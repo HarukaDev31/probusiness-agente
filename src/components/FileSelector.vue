@@ -3,50 +3,114 @@
         <customized-button @click="openFileExplorer">
             <template #text>Seleccionar archivo</template>
         </customized-button>
-        <input type="file" class="d-none" @change="onFileChange" accept="image/*" />
+        <input type="file"  class="d-none" ref="fileInput" :multiple="props.multiple" accept="image/*" @change="handleInputChange" />
 
         <div class="file-selector_drop d-flex align-items-center" @dragover.prevent @drop="handleDrop"
-            v-if="props.notshowDrop">
+            v-if="props.notShowDrop">
             <div class="file-selector_drop_container d-flex  flex-column ">
-                <div v-if="!file" class="d-flex flex-column ">
+                <div v-if="!files.length" class="d-flex flex-column ">
                     <label for="file" class="file-selector__label">Arrastre y suelte una imagen aquí</label>
                     <img src="/src/assets/upload-items.svg" alt="upload" class="file-selector__icon" />
                 </div>
-                <img v-if="file" :src="getImgUrl(file)" alt="preview" class="file-view" />
+                <div class="file-list"  v-if="files.length>0" :style="{
+                    gridTemplateColumns: `repeat(${Math.min(2,files.length)}, 1fr)`,
+                    gridTemplateRows: `repeat(${Math.ceil(files.length / 2)}, 1fr)`
+                
+                }">	
+                    <img v-for="(file, index) in files" :key="index" :src="file.iconUrl" alt="preview" class="file-item"
+                    />
 
-
+                </div>
             </div>
         </div>
     </div>
 </template>
 <script setup>
 import CustomizedButton from './CustomizedButton.vue'
-import { ref } from 'vue'
-const props = defineProps(['notShowDrop'])
-console.log(props)
-const file = ref(null)
-const onFileChange = (e) => {
-    const files = e.target.files || e.dataTransfer.files
-    if (!isImage(files[0])) return
-    if (!files.length) return
-    file.value = files[0]
-}
-const openFileExplorer = () => {
-    const input = document.querySelector('input[type="file"]')
-    input.click()
+import { ref,defineEmits } from 'vue'
 
+const props = defineProps(['notShowDrop', 'value', 'multiple'])
+const emit = defineEmits(['fileChange'])
+const files = ref([])
+const fileInput = ref(null)
+const openFileExplorer = () => {
+    const input = fileInput.value
+    input.click()
 }
-const getImgUrl = (file) => {
-    return URL.createObjectURL(file)
-}
+
+const getImgUrl = (file) => URL.createObjectURL(file)
+
 const handleDrop = (e) => {
     e.preventDefault()
-    onFileChange(e)
-
+    handleInputChange(e)
 }
-const isImage = (file) => {
-    const fileType = file.type.split('/')[0];
-    return fileType === 'image';
+
+const handleInputChange = (e) => {
+    const fileList = e.target.files || e.dataTransfer.files
+    //check size and type of file if size is greater than 5mb or file type is not supported then return
+    if (fileList.length && !validSize(fileList[0])) {
+        return
+    }
+    if (fileList.length) {
+        const validFiles = Array.from(fileList).filter(file => isValidFile(file))
+        if (props.multiple) {
+            //if
+            validFiles.forEach(file => {
+                
+                if (isImage(file)) {
+                    
+                    file.iconUrl = getImgUrl(file)
+                } else {
+                    file.iconUrl = getIconUrl(file.name)
+                }
+            })
+            files.value.push(...validFiles)
+            emit('fileChange', files.value)
+        } else if (validFiles.length > 0) {
+            const file = validFiles[0]
+            
+            if(isImage(file)){
+                file.iconUrl = getImgUrl(file)
+            }else{
+                file.iconUrl = getIconUrl(file.name)
+            }
+            files.value = [file]
+            emit('fileChange', files.value[0])
+        }
+    }
+}
+
+const isValidFile = (file) => (isImage(file) &&  file.type !== 'image/svg+xml')|| isSupportedFileType(file)
+
+const isImage = (file) => file.type.split('/')[0] === 'image'
+
+const isSupportedFileType = (file) => {
+    const extension = file.name.split('.').pop().toLowerCase()
+    const supportedExtensions = ["xlsx", "xls", "doc", "docx", "pdf"]
+    return supportedExtensions.includes(extension)
+}
+
+const getIconUrl = (fileName) => {
+    const extension = fileName.split('.').pop().toLowerCase()
+  
+    if (fileIconsUrl.hasOwnProperty(extension)) {
+        return fileIconsUrl[extension]
+    } else {
+        return "/src/assets/defaultIcon.svg" // Icono predeterminado para tipos de archivo desconocidos
+    }
+}
+const fileIconsUrl = {
+    "xlsx": "/src/assets/xlsIcon.svg",
+    "xls": "/src/assets/xlsIcon.svg",
+    "doc": "/src/assets/docIcon.svg",
+    "docx": "/src/assets/docIcon.svg",
+    "pdf": "/src/assets/pdfIcon.svg",
+}
+const validSize = (file) => file.size <= 5 * 1024 * 1024
+
+
+if (props.value) {
+    files.value = Array.isArray(props.value) ? props.value : [props.value]
 }
 </script>
 <style scoped>
@@ -54,6 +118,7 @@ const isImage = (file) => {
     gap: 1rem;
     width: 100%;
     max-width: 400px;
+    height: 100%;
     display: flex;
     flex-direction: column;
     row-gap: 1em;
@@ -64,10 +129,18 @@ const isImage = (file) => {
     justify-content: center;
     align-items: flex-start;
     width: 100%;
+    min-height: 100px;
     height: 100%;
-    min-height: 400px;
     border: 2px dashed #ccc;
     border-radius: 10px;
+}
+.file-selector_drop_container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    height: 100%;
+    align-items: center;
 }
 
 .file-selector__icon {
@@ -76,11 +149,27 @@ const isImage = (file) => {
     margin: 0 auto;
 }
 
-.file-view {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 10px;
+.file-list {
+    display:grid;
+    gap: 1rem;
+    width: 95%;
+        height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    align-items: center;
+}
 
+.file-item {
+    flex: 1; /* Cada imagen ocupará una fracción igual del contenedor */
+    margin: 5px; /* Ajusta el margen según sea necesario */
+    max-width: 100%; /* Cada imagen no superará el ancho del contenedor */
+    object-fit: contain; /* La imagen se ajustará manteniendo su relación de aspecto */
+}
+
+.file-selector__label {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1rem;
 }
 </style>

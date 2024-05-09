@@ -6,9 +6,9 @@
 </template>
 
 <script setup>
-import { defineProps, ref, defineEmits } from 'vue'
+import {  ref  } from 'vue'
 
-const props = defineProps(['text', 'optionalText', 'type', 'value'])
+const props = defineProps(['text', 'optionalText', 'type', 'value',])
 const emit = defineEmits(['input'])
 
 const inputValue = ref(props.value)
@@ -20,7 +20,7 @@ const emitInput = () => {
 
 <style scoped>
 .customized-input {
-    width: 100%;
+    width: 95%;
     display: flex;
     flex-direction: column;
     padding: 0.5em 0;
