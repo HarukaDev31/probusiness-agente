@@ -28,7 +28,7 @@
     <div id="second-row">
       <div class="proveedores-container d-flex flex-column mt-3 align-items-center">
         <h1>Proveedores</h1>
-        <customized-button @click="addNewSupplier" v-if="">
+        <customized-button @click="addNewSupplier">
           <template #text>Agregar Proveedor</template>
         </customized-button>
         <div id="suppliers-list" class="mt-3" v-if="suppliers.length != 0">
