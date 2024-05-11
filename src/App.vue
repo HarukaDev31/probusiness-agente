@@ -55,7 +55,6 @@
               </template>
               <template #body v-if="currentSupplier == supplierIndex + 1 && supplier.products != 0">
                 <div v-for="(productList, productListIndex) in supplier.products" class="product-list row ">
-                  {{ supplier }}
                   <div class="col-12 col-md-4">
                     <div v-for="(product, productItemIndex) in productList.filter(item => item.type == 'file')"
                       :key="`fileSelector-${productItemIndex}`" style="height: 100%;">
@@ -139,12 +138,14 @@ const formValues = ref([
   },
   {
     text: 'Email',
+    key: 'email',
     optionalText: false,
     type: 'email',
     value: ''
   },
   {
     text: 'RUC',
+    key: 'ruc',
     optionalText: true,
     type: 'text',
     value: ''
@@ -260,13 +261,45 @@ const suppliers = ref([
 ]);
 
 const sendCotizacionText = async () => {
-  //send only the values that are not files
+  //send all client keys and values,except if type is file
+  let cliente={
+
+  }
+  formValues.value.forEach(input=>{
+    if(input.type!="file"){
+      cliente[input.key]=input.value
+    }
+  })
+  let proveedores=[
+
+  ]
+  for(let i=0;i<suppliers.value.length;i++){
+    let proveedor={
+      indicators:{},
+      products:[]
+    }
+    for(let j=0;j<suppliers.value[i].indicators.length;j++){
+      //if type is file, continue
+      if(suppliers.value[i].indicators[j].key=="proforma") continue
+      proveedor.indicators[suppliers.value[i].indicators[j].key]=suppliers.value[i].indicators[j].value
+    }
+    for(let j=0;j<suppliers.value[i].products.length;j++){
+      if(suppliers.value[i].indicators[j].type=="file") continue
+
+      let product={
+        name:suppliers.value[i].products[j][0].value,
+        uso:suppliers.value[i].products[j][1].value,
+        cantidad:suppliers.value[i].products[j][2].value,
+        link:suppliers.value[i].products[j][4].value,
+        foto:suppliers.value[i].products[j][3].value
+      }
+      proveedor.products.push(product)
+    }
+    proveedores.push(proveedor)
+  }
   const formData = {
-    cliente: formValues.value.filter(input => input.type != 'file').map(input => ({ [input.text]: input.value })),
-    proveedores: suppliers.value.map(supplier => ({
-      indicators: supplier.indicators,
-      products: supplier.products.map(productList => productList.map(product => ({ [product.text]: product.value })))
-    }))
+    cliente,
+    proveedores
   }
   try {
     const response = await sendCotization(formData);
