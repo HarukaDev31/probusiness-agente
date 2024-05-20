@@ -2,19 +2,21 @@
     <div class="customized-input d-flex flex-column">
         <span class="fw-bold">{{ props.text }} <span v-if="!props.optionalText">*</span></span>
         <input :type="props.type" class="customized-input__input" :placeholder="props.optionalText?'Opcional':'Ingresar'" v-model="inputValue" @input="emitInput" />
+        <span v-if="props.isError" class="text-danger">Este campo es obligatorio</span>
     </div>
 </template>
 
 <script setup>
 import {  ref  } from 'vue'
 
-const props = defineProps(['text', 'optionalText', 'type', 'value',])
+const props = defineProps(['text', 'optionalText', 'type', 'value','validate','isError'])
 const emit = defineEmits(['input'])
-
 const inputValue = ref(props.value)
-
+const isError = ref(false)
 const emitInput = () => {
+    
     emit('input', inputValue.value)
+    
 }
 </script>
 

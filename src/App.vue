@@ -12,7 +12,7 @@
             <template #body>
               <!--Customized input with index pair-->
               <customized-input v-for="(input, index) in formValuesComputedPair" :key="index" :text="input.text"
-                :optionalText="input.optionalText" :type="input.type" @input="(e) => input.value = e" />
+                :optionalText="input.optionalText" :type="input.type" @input="(e) => input.value = e" :validation="input.validate" :is-error="input.error" />
             </template>
           </card>
         </div>
@@ -21,7 +21,7 @@
           <card class="card">
             <template #body>
               <customized-input v-for="(input, index) in formValuesComputedOdd" :key="index" :text="input.text"
-                :optionalText="input.optionalText" :type="input.type" @input="(e) => input.value = e" />
+                :optionalText="input.optionalText" :type="input.type" @input="(e) => input.value = e"  :validation="input.validate" :is-error="input.error"/>
             </template>
           </card>
         </div>
@@ -40,12 +40,12 @@
                   @click="currentSupplier != supplierIndex + 1 ? changeCurrentSupplier(supplierIndex + 1) : ''">
                   <h2 class="w-100">Proveedor {{ supplierIndex + 1 }}</h2>
                   <div class="supplier-indicators d-flex flex-column flex-md-row gap-4">
-                    
+
                     <div class="supplier-indicator " v-for="(indicator, index) in supplier.indicators"
                       :style="index == supplierIndicators.length - 1 && indicator.value ? 'height: 200px;' : 'height: 100%;'"
                       :key="`${supplierIndex}-${indicator.key}`" v-if="currentSupplier == supplierIndex + 1">
                       <customized-input :value="indicator.value" :text="indicator.name" :type="indicator.key"
-                        @input="(e) => indicator.value = e" v-if="index != supplierIndicators.length - 1" />
+                        @input="(e) => indicator.value = e" v-if="index != supplierIndicators.length - 1" :is-error="indicator.error"/>
                       <file-selector v-else :not-show-drop="indicator.value ? true : false
                         " :multiple="true" :value="indicator.value"
                         @file-change="(files) => handleMultipleFiles(files, indicator)" />
@@ -64,13 +64,14 @@
                     </div>
                   </div>
                   <div class="col-12 col-md-8">
-                    <customized-input v-for="(product, productItemIndex) in productList.filter(item => item.type != 'file')"
+                    <customized-input
+                      v-for="(product, productItemIndex) in productList.filter(item => item.type != 'file')"
                       :key="`${productListIndex}-${productItemIndex}`" :text="product.text"
-                      :optionalText="product.optionalText" :type="product.type" 
-                      :value="product.value" 
-                      @input="(e) => product.value = e"
+                      :optionalText="product.optionalText" :type="product.type" :value="product.value"
+                      @input="(e) => product.value = e" 
+                      :is-error="product.error"
                       />
-                      
+
                     <customized-button @click="deleteProduct(productListIndex, supplierIndex)" v-fi>
                       <template #text>Eliminar Producto</template>
                     </customized-button>
@@ -91,7 +92,7 @@
     <floatting-button />
 
     <footer-cuz />
-    <send-button @sendCotizacion="sendCotizacionText" />
+    <send-button @sendCotizacion="sendCotizacion" />
   </div>
 </template>
 <script setup>
@@ -105,50 +106,78 @@ import SendButton from './components/SendButton.vue';
 import FloattingButton from './components/FloattingButton.vue';
 import { ref, computed } from 'vue';
 import { sendCotization } from './services/send-cotization';
+const validateNotEmpy = (value) => {
+  return value != ''
+}
+const validateNumber = (value) => {
+  //validate if is a number and is more than 0 and less than 100
+  return !isNaN(value) && value > 0 && value < 10000
+}
 
 const formValues = ref([
   {
-    text: 'Nombres y Apellidos',
+    text: 'Nombres',
     key: 'nombres',
     optionalText: false,
     type: 'text',
-    value: ''
+    value: '',
+    validate: validateNotEmpy,
+    error: false
   },
   {
     text: 'Whatsapp',
     key: 'whatsapp',
     optionalText: false,
     type: 'text',
-    value: ''
+    value: '',
+    validate: validateNumber,
+    error: false
 
   },
   {
-    text: 'DNI/ID',
-    key: 'dni',
+    text: 'Apellidos',
+    key: 'apellidos',
     optionalText: false,
     type: 'text',
-    value: ''
+    value: '',
+    validate: validateNotEmpy,
+    error: false
   },
   {
     text: 'Nombre de la empresa',
     key: 'empresa',
     optionalText: true,
     type: 'text',
-    value: ''
+    value: '',
+    error: false
+  },
+  {
+    text: 'DNI/ID',
+    key: 'dni',
+    optionalText: false,
+    type: 'text',
+    value: '',
+    validate: validateNumber,
+    error: false
+  },
+  
+  
+  {
+    text: 'RUC',
+    key: 'ruc',
+    optionalText: true,
+    type: 'text',
+    value: '',
+    error: false
   },
   {
     text: 'Email',
     key: 'email',
     optionalText: false,
     type: 'email',
-    value: ''
-  },
-  {
-    text: 'RUC',
-    key: 'ruc',
-    optionalText: true,
-    type: 'text',
-    value: ''
+    value: '',
+    validate: validateNotEmpy,
+    error: false
   },
 ]);
 const formValuesComputedPair = computed(() => {
@@ -166,9 +195,7 @@ const changeCurrentSupplier = (index) => {
   currentSupplier.value = index
 }
 const handleFile = (file, product) => {
-  console.log("owo")
   product.value = file
-  console.log(product)
 
 }
 const handleMultipleFiles = (files, product) => {
@@ -210,32 +237,43 @@ const productParams = ref([
   {
     text: 'Nombre Comercial',
     optionalText: false,
+    key: 'nombre',
     type: 'text',
-    value: ''
+    value: '',
+    error: false
   },
   {
     text: "Uso",
     optionalText: false,
     type: 'text',
-    value: ''
+    key: 'uso',
+    value: '',
+    error: false
+   
   },
   {
     text: "Cantidad",
     optionalText: false,
-    type: 'text',
-    value: ''
+    type: 'number',
+    key: 'cantidad',
+    value: '',
+    error: false
   },
   {
     "text": "Agregar Foto",
     "optionalText": false,
     "type": "file",
-    "value": null
+    "key": "foto",
+    "value": null,
+    "error": false
   },
   {
     "text": "Link",
     "optionalText": true,
-    "type": "text",
-    "value": ""
+    "key": "link",
+    "type": "link",
+    "value": "",
+    "error": false
   }
 
 ]);
@@ -243,74 +281,116 @@ const supplierIndicators = ref([
   {
     name: "CBM TOTAL",
     key: "cbm",
-    value: ""
+    value: "",
+    error: false
   },
   {
     name: "PESO TOTAL",
     key: "peso",
-    value: ""
+    value: "",
+    error: false
   },
   {
     name: "Proforma y Packing",
     key: "proforma",
-    value: null
+    value: null,
+    error: false
   }
 ]);
 const suppliers = ref([
 
 ]);
 
-const sendCotizacionText = async () => {
-  //send all client keys and values,except if type is file
-  let cliente={
-
-  }
-  formValues.value.forEach(input=>{
-    if(input.type!="file"){
-      cliente[input.key]=input.value
-    }
-  })
-  let proveedores=[
-
-  ]
-  for(let i=0;i<suppliers.value.length;i++){
-    let proveedor={
-      indicators:{},
-      products:[]
-    }
-    for(let j=0;j<suppliers.value[i].indicators.length;j++){
-      //if type is file, continue
-      if(suppliers.value[i].indicators[j].key=="proforma") continue
-      proveedor.indicators[suppliers.value[i].indicators[j].key]=suppliers.value[i].indicators[j].value
-    }
-    for(let j=0;j<suppliers.value[i].products.length;j++){
-      if(suppliers.value[i].indicators[j].type=="file") continue
-
-      let product={
-        name:suppliers.value[i].products[j][0].value,
-        uso:suppliers.value[i].products[j][1].value,
-        cantidad:suppliers.value[i].products[j][2].value,
-        link:suppliers.value[i].products[j][4].value,
-        foto:suppliers.value[i].products[j][3].value
+const sendCotizacion = async () => {
+  //send all in formdata format
+  const formData = new FormData();
+  let isValid = true;
+  formValues.value.forEach(input => {
+    if(input.type=="text" || input.type=="email"){
+      if(validateNotEmpy(input.value)){
+        formData.append(input.key, input.value)
+      }else{
+        input.error=true
+        isValid=false
       }
-      proveedor.products.push(product)
     }
-    proveedores.push(proveedor)
-  }
-  const formData = {
-    cliente,
-    proveedores
-  }
-  try {
-    const response = await sendCotization(formData);
-    console.log(response)
+  });
+  if(suppliers.value.length==0)return;
+  let supplierIndex = 0;
+  suppliers.value.forEach(supplier => {
+    
+    supplier.indicators.forEach(indicator => {
+      //if key is proforma, then it is a filearray
+      if (indicator.key == 'proforma') {
+        if (indicator.value instanceof Array) {
+          // Iterar sobre el arreglo de archivos
+          let proformaIndex = 0;
+          indicator.value.forEach(file => {
+            // Agregar cada archivo al FormData con una clave que incluye el índice de la proforma
+            formData.append(`proveedor-${supplierIndex}-proforma-${proformaIndex}`, file);
+            proformaIndex++;
+          });
+        } else if (indicator.value instanceof File) {
+          // Si es un solo archivo, agregarlo al FormData con la misma clave
+          formData.append(`proveedor-${supplierIndex}-proforma-0`, indicator.value);
+        } else {
+        }
+      } else {
+        if (indicator.key == 'cbm' || indicator.key == 'peso') {
+          if (validateNumber(indicator.value)) {
+            formData.append(`proveedor-${supplierIndex}-${indicator.key}`, indicator.value)
+          } else {
+            indicator.error = true
+            isValid = false
+          }
+        } else {
+          formData.append(`proveedor-${supplierIndex}-${indicator.key}`, indicator.value)
+        }
+      }
+    });
+    let productIndex = 0;
+    if (supplier.products.length == 0) {
+      isValid = false
+      return
+    }
+    supplier.products.forEach(productList => {
+      productList.forEach(product => {
+        if (product.type == 'file') {
+          if (product.value != null && product.value instanceof File) {
 
-  } catch (e) {
-    console.log(e)
+            formData.append(`proveedor-${supplierIndex}-producto-${productIndex}-${product.key}`, product.value, product.value.name);
+          } else {
+            // Si no es un archivo, puedes manejarlo de otra manera o mostrar un mensaje de error
+            console.error('El valor no es un archivo.');
+          }
+        } else {
+          if (validateNotEmpy(product.value)) {
+            formData.append(`proveedor-${supplierIndex}-producto-${productIndex}-${product.key}`, product.value)
+          } else {
+            product.error = true
+            isValid = false
+        }
+
+        }
+      }
+      )
+
+
+      productIndex++
+    })
+    supplierIndex++
+
+  });
+  if (!isValid) return
+
+  const response=await sendCotization(formData);
+  if(response.status==201){
+    alert("Cotización enviada con éxito")
+  }else{
+    alert("Error al enviar la cotización")
   }
- 
+
 }
-
 
 </script>
 <style>
