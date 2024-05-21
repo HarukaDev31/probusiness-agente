@@ -12,7 +12,8 @@
             <template #body>
               <!--Customized input with index pair-->
               <customized-input v-for="(input, index) in formValuesComputedPair" :key="index" :text="input.text"
-                :optionalText="input.optionalText" :type="input.type" @input="(e) => input.value = e" :validation="input.validate" :is-error="input.error" />
+                :optionalText="input.optionalText" :type="input.type" @input="(e) => input.value = e"
+                :validation="input.validate" :is-error="input.error" />
             </template>
           </card>
         </div>
@@ -21,7 +22,8 @@
           <card class="card">
             <template #body>
               <customized-input v-for="(input, index) in formValuesComputedOdd" :key="index" :text="input.text"
-                :optionalText="input.optionalText" :type="input.type" @input="(e) => input.value = e"  :validation="input.validate" :is-error="input.error"/>
+                :optionalText="input.optionalText" :type="input.type" @input="(e) => input.value = e"
+                :validation="input.validate" :is-error="input.error" />
             </template>
           </card>
         </div>
@@ -29,23 +31,25 @@
       <div id="second-row">
         <div class="proveedores-container d-flex flex-column mt-3 align-items-center">
           <h1>Proveedores</h1>
-          <customized-button @click="addNewSupplier">
+          <customized-button @click="addNewSupplier" v-if="suppliers.length == 0">
             <template #text>Agregar Proveedor</template>
           </customized-button>
           <div id="suppliers-list" class="mt-3" v-if="suppliers.length != 0">
             <card v-for="(supplier, supplierIndex) in suppliers" :key="supplierIndex" class="my-3"
               :background="currentSupplier != supplierIndex + 1 ? '#21618C' : 'white'">
               <template #header>
-                <div class="supplier-header d-flex flex-column flex-lg-row"
+                <div class="supplier-header d-flex flex-column flex-lg-row align-items-center"
                   @click="currentSupplier != supplierIndex + 1 ? changeCurrentSupplier(supplierIndex + 1) : ''">
-                  <h2 class="w-100">Proveedor {{ supplierIndex + 1 }}</h2>
-                  <div class="supplier-indicators d-flex flex-column flex-md-row gap-4">
+                  <h2 class="w-100" :style="currentSupplier != supplierIndex + 1 ? 'color:white' : ''"><strong>PROVEEDOR {{
+                      supplierIndex + 1 }}</strong></h2>
+                  <div class="supplier-indicators d-flex flex-column flex-md-row gap-4 align-items-center ">
 
-                    <div class="supplier-indicator " v-for="(indicator, index) in supplier.indicators"
+                    <div class="supplier-indicator d-flex " v-for="(indicator, index) in supplier.indicators"
                       :style="index == supplierIndicators.length - 1 && indicator.value ? 'height: 200px;' : 'height: 100%;'"
                       :key="`${supplierIndex}-${indicator.key}`" v-if="currentSupplier == supplierIndex + 1">
                       <customized-input :value="indicator.value" :text="indicator.name" :type="indicator.key"
-                        @input="(e) => indicator.value = e" v-if="index != supplierIndicators.length - 1" :is-error="indicator.error"/>
+                        :optionalText="indicator.optionalText" @input="(e) => indicator.value = e"
+                        v-if="index != supplierIndicators.length - 1" :is-error="indicator.error" />
                       <file-selector v-else :not-show-drop="indicator.value ? true : false
                         " :multiple="true" :value="indicator.value"
                         @file-change="(files) => handleMultipleFiles(files, indicator)" />
@@ -68,9 +72,7 @@
                       v-for="(product, productItemIndex) in productList.filter(item => item.type != 'file')"
                       :key="`${productListIndex}-${productItemIndex}`" :text="product.text"
                       :optionalText="product.optionalText" :type="product.type" :value="product.value"
-                      @input="(e) => product.value = e" 
-                      :is-error="product.error"
-                      />
+                      @input="(e) => product.value = e" :is-error="product.error" />
 
                     <customized-button @click="deleteProduct(productListIndex, supplierIndex)" v-fi>
                       <template #text>Eliminar Producto</template>
@@ -82,9 +84,14 @@
             </card>
 
           </div>
-          <customized-button @click="addNewProductToSupplier(currentSupplier)" v-if="suppliers.length != 0">
-            <template #text>Agregar Producto</template>
-          </customized-button>
+          <div class="d-flex flex-column w-100 gap-2">
+            <customized-button @click="addNewProductToSupplier(currentSupplier)" v-if="suppliers.length != 0">
+              <template #text>Agregar Producto</template>
+            </customized-button>
+            <customized-button @click="addNewSupplier" v-if="suppliers.length != 0">
+              <template #text>Agregar Proveedor</template>
+            </customized-button>
+          </div>
           <!-- <supplier-card v-for="supplier in suppliers" :key="supplier.id" :supplier="supplier" /> -->
         </div>
       </div>
@@ -160,8 +167,8 @@ const formValues = ref([
     validate: validateNumber,
     error: false
   },
-  
-  
+
+
   {
     text: 'RUC',
     key: 'ruc',
@@ -224,7 +231,9 @@ const addNewSupplier = () => {
 
   );
   if (suppliers.value.length == 1) {
-    suppliers.value[0].products.push(productParams.value)
+    const newProductParams = productParams.value.map(param => ({ ...param }));
+
+    suppliers.value[0].products.push(newProductParams)
   }
   currentSupplier.value++
 
@@ -249,7 +258,7 @@ const productParams = ref([
     key: 'uso',
     value: '',
     error: false
-   
+
   },
   {
     text: "Cantidad",
@@ -279,16 +288,18 @@ const productParams = ref([
 ]);
 const supplierIndicators = ref([
   {
-    name: "CBM TOTAL",
+    name: "CBM TOTAL ",
     key: "cbm",
     value: "",
-    error: false
+    error: false,
+    optionalText: false
   },
   {
     name: "PESO TOTAL",
     key: "peso",
     value: "",
-    error: false
+    error: false,
+    optionalText: true
   },
   {
     name: "Proforma y Packing",
@@ -306,19 +317,20 @@ const sendCotizacion = async () => {
   const formData = new FormData();
   let isValid = true;
   formValues.value.forEach(input => {
-    if(input.type=="text" || input.type=="email"){
-      if(validateNotEmpy(input.value)){
+    console.log(input)
+    if ((input.type == "text" || input.type == "email") && input.optionalText == false) {
+      if (validateNotEmpy(input.value)) {
         formData.append(input.key, input.value)
-      }else{
-        input.error=true
-        isValid=false
+      } else {
+        input.error = true
+        isValid = false
       }
     }
   });
-  if(suppliers.value.length==0)return;
+  if (suppliers.value.length == 0) return;
   let supplierIndex = 0;
   suppliers.value.forEach(supplier => {
-    
+
     supplier.indicators.forEach(indicator => {
       //if key is proforma, then it is a filearray
       if (indicator.key == 'proforma') {
@@ -336,7 +348,7 @@ const sendCotizacion = async () => {
         } else {
         }
       } else {
-        if (indicator.key == 'cbm' || indicator.key == 'peso') {
+        if (indicator.key == 'cbm') {
           if (validateNumber(indicator.value)) {
             formData.append(`proveedor-${supplierIndex}-${indicator.key}`, indicator.value)
           } else {
@@ -364,12 +376,12 @@ const sendCotizacion = async () => {
             console.error('El valor no es un archivo.');
           }
         } else {
-          if (validateNotEmpy(product.value)) {
+          if (validateNotEmpy(product.value) || product.optionalText) {
             formData.append(`proveedor-${supplierIndex}-producto-${productIndex}-${product.key}`, product.value)
           } else {
             product.error = true
             isValid = false
-        }
+          }
 
         }
       }
@@ -383,10 +395,10 @@ const sendCotizacion = async () => {
   });
   if (!isValid) return
 
-  const response=await sendCotization(formData);
-  if(response.status==201){
+  const response = await sendCotization(formData);
+  if (response.status == 201) {
     alert("Cotización enviada con éxito")
-  }else{
+  } else {
     alert("Error al enviar la cotización")
   }
 

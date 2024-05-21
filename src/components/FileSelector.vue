@@ -132,7 +132,7 @@ if (props.value) {
     min-height: 100px;
     height: 100%;
     border: 2px dashed #ccc;
-    border-radius: 10px;
+    border-radius: 10px;    
 }
 .file-selector_drop_container {
     display: flex;
@@ -141,6 +141,7 @@ if (props.value) {
     width: 100%;
     height: 100%;
     align-items: center;
+    justify-content: center;
 }
 
 .file-selector__icon {
