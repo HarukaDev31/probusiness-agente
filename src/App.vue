@@ -4,10 +4,10 @@
   <div>
     <navbar />
     <main class="main-container">
-
+      {{currentSupplier}}
       <div id="first-row" class="d-flex flex-column flex-md-row gap-4">
         <div id="card-cliente">
-          <h1>Cliente</h1>
+          <h1 class="fw-bold">Cliente</h1>
           <card class="card">
             <template #body>
               <!--Customized input with index pair-->
@@ -18,7 +18,7 @@
           </card>
         </div>
         <div id="card-empresa">
-          <h1>Empresa</h1>
+          <h1 class="fw-bold">Empresa</h1>
           <card class="card">
             <template #body>
               <customized-input v-for="(input, index) in formValuesComputedOdd" :key="index" :text="input.text"
@@ -40,19 +40,27 @@
               <template #header>
                 <div class="supplier-header d-flex flex-column flex-lg-row align-items-center"
                   @click="currentSupplier != supplierIndex + 1 ? changeCurrentSupplier(supplierIndex + 1) : ''">
-                  <h2 class="w-100" :style="currentSupplier != supplierIndex + 1 ? 'color:white' : ''"><strong>PROVEEDOR {{
-                      supplierIndex + 1 }}</strong></h2>
+                  <h2 class="w-100 " :style="currentSupplier != supplierIndex + 1 ? 'color:white ' : ''"><strong class="">PROVEEDOR {{
+                      supplierIndex + 1 }}</strong>
+                    <div class="btn btn-outline-danger " v-if="currentSupplier == supplierIndex + 1" @click="deleteSupplier(supplierIndex + 1)">
+                      Eliminar Proveedor
+                    </div>
+                    </h2>
+                    
                   <div class="supplier-indicators d-flex flex-column flex-md-row gap-4 align-items-center ">
 
                     <div class="supplier-indicator d-flex " v-for="(indicator, index) in supplier.indicators"
                       :style="index == supplierIndicators.length - 1 && indicator.value ? 'height: 200px;' : 'height: 100%;'"
                       :key="`${supplierIndex}-${indicator.key}`" v-if="currentSupplier == supplierIndex + 1">
-                      <customized-input :value="indicator.value" :text="indicator.name" :type="indicator.key"
+                      <customized-input :value="indicator.value" :text="indicator.name" :type="indicator.type"
                         :optionalText="indicator.optionalText" @input="(e) => indicator.value = e"
                         v-if="index != supplierIndicators.length - 1" :is-error="indicator.error" />
+                        
                       <file-selector v-else :not-show-drop="indicator.value ? true : false
                         " :multiple="true" :value="indicator.value"
-                        @file-change="(files) => handleMultipleFiles(files, indicator)" />
+                        @file-change="(files) => handleMultipleFiles(files, indicator)" >
+                        <template #text>  Subir Proforma y/o packing</template>
+                        </file-selector>
                     </div>
                   </div>
                 </div>
@@ -62,6 +70,7 @@
                   <div class="col-12 col-md-4">
                     <div v-for="(product, productItemIndex) in productList.filter(item => item.type == 'file')"
                       :key="`fileSelector-${productItemIndex}`" style="height: 100%;">
+                      <label class="fw-bold">Imagen</label>
                       <file-selector :not-show-drop="true" :multiple="false" :value="product.value"
                         @fileChange="(files) => handleFile(files, product)" />
 
@@ -74,9 +83,9 @@
                       :optionalText="product.optionalText" :type="product.type" :value="product.value"
                       @input="(e) => product.value = e" :is-error="product.error" />
 
-                    <customized-button @click="deleteProduct(productListIndex, supplierIndex)" v-fi>
-                      <template #text>Eliminar Producto</template>
-                    </customized-button>
+                    <div  class="btn btn-outline-danger w-100"@click="deleteProduct(productListIndex, supplierIndex)" v-fi>
+                     Eliminar Producto
+                    </div>
                   </div>
 
                 </div>
@@ -85,9 +94,9 @@
 
           </div>
           <div class="d-flex flex-column w-100 gap-2">
-            <customized-button @click="addNewProductToSupplier(currentSupplier)" v-if="suppliers.length != 0">
-              <template #text>Agregar Producto</template>
-            </customized-button>
+            <div class="btn btn-outline-danger"@click="addNewProductToSupplier(currentSupplier)" v-if="suppliers.length != 0">
+              Agregar Producto
+            </div>
             <customized-button @click="addNewSupplier" v-if="suppliers.length != 0">
               <template #text>Agregar Proveedor</template>
             </customized-button>
@@ -162,7 +171,7 @@ const formValues = ref([
     text: 'DNI/ID',
     key: 'dni',
     optionalText: false,
-    type: 'text',
+    type: 'number',
     value: '',
     validate: validateNumber,
     error: false
@@ -269,6 +278,14 @@ const productParams = ref([
     error: false
   },
   {
+    text:"Valor Unitario",
+    optionalText: false,
+    type: 'number',
+    key: 'valor',
+    value: '',
+    error: false
+  },
+  {
     "text": "Agregar Foto",
     "optionalText": false,
     "type": "file",
@@ -290,12 +307,14 @@ const supplierIndicators = ref([
   {
     name: "CBM TOTAL ",
     key: "cbm",
+    type: "number",
     value: "",
     error: false,
     optionalText: false
   },
   {
     name: "PESO TOTAL",
+    type: "number",
     key: "peso",
     value: "",
     error: false,
@@ -402,6 +421,13 @@ const sendCotizacion = async () => {
     alert("Error al enviar la cotización")
   }
 
+  
+} 
+const deleteSupplier = (index) => {
+  suppliers.value.splice(index - 1, 1)
+  if (currentSupplier.value == index) {
+    currentSupplier.value = 0
+  }
 }
 
 </script>

@@ -1,6 +1,6 @@
 <template>
     <div class="customized-input d-flex flex-column">
-        <span class="fw-bold">{{ props.text }} <span v-if="!props.optionalText">*</span></span>
+        <span class="fw-bold ">{{ props.text }} <span v-if="!props.optionalText" class="text-danger">*</span></span>
         <input :type="props.type" class="customized-input__input" :placeholder="props.optionalText?'Opcional':'Ingresar'" v-model="inputValue" @input="emitInput" />
         <span v-if="props.isError" class="text-danger">Este campo es obligatorio</span>
     </div>

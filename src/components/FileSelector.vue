@@ -1,16 +1,14 @@
 <template>
     <div class="file-selector_container">
-        <customized-button @click="openFileExplorer">
-            <template #text>Seleccionar archivo</template>
-        </customized-button>
+        <div @click="openFileExplorer" class="btn  btn-outline-secondary">
+           <slot name="text">Seleccionar archivo</slot>
+        </div>
         <input type="file"  class="d-none" ref="fileInput" :multiple="props.multiple" accept="image/*" @change="handleInputChange" />
 
         <div class="file-selector_drop d-flex align-items-center" @dragover.prevent @drop="handleDrop"
             v-if="props.notShowDrop">
             <div class="file-selector_drop_container d-flex  flex-column ">
                 <div v-if="!files.length" class="d-flex flex-column ">
-                    <label for="file" class="file-selector__label">Arrastre y suelte una imagen aquí</label>
-                    <img src="/src/assets/upload-items.svg" alt="upload" class="file-selector__icon" />
                 </div>
                 <div class="file-list"  v-if="files.length>0" :style="{
                     gridTemplateColumns: `repeat(${Math.min(2,files.length)}, 1fr)`,
@@ -131,7 +129,6 @@ if (props.value) {
     width: 100%;
     min-height: 100px;
     height: 100%;
-    border: 2px dashed #ccc;
     border-radius: 10px;    
 }
 .file-selector_drop_container {
