@@ -214,6 +214,7 @@ import SendButton from "./components/SendButton.vue";
 import FloattingButton from "./components/FloattingButton.vue";
 import { ref, computed, nextTick, watchEffect, reactive } from "vue";
 import { sendCotization } from "./services/send-cotization";
+import { i } from "vite/dist/node/types.d-aGj9QkWt";
 
 const validateNotEmpy = (value) => {
   return value != "";
@@ -430,6 +431,14 @@ const sendCotizacion = async () => {
       input.optionalText == false
     ) {
       if (validateNotEmpy(input.value)) {
+        formData.append(input.key, input.value);
+      } else {
+        input.error = true;
+        isValid = false;
+      }
+    }
+    if (input.type == "number") {
+      if (validateNumber(input.value)) {
         formData.append(input.key, input.value);
       } else {
         input.error = true;
