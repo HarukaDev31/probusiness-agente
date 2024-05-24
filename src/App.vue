@@ -83,7 +83,6 @@
                       Eliminar Proveedor
                     </div>
                   </h2>
-                  {{ currentSupplier.value }}
 
                   <div
                     class="supplier-indicators d-flex flex-column flex-md-row gap-4 align-items-center"
