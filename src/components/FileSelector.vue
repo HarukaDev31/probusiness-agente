@@ -10,7 +10,7 @@
         </div>
 
         <input type="file" class="d-none" ref="fileInput" :multiple="props.multiple"
-            accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" @change="handleInputChange" />
+            :accept="props.accept" @change="handleInputChange" />
 
         <div class="file-selector_drop d-flex align-items-center" @dragover.prevent @drop="handleDrop"
             v-if="props.notShowDrop">
@@ -32,8 +32,16 @@
 </template>
 <script setup>
 import { ref, defineEmits } from 'vue'
-
-const props = defineProps(['notShowDrop', 'value', 'multiple'])
+const showAlert = (title, text, icon,) => {
+  Swal.fire({
+    title: title,
+    text: text,
+    icon: icon,
+    confirmButtonText: 'OK',
+    confirmButtonColor: '#21618C',
+  });
+}
+const props = defineProps(['notShowDrop', 'value', 'multiple','accept'])
 const emit = defineEmits(['fileChange'])
 const files = ref([])
 const fileInput = ref(null)
@@ -52,7 +60,7 @@ const handleDrop = (e) => {
 const handleInputChange = (e) => {
     const fileList = e.target.files || e.dataTransfer.files
     //check size and type of file if size is greater than 5mb or file type is not supported then return
-    if (fileList.length && !validSize(fileList[0])) {
+    if (fileList.length && !validSize(fileList[0]) ){
         return
     }
     if (fileList.length) {
@@ -72,7 +80,11 @@ const handleInputChange = (e) => {
             emit('fileChange', files.value)
         } else if (validFiles.length > 0) {
             const file = validFiles[0]
-
+            //if file not in props.accept then return
+            if (!isValidFile(file)) {
+                showAlert('Error', 'Tipo de archivo no soportado', 'error')
+                return
+            }
             if (isImage(file)) {
                 file.iconUrl = getImgUrl(file)
             } else {
@@ -84,8 +96,20 @@ const handleInputChange = (e) => {
     }
 }
 
-const isValidFile = (file) => (isImage(file) && file.type !== 'image/svg+xml') || isSupportedFileType(file)
+const isValidFile = (file) => {
+    const accept=props.accept;
+    const acceptArray=accept.split(',')
+    return  isValidAccept(file)
+}
+const isValidAccept = (file) => {
+    const accept=props.accept.split(',')
+    //if image/* is in accept then check if file is image
+    if(accept[0].includes('image/*' ) && accept.length==1){
+        return isImage(file)
+    }
 
+    return isSupportedFileType(file) && accept.includes("."+file.name.split('.').pop().toLowerCase())
+}
 const isImage = (file) => file.type.split('/')[0] === 'image'
 
 const isSupportedFileType = (file) => {

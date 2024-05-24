@@ -65,8 +65,9 @@
                         v-if="index != supplierIndicators.length - 1" :is-error="indicator.error" />
 
                       <file-selector v-else :not-show-drop="false" :multiple="true"
-                        :value="indicator.value" @file-change="(files) => handleMultipleFiles(files, indicator)
-                          ">
+                        :value="indicator.value" @file-change="(files) => handleMultipleFiles(files, indicator)"
+                        :accept="'image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx'"
+                          >
                           <template #button>
                             <div class="btn d-flex flex-column" :class="indicator.value?'btn-dark':'btn-outline-secondary'">
                               Subir proforma y/o Packing
@@ -91,7 +92,7 @@
                     )" :key="`fileSelector-${productItemIndex}`" style="height: 100%">
                       <label class="fw-bold">Imagen</label>
                       <file-selector :not-show-drop="true" :multiple="false" :value="product.value"
-                        @fileChange="(files) => handleFile(files, product)">
+                        @fileChange="(files) => handleFile(files, product)" :accept="'image/*'">
                         <template #text>Seleccionar foto</template>
                       </file-selector>
                     </div>
