@@ -13,6 +13,8 @@ import "sweetalert2/dist/sweetalert2.min.css";
 library.add(fas);
 library.add(fab);
 
-createApp(App).component("font-awesome-icon", FontAwesomeIcon).component("vue-sweetalert2", VueSweetalert2).mount("#app");
 
 import "bootstrap/dist/js/bootstrap.min";
+import 'bootstrap'
+import 'bootstrap-icons/font/bootstrap-icons.css'
+createApp(App).component("font-awesome-icon", FontAwesomeIcon).component("vue-sweetalert2", VueSweetalert2).mount("#app");

@@ -2,6 +2,11 @@
   <!--<file-selector />-->
   <!-- <customized-input :text="'waos'" :optionalText="true" :type="'text'"/> -->
   <div class="app-container">
+    <div v-if="isLoading" class="backdrop">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
     <navbar />
     <main class="main-container">
       <div id="first-row" class="d-flex flex-column flex-md-row gap-4">
@@ -12,7 +17,8 @@
               <!--Customized input with index pair-->
               <customized-input v-for="(input, index) in formValuesComputedPair" :key="index" :text="input.text"
                 :optionalText="input.optionalText" :type="input.type" @input="(e) => (input.value = e)"
-                :validation="input.validate" :is-error="input.error" />
+                :value="input.value" :validation="input.validate" :is-error="input.error" :prepend="input.prepend"
+                :keyRender="input.keyRender" />
             </template>
           </card>
         </div>
@@ -21,8 +27,9 @@
           <card class="card">
             <template #body>
               <customized-input v-for="(input, index) in formValuesComputedOdd" :key="index" :text="input.text"
-                :optionalText="input.optionalText" :type="input.type" @input="(e) => (input.value = e)"
-                :validation="input.validate" :is-error="input.error" />
+                :value="input.value" :optionalText="input.optionalText" :type="input.type"
+                @input="(e) => (input.value = e)" :validation="input.validate" :is-error="input.error"
+                :prepend="input.prepend" :keyRender="input.keyRender" />
             </template>
           </card>
         </div>
@@ -52,19 +59,22 @@
 
                   <div class="supplier-indicators d-flex flex-column flex-md-row gap-4 align-items-center"
                     v-if="currentSupplier.value == supplierIndex + 1">
-                    <div class="supplier-indicator d-flex" v-for="(indicator, index) in supplier.indicators" :style="index == supplierIndicators.length - 1 &&
-                      indicator.value
-                      ? 'height: 200px;'
-                      : 'height: 100%;'
-                      " :key="`${supplierIndex}-${indicator.key}`">
+                    <div class="supplier-indicator d-flex" v-for="(indicator, index) in supplier.indicators"  :key="`${supplierIndex}-${indicator.key}`">
                       <customized-input :value="indicator.value" :text="indicator.name" :type="indicator.type"
                         :optionalText="indicator.optionalText" @input="(e) => (indicator.value = e)"
                         v-if="index != supplierIndicators.length - 1" :is-error="indicator.error" />
 
-                      <file-selector v-else :not-show-drop="indicator.value ? true : false" :multiple="true"
+                      <file-selector v-else :not-show-drop="false" :multiple="true"
                         :value="indicator.value" @file-change="(files) => handleMultipleFiles(files, indicator)
                           ">
-                        <template #text> Subir proforma y/o packing</template>
+                          <template #button>
+                            <div class="btn d-flex flex-column" :class="indicator.value?'btn-dark':'btn-outline-secondary'">
+                              Subir proforma y/o Packing
+                              <small class="text-danger">
+                                {{ indicator.value ? `(${indicator.value.length} archivo(s))`: '' }}
+                              </small>
+                            </div>
+                          </template> 
                       </file-selector>
                     </div>
                   </div>
@@ -81,9 +91,9 @@
                     )" :key="`fileSelector-${productItemIndex}`" style="height: 100%">
                       <label class="fw-bold">Imagen</label>
                       <file-selector :not-show-drop="true" :multiple="false" :value="product.value"
-                        @fileChange="(files) => handleFile(files, product)" >
+                        @fileChange="(files) => handleFile(files, product)">
                         <template #text>Seleccionar foto</template>
-                      </file-selector>  
+                      </file-selector>
                     </div>
                   </div>
                   <div class="col-12 col-md-8">
@@ -130,26 +140,70 @@ import FooterCuz from "./components/FooterCuz.vue";
 import SendButton from "./components/SendButton.vue";
 import FloattingButton from "./components/FloattingButton.vue";
 import { ref, computed, reactive, } from "vue";
-import { sendCotization } from "./services/send-cotization";
+import { sendCotization, getClientDataByDNIID } from "./services/send-cotization";
 import Swal from 'sweetalert2';
 const validateNotEmpy = (value) => {
-  return value != "";
+  return value!="";
 };
 const validateNumber = (value) => {
   //validate if is a number and is more than 0 and less than 100
   return !isNaN(value) && value > 0 && value < 999999999;
 };
 const showConfirmationModal = ref(false)
+const getClientData = async (value) => {
+  if(!validateNotEmpy(value)) return showAlert("Error al buscar cliente", "Debe ingresar un DNI/ID", 'error')
+  try {
+    isLoading.value = true
+    const params = {
+      dni: value
+    }
+    const response = await getClientDataByDNIID(params);
+    
+    formValues.value.forEach((input) => {
+      if (response.tipoCliente==0) {
+        showAlert("Cliente no encontrado",
+          `No se encontró un cliente con el DNI/ID ingresado`, 'error')
+        return
+      }
+      if(response.tipoCliente==2){
+        //NOTIFY USE COLLABORATOR CODE,GET CONGRATULATIONS
+        showAlert("Bienvenido de vuelta!",
+          `Al ser un socio, obtienes un descuento especial en tu cotización`, 'success')
+        return
+      }
+      try {
+        input.keyRender++
+
+        input.value = response.clientData[0][input.key];
+      } catch (e) {
+        console.error(e)
+      }
+
+    });
+    isLoading.value = false
+  }
+  catch (e) {
+    isLoading.value = false
+    console.error(e)
+  }
+};
 const formValues = ref([
   {
-    text: "Nombres",
-    key: "nombres",
+    text: "DNI/ID",
+    key: "dni",
     optionalText: false,
     type: "text",
     value: "",
     validate: validateNotEmpy,
     error: false,
+    prepend: {
+      icon: 'bi bi-search',
+      //send function to component and call it when icon is clicked
+      action: getClientData
+    },
+    keyRender: 0
   },
+
   {
     text: "Whatsapp",
     key: "whatsapp",
@@ -158,6 +212,28 @@ const formValues = ref([
     value: "",
     validate: validateNumber,
     error: false,
+    keyRender: 0
+
+  },
+  {
+    text: "Nombres",
+    key: "nombres",
+    optionalText: false,
+    type: "text",
+    value: "",
+    validate: validateNotEmpy,
+    error: false,
+    keyRender: 0
+  },
+
+  {
+    text: "Nombre de la empresa",
+    key: "empresa",
+    optionalText: true,
+    type: "text",
+    value: "",
+    error: false,
+    keyRender: 0
   },
   {
     text: "Apellidos",
@@ -167,23 +243,7 @@ const formValues = ref([
     value: "",
     validate: validateNotEmpy,
     error: false,
-  },
-  {
-    text: "Nombre de la empresa",
-    key: "empresa",
-    optionalText: true,
-    type: "text",
-    value: "",
-    error: false,
-  },
-  {
-    text: "DNI/ID",
-    key: "dni",
-    optionalText: false,
-    type: "number",
-    value: "",
-    validate: validateNumber,
-    error: false,
+    keyRender: 0
   },
 
   {
@@ -193,6 +253,7 @@ const formValues = ref([
     type: "text",
     value: "",
     error: false,
+    keyRender: 0
   },
   {
     text: "Email",
@@ -202,6 +263,7 @@ const formValues = ref([
     value: "",
     validate: validateNotEmpy,
     error: false,
+    keyRender: 0
   },
 ]);
 const formValuesComputedPair = computed(() => {
@@ -336,11 +398,11 @@ const supplierIndicators = ref([
 ]);
 const suppliers = ref([]);
 
-const showAlert = (title, text,icon,) => {
+const showAlert = (title, text, icon,) => {
   Swal.fire({
     title: title,
     text: text,
-    icon: 'success',
+    icon: icon,
     confirmButtonText: 'OK',
     confirmButtonColor: '#21618C',
   });
@@ -351,7 +413,6 @@ const sendCotizacion = async () => {
   const formData = new FormData();
   let isValid = true;
   formValues.value.forEach((input) => {
-    console.log(input);
     if (
       (input.type == "text" || input.type == "email") &&
       input.optionalText == false
@@ -370,9 +431,15 @@ const sendCotizacion = async () => {
         input.error = true;
         isValid = false;
       }
+    }else{
+      formData.append(input.key, input.value);
     }
   });
-  if (suppliers.value.length == 0) return;
+  if (suppliers.value.length == 0) {
+    showAlert("Error al enviar la cotización",
+      `Debe agregar al menos un proveedor para enviar la cotización`, 'error')
+    return;
+  }
   let supplierIndex = 0;
   suppliers.value.forEach((supplier) => {
     supplier.indicators.forEach((indicator) => {
@@ -456,18 +523,15 @@ const sendCotizacion = async () => {
   const response = await sendCotization(formData);
   if (response.status == 201) {
     showAlert("Cotización enviada",
-      `Su cotización ha sido registrada con el codigo N° ${response.code} ¡Gracias por confiar en nosotros!`,'success')
+      `Su cotización ha sido registrada con el codigo N° ${response.code} ¡Gracias por confiar en nosotros!`, 'success')
     //clear all values 
-    formValues.value.forEach((input) => {
-      input.value = "";
-    });
-    suppliers.value = [];
+
     currentSupplier.value = 0;
 
 
   } else {
     showAlert("Error al enviar la cotización",
-      `Hubo un error al enviar la cotización, por favor intente nuevamente`,'error')  
+      `Hubo un error al enviar la cotización, por favor intente nuevamente`, 'error')
   }
 };
 const deleteSupplier = (index) => {
@@ -479,6 +543,7 @@ const deleteSupplier = (index) => {
     currentSupplier.value = index > 0 ? index : 0;
   }
 };
+const isLoading = ref(false)
 
 </script>
 <style>
@@ -570,5 +635,15 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
 }
 </style>

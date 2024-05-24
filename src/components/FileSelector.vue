@@ -1,22 +1,29 @@
 <template>
     <div class="file-selector_container">
-        <div @click="openFileExplorer" class="btn  btn-outline-secondary">
-           <slot name="text">Seleccionar archivo</slot>
+
+        <div @click="openFileExplorer" class="w-100">
+            <slot name="button">
+                <div class="btn  btn-outline-secondary w-100">
+                    <slot name="text">Seleccionar archivo</slot>
+                </div>
+            </slot>
         </div>
-        <input type="file"  class="d-none" ref="fileInput" :multiple="props.multiple" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" @change="handleInputChange" />
+
+        <input type="file" class="d-none" ref="fileInput" :multiple="props.multiple"
+            accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" @change="handleInputChange" />
 
         <div class="file-selector_drop d-flex align-items-center" @dragover.prevent @drop="handleDrop"
             v-if="props.notShowDrop">
             <div class="file-selector_drop_container d-flex  flex-column ">
                 <div v-if="!files.length" class="d-flex flex-column ">
                 </div>
-                <div class="file-list"  v-if="files.length>0" :style="{
-                    gridTemplateColumns: `repeat(${Math.min(2,files.length)}, 1fr)`,
+                <div class="file-list" v-if="files.length > 0" :style="{
+                    gridTemplateColumns: `repeat(${Math.min(2, files.length)}, 1fr)`,
                     gridTemplateRows: `repeat(${Math.ceil(files.length / 2)}, 1fr)`
-                
-                }">	
-                    <img v-for="(file, index) in files" :key="index" :src="file.iconUrl" alt="preview" class="file-item"
-                    />
+
+                }">
+                    <img v-for="(file, index) in files" :key="index" :src="file.iconUrl" alt="preview"
+                        class="file-item" />
 
                 </div>
             </div>
@@ -24,7 +31,7 @@
     </div>
 </template>
 <script setup>
-import { ref,defineEmits } from 'vue'
+import { ref, defineEmits } from 'vue'
 
 const props = defineProps(['notShowDrop', 'value', 'multiple'])
 const emit = defineEmits(['fileChange'])
@@ -53,9 +60,9 @@ const handleInputChange = (e) => {
         if (props.multiple) {
             //if
             validFiles.forEach(file => {
-                
+
                 if (isImage(file)) {
-                    
+
                     file.iconUrl = getImgUrl(file)
                 } else {
                     file.iconUrl = getIconUrl(file.name)
@@ -65,10 +72,10 @@ const handleInputChange = (e) => {
             emit('fileChange', files.value)
         } else if (validFiles.length > 0) {
             const file = validFiles[0]
-            
-            if(isImage(file)){
+
+            if (isImage(file)) {
                 file.iconUrl = getImgUrl(file)
-            }else{
+            } else {
                 file.iconUrl = getIconUrl(file.name)
             }
             files.value = [file]
@@ -77,7 +84,7 @@ const handleInputChange = (e) => {
     }
 }
 
-const isValidFile = (file) => (isImage(file) &&  file.type !== 'image/svg+xml')|| isSupportedFileType(file)
+const isValidFile = (file) => (isImage(file) && file.type !== 'image/svg+xml') || isSupportedFileType(file)
 
 const isImage = (file) => file.type.split('/')[0] === 'image'
 
@@ -89,7 +96,7 @@ const isSupportedFileType = (file) => {
 
 const getIconUrl = (fileName) => {
     const extension = fileName.split('.').pop().toLowerCase()
-  
+
     if (fileIconsUrl.hasOwnProperty(extension)) {
         return fileIconsUrl[extension]
     } else {
@@ -97,11 +104,11 @@ const getIconUrl = (fileName) => {
     }
 }
 const fileIconsUrl = {
-    "xlsx": "./src/assets/xlsIcon.svg",
-    "xls": "./src/assets/xlsIcon.svg",
-    "doc": "./src/assets/docIcon.svg",
-    "docx": "./src/assets/docIcon.svg",
-    "pdf": "./src/assets/pdfIcon.svg",
+    "xlsx": "/assets/xlsIcon.svg",
+    "xls": "/assets/xlsIcon.svg",
+    "doc": "/assets/docIcon.svg",
+    "docx": "/assets/docIcon.svg",
+    "pdf": "/assets/pdfIcon.svg",
 }
 const validSize = (file) => file.size <= 5 * 1024 * 1024
 
@@ -128,8 +135,9 @@ if (props.value) {
     width: 100%;
     min-height: 100px;
     height: 100%;
-    border-radius: 10px;    
+    border-radius: 10px;
 }
+
 .file-selector_drop_container {
     display: flex;
     flex-direction: column;
@@ -147,20 +155,24 @@ if (props.value) {
 }
 
 .file-list {
-    display:grid;
+    display: grid;
     gap: 1rem;
     width: 95%;
-        height: 100%;
+    height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
     align-items: center;
 }
 
 .file-item {
-    flex: 1; /* Cada imagen ocupará una fracción igual del contenedor */
-    margin: 5px; /* Ajusta el margen según sea necesario */
-    max-width: 100%; /* Cada imagen no superará el ancho del contenedor */
-    object-fit: contain; /* La imagen se ajustará manteniendo su relación de aspecto */
+    flex: 1;
+    /* Cada imagen ocupará una fracción igual del contenedor */
+    margin: 5px;
+    /* Ajusta el margen según sea necesario */
+    max-width: 100%;
+    /* Cada imagen no superará el ancho del contenedor */
+    object-fit: contain;
+    /* La imagen se ajustará manteniendo su relación de aspecto */
 }
 
 .file-selector__label {
