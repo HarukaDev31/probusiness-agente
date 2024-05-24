@@ -1,7 +1,7 @@
 <template>
   <!--<file-selector />-->
   <!-- <customized-input :text="'waos'" :optionalText="true" :type="'text'"/> -->
-  <div>
+  <div class="app-container">
     <navbar />
     <main class="main-container">
       <div id="first-row" class="d-flex flex-column flex-md-row gap-4">
@@ -40,8 +40,8 @@
                 <div class="supplier-header d-flex flex-column flex-lg-row align-items-center"
                   @click="changeCurrentSupplier(supplierIndex + 1)">
                   <h2 class="w-100" :style="currentSupplier.value != supplierIndex + 1
-                      ? 'color:white '
-                      : ''
+                    ? 'color:white '
+                    : ''
                     ">
                     <strong class="">PROVEEDOR {{ supplierIndex + 1 }}</strong>
                     <div class="btn btn-outline-danger" v-if="currentSupplier.value == supplierIndex + 1"
@@ -53,9 +53,9 @@
                   <div class="supplier-indicators d-flex flex-column flex-md-row gap-4 align-items-center"
                     v-if="currentSupplier.value == supplierIndex + 1">
                     <div class="supplier-indicator d-flex" v-for="(indicator, index) in supplier.indicators" :style="index == supplierIndicators.length - 1 &&
-                        indicator.value
-                        ? 'height: 200px;'
-                        : 'height: 100%;'
+                      indicator.value
+                      ? 'height: 200px;'
+                      : 'height: 100%;'
                       " :key="`${supplierIndex}-${indicator.key}`">
                       <customized-input :value="indicator.value" :text="indicator.name" :type="indicator.type"
                         :optionalText="indicator.optionalText" @input="(e) => (indicator.value = e)"
@@ -81,7 +81,9 @@
                     )" :key="`fileSelector-${productItemIndex}`" style="height: 100%">
                       <label class="fw-bold">Imagen</label>
                       <file-selector :not-show-drop="true" :multiple="false" :value="product.value"
-                        @fileChange="(files) => handleFile(files, product)" />
+                        @fileChange="(files) => handleFile(files, product)" >
+                        <template #text>Seleccionar foto</template>
+                      </file-selector>  
                     </div>
                   </div>
                   <div class="col-12 col-md-8">
@@ -113,13 +115,10 @@
       </div>
     </main>
     <floatting-button />
-    <button class="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#confirmation-modal">
-      Enviar Cotización
-    </button>
     <footer-cuz />
     <send-button @sendCotizacion="sendCotizacion" />
-    <confirm-cotization-modal />
   </div>
+
 </template>
 <script setup>
 import FileSelector from "./components/FileSelector.vue";
@@ -130,10 +129,9 @@ import Navbar from "./components/Navbar.vue";
 import FooterCuz from "./components/FooterCuz.vue";
 import SendButton from "./components/SendButton.vue";
 import FloattingButton from "./components/FloattingButton.vue";
-import { ref, computed, nextTick, watchEffect, reactive } from "vue";
+import { ref, computed, reactive, } from "vue";
 import { sendCotization } from "./services/send-cotization";
-import ConfirmCotizationModal from "./components/ConfirmCotizationModal.vue";
-
+import Swal from 'sweetalert2';
 const validateNotEmpy = (value) => {
   return value != "";
 };
@@ -141,7 +139,7 @@ const validateNumber = (value) => {
   //validate if is a number and is more than 0 and less than 100
   return !isNaN(value) && value > 0 && value < 999999999;
 };
-
+const showConfirmationModal = ref(false)
 const formValues = ref([
   {
     text: "Nombres",
@@ -338,6 +336,16 @@ const supplierIndicators = ref([
 ]);
 const suppliers = ref([]);
 
+const showAlert = (title, text,icon,) => {
+  Swal.fire({
+    title: title,
+    text: text,
+    icon: 'success',
+    confirmButtonText: 'OK',
+    confirmButtonColor: '#21618C',
+  });
+}
+
 const sendCotizacion = async () => {
   //send all in formdata format
   const formData = new FormData();
@@ -447,10 +455,19 @@ const sendCotizacion = async () => {
 
   const response = await sendCotization(formData);
   if (response.status == 201) {
-    $("#confirmation-modal").modal("show");
+    showAlert("Cotización enviada",
+      `Su cotización ha sido registrada con el codigo N° ${response.code} ¡Gracias por confiar en nosotros!`,'success')
+    //clear all values 
+    formValues.value.forEach((input) => {
+      input.value = "";
+    });
+    suppliers.value = [];
+    currentSupplier.value = 0;
+
 
   } else {
-    alert("Error al enviar la cotización");
+    showAlert("Error al enviar la cotización",
+      `Hubo un error al enviar la cotización, por favor intente nuevamente`,'error')  
   }
 };
 const deleteSupplier = (index) => {
@@ -462,6 +479,7 @@ const deleteSupplier = (index) => {
     currentSupplier.value = index > 0 ? index : 0;
   }
 };
+
 </script>
 <style>
 body {
@@ -539,5 +557,18 @@ main {
   flex-direction: column;
   gap: 1em;
   position: relative;
+}
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

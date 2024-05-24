@@ -24,7 +24,6 @@
     </div>
 </template>
 <script setup>
-import CustomizedButton from './CustomizedButton.vue'
 import { ref,defineEmits } from 'vue'
 
 const props = defineProps(['notShowDrop', 'value', 'multiple'])
@@ -98,11 +97,11 @@ const getIconUrl = (fileName) => {
     }
 }
 const fileIconsUrl = {
-    "xlsx": "/src/assets/xlsIcon.svg",
-    "xls": "/src/assets/xlsIcon.svg",
-    "doc": "/src/assets/docIcon.svg",
-    "docx": "/src/assets/docIcon.svg",
-    "pdf": "/src/assets/pdfIcon.svg",
+    "xlsx": "./src/assets/xlsIcon.svg",
+    "xls": "./src/assets/xlsIcon.svg",
+    "doc": "./src/assets/docIcon.svg",
+    "docx": "./src/assets/docIcon.svg",
+    "pdf": "./src/assets/pdfIcon.svg",
 }
 const validSize = (file) => file.size <= 5 * 1024 * 1024
 
