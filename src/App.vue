@@ -139,7 +139,7 @@ const validateNotEmpy = (value) => {
 };
 const validateNumber = (value) => {
   //validate if is a number and is more than 0 and less than 100
-  return !isNaN(value) && value > 0 && value < 99999999;
+  return !isNaN(value) && value > 0 && value < 999999999;
 };
 
 const formValues = ref([
