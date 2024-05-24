@@ -3,7 +3,7 @@
         <div @click="openFileExplorer" class="btn  btn-outline-secondary">
            <slot name="text">Seleccionar archivo</slot>
         </div>
-        <input type="file"  class="d-none" ref="fileInput" :multiple="props.multiple" accept="image/*" @change="handleInputChange" />
+        <input type="file"  class="d-none" ref="fileInput" :multiple="props.multiple" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" @change="handleInputChange" />
 
         <div class="file-selector_drop d-flex align-items-center" @dragover.prevent @drop="handleDrop"
             v-if="props.notShowDrop">

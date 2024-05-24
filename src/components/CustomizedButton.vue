@@ -1,5 +1,5 @@
 <template>
-    <button class="customized-button" @click="emitClick">
+    <button class="customized-button " @click="emitClick">
         <slot name="text"></slot>
     </button>
 </template>
@@ -19,6 +19,11 @@ const emitClick = () => {
     cursor: pointer;
     width: 100%;
     
+}
+@media (max-width:  568px) {
+    .customized-button {
+        padding: 0.8rem 1rem;
+    }
 }
 .customized-button:hover {
     background-color: #c82333;

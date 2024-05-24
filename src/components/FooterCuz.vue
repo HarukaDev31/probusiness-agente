@@ -1,5 +1,6 @@
 <template>
   <footer class="pt-4 my-md-5 pt-md-5 pb-5 border-top footer">
+    <div class="separator"></div>
     <div class="row ">
       <div class="col-12 col-md">
         <img class="mb-2" src="https://agentecompra.probusiness.pe/assets/images/logo_probusiness.png?ver=5.0.0" alt="" height="60">
@@ -42,5 +43,12 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 .footer {
     width: 80%!important;
     margin: 0 auto;
+}
+@media (max-width: 568px) {
+    .separator {
+        border-top: 1px solid #D7DBDD;
+        width: 100%;
+        height: 1px;
+    }
 }
 </style>
