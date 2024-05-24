@@ -399,16 +399,24 @@ const supplierIndicators = ref([
 ]);
 const suppliers = ref([]);
 
-const showAlert = (title, text, icon,) => {
+const showAlert = (title, text, icon,fn=null,go="OK") => {
   Swal.fire({
     title: title,
     text: text,
     icon: icon,
-    confirmButtonText: 'OK',
+    confirmButtonText: go,
     confirmButtonColor: '#21618C',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      if(fn){
+        fn()
+      }
+    }
   });
 }
-
+const redirectoWhatsapp = (num) => {
+  window.open(`https://wa.me/${num}`, '_blank')
+}
 const sendCotizacion = async () => {
   //send all in formdata format
   const formData = new FormData();
@@ -524,11 +532,19 @@ const sendCotizacion = async () => {
   const response = await sendCotization(formData);
   if (response.status == 201) {
     showAlert("Cotización enviada",
-      `Su cotización ha sido registrada con el codigo N° ${response.code} ¡Gracias por confiar en nosotros!`, 'success')
+      `Su cotización ha sido registrada con el codigo N° ${response.code} ¡Gracias por confiar en nosotros!
+      Contactanos para mas informacion al whatsapp +51988826734
+      `, 'success',()=>
+    redirectoWhatsapp("+51988826734"),"!Contactanos!"
+    )
     //clear all values 
 
     currentSupplier.value = 0;
-
+    suppliers.value = [];
+    formValues.value.forEach((input) => {
+      input.value = "";
+      input.keyRender++
+    });
 
   } else {
     showAlert("Error al enviar la cotización",
