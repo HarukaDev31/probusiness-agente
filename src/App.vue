@@ -10,16 +10,9 @@
           <card class="card">
             <template #body>
               <!--Customized input with index pair-->
-              <customized-input
-                v-for="(input, index) in formValuesComputedPair"
-                :key="index"
-                :text="input.text"
-                :optionalText="input.optionalText"
-                :type="input.type"
-                @input="(e) => (input.value = e)"
-                :validation="input.validate"
-                :is-error="input.error"
-              />
+              <customized-input v-for="(input, index) in formValuesComputedPair" :key="index" :text="input.text"
+                :optionalText="input.optionalText" :type="input.type" @input="(e) => (input.value = e)"
+                :validation="input.validate" :is-error="input.error" />
             </template>
           </card>
         </div>
@@ -27,150 +20,78 @@
           <h1 class="fw-bold">Empresa</h1>
           <card class="card">
             <template #body>
-              <customized-input
-                v-for="(input, index) in formValuesComputedOdd"
-                :key="index"
-                :text="input.text"
-                :optionalText="input.optionalText"
-                :type="input.type"
-                @input="(e) => (input.value = e)"
-                :validation="input.validate"
-                :is-error="input.error"
-              />
+              <customized-input v-for="(input, index) in formValuesComputedOdd" :key="index" :text="input.text"
+                :optionalText="input.optionalText" :type="input.type" @input="(e) => (input.value = e)"
+                :validation="input.validate" :is-error="input.error" />
             </template>
           </card>
         </div>
       </div>
       <div id="second-row">
-        <div
-          class="proveedores-container d-flex flex-column mt-3 align-items-center"
-        >
+        <div class="proveedores-container d-flex flex-column mt-3 align-items-center">
           <h1>Proveedores</h1>
-          <customized-button
-            @click="addNewSupplier()"
-            v-if="suppliers.length == 0"
-          >
+          <customized-button @click="addNewSupplier()" v-if="suppliers.length == 0">
             <template #text>Agregar Proveedor</template>
           </customized-button>
           <div id="suppliers-list" class="mt-3" v-if="suppliers.length != 0">
-            <card
-              v-for="(supplier, supplierIndex) in suppliers"
-              :key="supplierIndex"
-              class="my-3"
-              :background="
-                currentSupplier.value != supplierIndex + 1 ? '#21618C' : 'white'
-              "
-            >
+            <card v-for="(supplier, supplierIndex) in suppliers" :key="supplierIndex" class="my-3" :background="currentSupplier.value != supplierIndex + 1 ? '#21618C' : 'white'
+              ">
               <template #header>
-                <div
-                  class="supplier-header d-flex flex-column flex-lg-row align-items-center"
-                  @click="changeCurrentSupplier(supplierIndex + 1)"
-                >
-                  <h2
-                    class="w-100"
-                    :style="
-                      currentSupplier.value != supplierIndex + 1
-                        ? 'color:white '
-                        : ''
-                    "
-                  >
+                <div class="supplier-header d-flex flex-column flex-lg-row align-items-center"
+                  @click="changeCurrentSupplier(supplierIndex + 1)">
+                  <h2 class="w-100" :style="currentSupplier.value != supplierIndex + 1
+                      ? 'color:white '
+                      : ''
+                    ">
                     <strong class="">PROVEEDOR {{ supplierIndex + 1 }}</strong>
-                    <div
-                      class="btn btn-outline-danger"
-                      v-if="currentSupplier.value == supplierIndex + 1"
-                      @click.stop="deleteSupplier(supplierIndex)"
-                    >
-                      Eliminar Proveedor
+                    <div class="btn btn-outline-danger" v-if="currentSupplier.value == supplierIndex + 1"
+                      @click.stop="deleteSupplier(supplierIndex)">
+                      Eliminar
                     </div>
                   </h2>
 
-                  <div
-                    class="supplier-indicators d-flex flex-column flex-md-row gap-4 align-items-center"
-                    v-if="currentSupplier.value == supplierIndex + 1"
-                  >
-                    <div
-                      class="supplier-indicator d-flex"
-                      v-for="(indicator, index) in supplier.indicators"
-                      :style="
-                        index == supplierIndicators.length - 1 &&
+                  <div class="supplier-indicators d-flex flex-column flex-md-row gap-4 align-items-center"
+                    v-if="currentSupplier.value == supplierIndex + 1">
+                    <div class="supplier-indicator d-flex" v-for="(indicator, index) in supplier.indicators" :style="index == supplierIndicators.length - 1 &&
                         indicator.value
-                          ? 'height: 200px;'
-                          : 'height: 100%;'
-                      "
-                      :key="`${supplierIndex}-${indicator.key}`"
-                    >
-                      <customized-input
-                        :value="indicator.value"
-                        :text="indicator.name"
-                        :type="indicator.type"
-                        :optionalText="indicator.optionalText"
-                        @input="(e) => (indicator.value = e)"
-                        v-if="index != supplierIndicators.length - 1"
-                        :is-error="indicator.error"
-                      />
+                        ? 'height: 200px;'
+                        : 'height: 100%;'
+                      " :key="`${supplierIndex}-${indicator.key}`">
+                      <customized-input :value="indicator.value" :text="indicator.name" :type="indicator.type"
+                        :optionalText="indicator.optionalText" @input="(e) => (indicator.value = e)"
+                        v-if="index != supplierIndicators.length - 1" :is-error="indicator.error" />
 
-                      <file-selector
-                        v-else
-                        :not-show-drop="indicator.value ? true : false"
-                        :multiple="true"
-                        :value="indicator.value"
-                        @file-change="
-                          (files) => handleMultipleFiles(files, indicator)
-                        "
-                      >
-                        <template #text> Subir Proforma y/o packing</template>
+                      <file-selector v-else :not-show-drop="indicator.value ? true : false" :multiple="true"
+                        :value="indicator.value" @file-change="(files) => handleMultipleFiles(files, indicator)
+                          ">
+                        <template #text> Subir proforma y/o packing</template>
                       </file-selector>
                     </div>
                   </div>
                 </div>
               </template>
-              <template
-                #body
-                v-if="
-                  currentSupplier.value == supplierIndex + 1 &&
-                  supplier.products != 0
-                "
-              >
-                <div
-                  v-for="(productList, productListIndex) in supplier.products"
-                  class="product-list row"
-                  :key="productListIndex"
-                >
+              <template #body v-if="currentSupplier.value == supplierIndex + 1 &&
+                supplier.products != 0
+                ">
+                <div v-for="(productList, productListIndex) in supplier.products" class="product-list row"
+                  :key="productListIndex">
                   <div class="col-12 col-md-4">
-                    <div
-                      v-for="(product, productItemIndex) in productList.filter(
-                        (item) => item.type == 'file'
-                      )"
-                      :key="`fileSelector-${productItemIndex}`"
-                      style="height: 100%"
-                    >
+                    <div v-for="(product, productItemIndex) in productList.filter(
+                      (item) => item.type == 'file'
+                    )" :key="`fileSelector-${productItemIndex}`" style="height: 100%">
                       <label class="fw-bold">Imagen</label>
-                      <file-selector
-                        :not-show-drop="true"
-                        :multiple="false"
-                        :value="product.value"
-                        @fileChange="(files) => handleFile(files, product)"
-                      />
+                      <file-selector :not-show-drop="true" :multiple="false" :value="product.value"
+                        @fileChange="(files) => handleFile(files, product)" />
                     </div>
                   </div>
                   <div class="col-12 col-md-8">
-                    <customized-input
-                      v-for="(product, productItemIndex) in productList.filter(
-                        (item) => item.type != 'file'
-                      )"
-                      :key="`${productListIndex}-${productItemIndex}`"
-                      :text="product.text"
-                      :optionalText="product.optionalText"
-                      :type="product.type"
-                      :value="product.value"
-                      @input="(e) => (product.value = e)"
-                      :is-error="product.error"
-                    />
+                    <customized-input v-for="(product, productItemIndex) in productList.filter(
+                      (item) => item.type != 'file'
+                    )" :key="`${productListIndex}-${productItemIndex}`" :text="product.text"
+                      :optionalText="product.optionalText" :type="product.type" :value="product.value"
+                      @input="(e) => (product.value = e)" :is-error="product.error" />
 
-                    <div
-                      class="btn btn-outline-danger w-100"
-                      @click="deleteProduct(productListIndex, supplierIndex)"
-                    >
+                    <div class="btn btn-outline-danger w-100" @click="deleteProduct(productListIndex, supplierIndex)">
                       Quitar
                     </div>
                   </div>
@@ -179,17 +100,11 @@
             </card>
           </div>
           <div class="d-flex flex-column w-100 gap-2">
-            <div
-              class="btn btn-outline-danger"
-              @click="addNewProductToSupplier(currentSupplier.value)"
-              v-if="suppliers.length != 0"
-            >
+            <div class="btn btn-outline-danger" @click="addNewProductToSupplier(currentSupplier.value)"
+              v-if="suppliers.length != 0">
               Agregar Producto
             </div>
-            <customized-button
-              @click="addNewSupplier()"
-              v-if="suppliers.length != 0"
-            >
+            <customized-button @click="addNewSupplier()" v-if="suppliers.length != 0">
               <template #text>Agregar Proveedor</template>
             </customized-button>
           </div>
@@ -198,9 +113,12 @@
       </div>
     </main>
     <floatting-button />
-
+    <button class="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#confirmation-modal">
+      Enviar Cotización
+    </button>
     <footer-cuz />
     <send-button @sendCotizacion="sendCotizacion" />
+    <confirm-cotization-modal />
   </div>
 </template>
 <script setup>
@@ -214,13 +132,14 @@ import SendButton from "./components/SendButton.vue";
 import FloattingButton from "./components/FloattingButton.vue";
 import { ref, computed, nextTick, watchEffect, reactive } from "vue";
 import { sendCotization } from "./services/send-cotization";
+import ConfirmCotizationModal from "./components/ConfirmCotizationModal.vue";
 
 const validateNotEmpy = (value) => {
   return value != "";
 };
 const validateNumber = (value) => {
   //validate if is a number and is more than 0 and less than 100
-  return !isNaN(value) && value > 0 && value < 10000;
+  return !isNaN(value) && value > 0 && value < 99999999;
 };
 
 const formValues = ref([
@@ -528,7 +447,8 @@ const sendCotizacion = async () => {
 
   const response = await sendCotization(formData);
   if (response.status == 201) {
-    alert("Cotización enviada con éxito");
+    $("#confirmation-modal").modal("show");
+
   } else {
     alert("Error al enviar la cotización");
   }
