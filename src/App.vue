@@ -58,12 +58,18 @@
                   </h2>
 
                   <div class="supplier-indicators d-flex flex-column flex-md-row gap-4 align-items-center"
+                  
                     v-if="currentSupplier.value == supplierIndex + 1">
                     <div class="supplier-indicator d-flex" v-for="(indicator, index) in supplier.indicators"
                       :key="`${supplierIndex}-${indicator.key}`">
                       <customized-input :value="indicator.value" :text="indicator.name" :type="indicator.type"
+                        :key="`${supplierIndex}-${indicator.key}`"
                         :optionalText="indicator.optionalText" @input="(e) => (indicator.value = e)"
-                        v-if="index != supplierIndicators.length - 1" :is-error="indicator.error" />
+                        v-if="index != supplierIndicators.length - 1" :is-error="indicator.error"
+                        :options="indicator.options"
+                        :keyRender="indicator.keyRender"
+                        @select="(e) =>  changeSelected(supplierIndex, e)"
+                        />
 
                       <file-selector v-else :not-show-drop="false" :multiple="true" :value="indicator.value"
                         @file-change="(files) => handleMultipleFiles(files, indicator)"
@@ -103,7 +109,8 @@
                       (item) => item.type != 'file'
                     )" :key="`${productListIndex}-${productItemIndex}`" :text="product.text"
                       :optionalText="product.optionalText" :type="product.type" :value="product.value"
-                      @input="(e) => (product.value = e)" :is-error="product.error" />
+                      @input="(e) => (product.value = e)" :is-error="product.error"
+                      :key-render="product.keyRender" />
 
                     <div class="btn btn-outline-danger w-100" @click="deleteProduct(productListIndex, supplierIndex)">
                       Quitar
@@ -152,6 +159,14 @@ const validateNumber = (value) => {
   return !isNaN(value) && value > 0 && value < 999999999;
 };
 const showConfirmationModal = ref(false)
+const changeSelected = (supplierIndex, value) => {
+  console.log("Supplier Index:", supplierIndex, "Value:", value);
+  const supplier = suppliers.value[supplierIndex];
+  const indicator = supplier.indicators.find((indicator) => indicator.key == "peso");
+  indicator.options.forEach((option) => {
+    option.selected = option.value == value;
+  });
+};
 const getClientData = async (value) => {
   if (!validateNotEmpy(value)) return showAlert("Error al buscar cliente", "Debe ingresar un DNI/ID", 'error')
   try {
@@ -279,10 +294,10 @@ const currentSupplier = reactive({
   value: 0,
 });
 const changeCurrentSupplier = (index) => {
-  console.log("Current Supplier before change:", currentSupplier.value);
-  if (index !== currentSupplier.value) {
-    currentSupplier.value = index;
-  }
+  currentSupplier.value = index;
+
+  
+
 };
 const handleFile = (file, product) => {
   product.value = file;
@@ -300,17 +315,19 @@ const deleteProduct = (productIndex, supplierIndex) => {
   suppliers.value[supplierIndex].products.splice(productIndex, 1);
 };
 const addNewSupplier = () => {
-  const newSupplierIndicators = supplierIndicators.value.map((param) => ({
-    ...param,
+  console.log("Adding new supplier", supplierIndicators.value);
+  
+  const newSupplierIndicators = supplierIndicators.value.map(indicator => ({
+    ...indicator,
+    options: indicator.options ? indicator.options.map(option => ({ ...option })) : undefined
   }));
-  //const newSupplierIndicators = supplierIndicators.value.map(indicator => ({ ...indicator }));
 
-  // suppliersIndicators.value.push(newSupplierIndicators);
   suppliers.value.push({
     id: suppliers.value.length + 1,
     indicators: newSupplierIndicators,
     products: [],
   });
+  
   const newProductParams = productParams.value.map((param) => ({ ...param }));
   if (suppliers.value.length == 1) {
     suppliers.value[0].products.push(newProductParams);
@@ -332,6 +349,7 @@ const productParams = ref([
     type: "text",
     value: "",
     error: false,
+    keyRender: 0
   },
   {
     text: "Uso",
@@ -340,6 +358,8 @@ const productParams = ref([
     key: "uso",
     value: "",
     error: false,
+    keyRender: 0
+
   },
   {
     text: "Cantidad",
@@ -348,6 +368,8 @@ const productParams = ref([
     key: "cantidad",
     value: "",
     error: false,
+    keyRender: 0
+
   },
   {
     text: "Valor Unitario",
@@ -356,6 +378,8 @@ const productParams = ref([
     key: "valor",
     value: "",
     error: false,
+    keyRender: 0
+
   },
   {
     text: "Agregar Foto",
@@ -364,6 +388,8 @@ const productParams = ref([
     key: "foto",
     value: null,
     error: false,
+    keyRender: 0
+
   },
   {
     text: "Link",
@@ -372,6 +398,8 @@ const productParams = ref([
     type: "link",
     value: "",
     error: false,
+    keyRender: 0
+
   },
 ]);
 const supplierIndicators = ref([
@@ -382,20 +410,29 @@ const supplierIndicators = ref([
     value: "",
     error: false,
     optionalText: false,
+    keyRender: 0
   },
   {
     name: "PESO TOTAL",
     type: "number",
+    options: [
+      { text: "Kg", value: "Kg",selected:false },
+      { text: "Tn", value: "Tn",selected:false },
+    ],
     key: "peso",
     value: "",
     error: false,
-    optionalText: true,
+    optionalText: true,   
+     keyRender: 0
+
   },
   {
     name: "Proforma y Packing",
     key: "proforma",
     value: null,
     error: false,
+    keyRender: 0
+
   },
 ]);
 const suppliers = ref([]);
@@ -429,10 +466,13 @@ const sendCotizacion = async () => {
     ) {
       if (validateNotEmpy(input.value)) {
         formData.append(input.key, input.value);
+        
       } else {
         input.error = true;
         isValid = false;
       }
+    }else{
+      
     }
     if (input.type == "number") {
       if (validateNumber(input.value)) {
@@ -485,7 +525,28 @@ const sendCotizacion = async () => {
             indicator.error = true;
             isValid = false;
           }
-        } else {
+        }else if(indicator.key == "peso"){
+          const existsSelected=indicator.options.find(option=>option.selected)
+          if(existsSelected){
+            if(validateNumber(indicator.value)){
+              formData.append(
+                `proveedor-${supplierIndex}-${indicator.key}`,
+                indicator.value
+              );
+              formData.append(
+                `proveedor-${supplierIndex}-peso-unidad`,
+                existsSelected.value
+              );
+            }else{
+              indicator.error = true;
+              isValid = false;
+            }
+          }else{
+            indicator.error = false;
+          
+          }
+        }
+         else {
           formData.append(
             `proveedor-${supplierIndex}-${indicator.key}`,
             indicator.value
