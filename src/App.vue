@@ -2,7 +2,7 @@
   <!--<file-selector />-->
   <!-- <customized-input :text="'waos'" :optionalText="true" :type="'text'"/> -->
   <div class="app-container">
-    <div v-if="isLoading" class="backdrop">
+    <div v-if="isLoading || isInStepByStep" class="backdrop">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
@@ -59,23 +59,24 @@
 
                   <div class="supplier-indicators d-flex flex-column flex-md-row gap-4 align-items-center"
                     v-if="currentSupplier.value == supplierIndex + 1">
-                    <div class="supplier-indicator d-flex" v-for="(indicator, index) in supplier.indicators"  :key="`${supplierIndex}-${indicator.key}`">
+                    <div class="supplier-indicator d-flex" v-for="(indicator, index) in supplier.indicators"
+                      :key="`${supplierIndex}-${indicator.key}`">
                       <customized-input :value="indicator.value" :text="indicator.name" :type="indicator.type"
                         :optionalText="indicator.optionalText" @input="(e) => (indicator.value = e)"
                         v-if="index != supplierIndicators.length - 1" :is-error="indicator.error" />
 
-                      <file-selector v-else :not-show-drop="false" :multiple="true"
-                        :value="indicator.value" @file-change="(files) => handleMultipleFiles(files, indicator)"
-                        :accept="'image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx'"
-                          >
-                          <template #button>
-                            <div class="btn d-flex flex-column" :class="indicator.value?'btn-dark':'btn-outline-secondary'">
-                              Subir proforma y/o Packing
-                              <small class="text-danger">
-                                {{ indicator.value ? `(${indicator.value.length} archivo(s))`: '' }}
-                              </small>
-                            </div>
-                          </template> 
+                      <file-selector v-else :not-show-drop="false" :multiple="true" :value="indicator.value"
+                        @file-change="(files) => handleMultipleFiles(files, indicator)"
+                        :accept="'image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx'">
+                        <template #button>
+                          <div class="btn d-flex flex-column"
+                            :class="indicator.value ? 'btn-dark' : 'btn-outline-secondary'">
+                            Subir proforma y/o Packing
+                            <small class="text-danger">
+                              {{ indicator.value ? `(${indicator.value.length} archivo(s))` : '' }}
+                            </small>
+                          </div>
+                        </template>
                       </file-selector>
                     </div>
                   </div>
@@ -144,7 +145,7 @@ import { ref, computed, reactive, } from "vue";
 import { sendCotization, getClientDataByDNIID } from "./services/send-cotization";
 import Swal from 'sweetalert2';
 const validateNotEmpy = (value) => {
-  return value!="";
+  return value != "";
 };
 const validateNumber = (value) => {
   //validate if is a number and is more than 0 and less than 100
@@ -152,21 +153,21 @@ const validateNumber = (value) => {
 };
 const showConfirmationModal = ref(false)
 const getClientData = async (value) => {
-  if(!validateNotEmpy(value)) return showAlert("Error al buscar cliente", "Debe ingresar un DNI/ID", 'error')
+  if (!validateNotEmpy(value)) return showAlert("Error al buscar cliente", "Debe ingresar un DNI/ID", 'error')
   try {
     isLoading.value = true
     const params = {
       dni: value
     }
     const response = await getClientDataByDNIID(params);
-    
+
     formValues.value.forEach((input) => {
-      if (response.tipoCliente==0) {
+      if (response.tipoCliente == 0) {
         showAlert("Cliente no encontrado",
           `No se encontró un cliente con el DNI/ID ingresado`, 'error')
         return
       }
-      if(response.tipoCliente==2){
+      if (response.tipoCliente == 2) {
         //NOTIFY USE COLLABORATOR CODE,GET CONGRATULATIONS
         showAlert("Bienvenido de vuelta!",
           `Al ser un socio, obtienes un descuento especial en tu cotización`, 'success')
@@ -399,7 +400,7 @@ const supplierIndicators = ref([
 ]);
 const suppliers = ref([]);
 
-const showAlert = (title, text, icon,fn=null,go="OK") => {
+const showAlert = (title, text, icon, fn = null, go = "OK") => {
   Swal.fire({
     title: title,
     text: text,
@@ -408,7 +409,7 @@ const showAlert = (title, text, icon,fn=null,go="OK") => {
     confirmButtonColor: '#21618C',
   }).then((result) => {
     if (result.isConfirmed) {
-      if(fn){
+      if (fn) {
         fn()
       }
     }
@@ -440,7 +441,7 @@ const sendCotizacion = async () => {
         input.error = true;
         isValid = false;
       }
-    }else{
+    } else {
       formData.append(input.key, input.value);
     }
   });
@@ -528,14 +529,15 @@ const sendCotizacion = async () => {
     supplierIndex++;
   });
   if (!isValid) return;
-
+  isLoading.value = true
   const response = await sendCotization(formData);
+  isLoading.value = false
   if (response.status == 201) {
     showAlert("Cotización enviada",
       `Su cotización ha sido registrada con el codigo N° ${response.code} ¡Gracias por confiar en nosotros!
-      Contactanos para mas informacion al whatsapp +51988826734
-      `, 'success',()=>
-    redirectoWhatsapp("+51988826734"),"!Contactanos!"
+      Contactanos para mas informacion al whatsapp +51 988 826 734
+      `, 'success', () =>
+      redirectoWhatsapp("+51988826734"), "!Contactanos!"
     )
     //clear all values 
 
@@ -561,7 +563,7 @@ const deleteSupplier = (index) => {
   }
 };
 const isLoading = ref(false)
-
+const isInStepByStep = ref(false)
 </script>
 <style>
 body {
@@ -648,7 +650,7 @@ main {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 99999;
+  z-index:10000;
   display: flex;
   align-items: center;
   justify-content: center;
