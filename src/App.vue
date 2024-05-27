@@ -596,9 +596,9 @@ const sendCotizacion = async () => {
   if (response.status == 201) {
     showAlert("Cotización enviada",
       `Su cotización ha sido registrada con el codigo N° ${response.code} ¡Gracias por confiar en nosotros!
-      Contactanos para mas informacion al whatsapp +51 988 826 734
+      Contactanos para mas informacion al whatsapp +51 991 351 346
       `, 'success', () =>
-      redirectoWhatsapp("+51988826734"), "!Contactanos!"
+      redirectoWhatsapp("+51991351346"), "!Contactanos!"
     )
     //clear all values 
 
