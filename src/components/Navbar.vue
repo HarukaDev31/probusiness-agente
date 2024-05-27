@@ -2,7 +2,7 @@
     <nav class="navbar bg-light menu-shadow p-0 py-1 mb-5 ">
       <div class="container-fluid">
         <a class="navbar-brand" href="https://cargaconsolidada.probusiness.pe" rel="noopener noreferrer">
-          <img class="mb-0 mb-sm-1" src="https://agentecompra.probusiness.pe/assets/images/logo_probusiness.png?ver=5.0.0" alt="Logo ProBusiness" height="45">
+          <img class="mb-0 mb-sm-1" style="height: 20%;width: 200px"  src="https://agentecompra.probusiness.pe/assets/images/logo_probusiness.png?ver=5.0.0" alt="Logo ProBusiness" height="45">
         </a>
       </div>
     </nav>
