@@ -5,7 +5,7 @@ export const sendCotization = async (data) => {
 
         const response = await axios.post(import.meta.env.VITE_API_URL+'create-cotization', data,
             { headers: { 'Content-Type': 'multipart/form-data',
-                'api_key': import.meta.env.VITE_API_KEY
+                'API-Key': import.meta.env.VITE_API_KEY
              } }
         );
         return response.data;
@@ -17,7 +17,7 @@ export const sendCotization = async (data) => {
 export const getClientDataByDNIID = async (data) => {
     try {
         const response = await axios.post(import.meta.env.VITE_API_URL+'get-client-data', data,{
-            headers: { 'Content-Type': 'application/json','api_key': import.meta.env.VITE_API_KEY}
+            headers: { 'Content-Type': 'application/json','API-Key': import.meta.env.VITE_API_KEY}
         });
         return response.data;
     } catch (error) {
