@@ -4,7 +4,9 @@ export const sendCotization = async (data) => {
     try {
 
         const response = await axios.post(import.meta.env.VITE_API_URL+'create-cotization', data,
-            { headers: { 'Content-Type': 'multipart/form-data' } }
+            { headers: { 'Content-Type': 'multipart/form-data',
+                'api_key': import.meta.env.VITE_API_KEY
+             } }
         );
         return response.data;
     } catch (error) {
