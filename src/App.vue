@@ -611,6 +611,7 @@ const sendCotizacion = async () => {
       e.message, 'error')
     isLoading.value = false
     //set empty files  in suppliers 
+    currentSupplier.value = 0;
     suppliers.value = []
     console.error(e)
   }
