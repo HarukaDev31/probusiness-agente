@@ -9,8 +9,8 @@
       <div class="col-6 col-md">
         <h5 class="fw-bold mb-4">Empresa</h5>
         <ul class="list-unstyled text-small">
-          <li class="mb-3"><a class="link-secondary text-decoration-none" href="#">Nosotros</a></li>
-          <li class="mb-3"><a class="link-secondary text-decoration-none" href="#">Política de Privacidad</a></li>
+          <li class="mb-3"><a class="link-secondary text-decoration-none" href="https://www.probusiness.pe/nosotros">Nosotros</a></li>
+          <li class="mb-3"><a class="link-secondary text-decoration-none" href="https://www.probusiness.pe/politicas">Política de Privacidad</a></li>
           <li class="mb-3"><a class="link-secondary text-decoration-none" href="https://agentecompra.probusiness.pe/terminos">Términos y condiciones</a></li>
         </ul>
       </div>
