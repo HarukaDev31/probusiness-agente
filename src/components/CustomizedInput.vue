@@ -39,7 +39,6 @@ const emitInput = () => {
 
 }
 const selectOption=(value)=>{
-    console.log(value)
     if(selected.value==value){
         selected.value=null
 

@@ -10,7 +10,7 @@ export const sendCotization = async (data) => {
         );
         return response.data;
     } catch (error) {
-        console.error('Error sending cotization:', error);
+        throw new Error('Error Tamaño de archivos excedido, por favor intente con un archivo más pequeño:', error);
         return null;
     }    
 }
@@ -21,7 +21,7 @@ export const getClientDataByDNIID = async (data) => {
         });
         return response.data;
     } catch (error) {
-        console.error('Error getting client data:', error);
+        throw new Error('Cliente no encontrado:', error);
         return null;
     }    
 }

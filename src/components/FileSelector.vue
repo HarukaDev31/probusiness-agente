@@ -32,6 +32,8 @@
 </template>
 <script setup>
 import { ref, defineEmits } from 'vue'
+import Swal from 'sweetalert2';
+
 const showAlert = (title, text, icon,) => {
   Swal.fire({
     title: title,
@@ -61,6 +63,7 @@ const handleInputChange = (e) => {
     const fileList = e.target.files || e.dataTransfer.files
     //check size and type of file if size is greater than 5mb or file type is not supported then return
     if (fileList.length && !validSize(fileList[0]) ){
+        showAlert('Error', 'El archivo es demasiado grande', 'error')
         return
     }
     if (fileList.length) {
@@ -97,8 +100,7 @@ const handleInputChange = (e) => {
 }
 
 const isValidFile = (file) => {
-    const accept=props.accept;
-    const acceptArray=accept.split(',')
+
     return  isValidAccept(file)
 }
 const isValidAccept = (file) => {
@@ -134,7 +136,7 @@ const fileIconsUrl = {
     "docx": "/assets/docIcon.svg",
     "pdf": "/assets/pdfIcon.svg",
 }
-const validSize = (file) => file.size <= 5 * 1024 * 1024
+const validSize = (file) => file.size <= 10 * 1024 * 1024
 
 
 if (props.value) {

@@ -58,18 +58,14 @@
                   </h2>
 
                   <div class="supplier-indicators d-flex flex-column flex-md-row gap-4 align-items-center"
-                  
                     v-if="currentSupplier.value == supplierIndex + 1">
                     <div class="supplier-indicator d-flex" v-for="(indicator, index) in supplier.indicators"
                       :key="`${supplierIndex}-${indicator.key}`">
                       <customized-input :value="indicator.value" :text="indicator.name" :type="indicator.type"
-                        :key="`${supplierIndex}-${indicator.key}`"
-                        :optionalText="indicator.optionalText" @input="(e) => (indicator.value = e)"
-                        v-if="index != supplierIndicators.length - 1" :is-error="indicator.error"
-                        :options="indicator.options"
-                        :keyRender="indicator.keyRender"
-                        @select="(e) =>  changeSelected(supplierIndex, e)"
-                        />
+                        :key="`${supplierIndex}-${indicator.key}`" :optionalText="indicator.optionalText"
+                        @input="(e) => (indicator.value = e)" v-if="index != supplierIndicators.length - 1"
+                        :is-error="indicator.error" :options="indicator.options" :keyRender="indicator.keyRender"
+                        @select="(e) => changeSelected(supplierIndex, e)" />
 
                       <file-selector v-else :not-show-drop="false" :multiple="true" :value="indicator.value"
                         @file-change="(files) => handleMultipleFiles(files, indicator)"
@@ -109,8 +105,7 @@
                       (item) => item.type != 'file'
                     )" :key="`${productListIndex}-${productItemIndex}`" :text="product.text"
                       :optionalText="product.optionalText" :type="product.type" :value="product.value"
-                      @input="(e) => (product.value = e)" :is-error="product.error"
-                      :key-render="product.keyRender" />
+                      @input="(e) => (product.value = e)" :is-error="product.error" :key-render="product.keyRender" />
 
                     <div class="btn btn-outline-danger w-100" @click="deleteProduct(productListIndex, supplierIndex)">
                       Quitar
@@ -159,7 +154,6 @@ const validateNumber = (value) => {
   return !isNaN(value) && value > 0 && value < 999999999;
 };
 const changeSelected = (supplierIndex, value) => {
-  console.log("Supplier Index:", supplierIndex, "Value:", value);
   const supplier = suppliers.value[supplierIndex];
   const indicator = supplier.indicators.find((indicator) => indicator.key == "peso");
   indicator.options.forEach((option) => {
@@ -192,7 +186,9 @@ const getClientData = async (value) => {
 
         input.value = response.clientData[0][input.key];
       } catch (e) {
-        console.error(e)
+        showAlert("Error al buscar cliente",
+          `Hubo un error al buscar el cliente, por favor intente nuevamente`, 'error')
+
       }
 
     });
@@ -295,7 +291,7 @@ const currentSupplier = reactive({
 const changeCurrentSupplier = (index) => {
   currentSupplier.value = index;
 
-  
+
 
 };
 const handleFile = (file, product) => {
@@ -304,7 +300,7 @@ const handleFile = (file, product) => {
 const handleMultipleFiles = (files, product) => {
   if (files.length > 0) {
     if (product.value != null) {
-      product.value = [...product.value, ...files];
+      product.value = [...files];
     } else {
       product.value = files;
     }
@@ -314,8 +310,6 @@ const deleteProduct = (productIndex, supplierIndex) => {
   suppliers.value[supplierIndex].products.splice(productIndex, 1);
 };
 const addNewSupplier = () => {
-  console.log("Adding new supplier", supplierIndicators.value);
-  
   const newSupplierIndicators = supplierIndicators.value.map(indicator => ({
     ...indicator,
     options: indicator.options ? indicator.options.map(option => ({ ...option })) : undefined
@@ -326,7 +320,7 @@ const addNewSupplier = () => {
     indicators: newSupplierIndicators,
     products: [],
   });
-  
+
   const newProductParams = productParams.value.map((param) => ({ ...param }));
   if (suppliers.value.length == 1) {
     suppliers.value[0].products.push(newProductParams);
@@ -336,7 +330,6 @@ const addNewSupplier = () => {
   currentSupplier.value++;
 };
 const addNewProductToSupplier = (supplierIndex) => {
-  console.log("Supplier Index:", supplierIndex - 1, suppliers.value);
   const newProductParams = productParams.value.map((param) => ({ ...param }));
   suppliers.value[supplierIndex - 1].products.push(newProductParams);
 };
@@ -415,14 +408,14 @@ const supplierIndicators = ref([
     name: "PESO TOTAL",
     type: "number",
     options: [
-      { text: "Kg", value: "Kg",selected:false },
-      { text: "Tn", value: "Tn",selected:false },
+      { text: "Kg", value: "Kg", selected: false },
+      { text: "Tn", value: "Tn", selected: false },
     ],
     key: "peso",
     value: "",
     error: false,
-    optionalText: true,   
-     keyRender: 0
+    optionalText: true,
+    keyRender: 0
 
   },
   {
@@ -465,13 +458,13 @@ const sendCotizacion = async () => {
     ) {
       if (validateNotEmpy(input.value)) {
         formData.append(input.key, input.value);
-        
+
       } else {
         input.error = true;
         isValid = false;
       }
-    }else{
-      
+    } else {
+
     }
     if (input.type == "number") {
       if (validateNumber(input.value)) {
@@ -524,10 +517,10 @@ const sendCotizacion = async () => {
             indicator.error = true;
             isValid = false;
           }
-        }else if(indicator.key == "peso"){
-          const existsSelected=indicator.options.find(option=>option.selected)
-          if(existsSelected){
-            if(validateNumber(indicator.value)){
+        } else if (indicator.key == "peso") {
+          const existsSelected = indicator.options.find(option => option.selected)
+          if (existsSelected) {
+            if (validateNumber(indicator.value)) {
               formData.append(
                 `proveedor-${supplierIndex}-${indicator.key}`,
                 indicator.value
@@ -536,16 +529,16 @@ const sendCotizacion = async () => {
                 `proveedor-${supplierIndex}-peso-unidad`,
                 existsSelected.value
               );
-            }else{
+            } else {
               indicator.error = true;
               isValid = false;
             }
-          }else{
+          } else {
             indicator.error = false;
-          
+
           }
         }
-         else {
+        else {
           formData.append(
             `proveedor-${supplierIndex}-${indicator.key}`,
             indicator.value
@@ -589,32 +582,40 @@ const sendCotizacion = async () => {
     supplierIndex++;
   });
   if (!isValid) return;
-  isLoading.value = true
-  const response = await sendCotization(formData);
-  isLoading.value = false
-  if (response.status == 201) {
-    showAlert("Cotización enviada",
-      `Su cotización ha sido registrada con el codigo N° ${response.code} ¡Gracias por confiar en nosotros!
+  try {
+    isLoading.value = true
+    const response = await sendCotization(formData);
+    isLoading.value = false
+    if (response.status == 201) {
+      showAlert("Cotización enviada",
+        `Su cotización ha sido registrada con el codigo N° ${response.code} ¡Gracias por confiar en nosotros!
       Contactanos para mas informacion al whatsapp +51 991 351 346
       `, 'success', () =>
-      redirectoWhatsapp("+51991351346"), "!Contactanos!"
-    )
-    //clear all values 
+        redirectoWhatsapp("+51991351346"), "!Contactanos!"
+      )
+      //clear all values 
 
-    currentSupplier.value = 0;
-    suppliers.value = [];
-    formValues.value.forEach((input) => {
-      input.value = "";
-      input.keyRender++
-    });
+      currentSupplier.value = 0;
+      suppliers.value = [];
+      formValues.value.forEach((input) => {
+        input.value = "";
+        input.keyRender++
+      });
 
-  } else {
+    } else {
+      showAlert("Error al enviar la cotización",
+        `Hubo un error al enviar la cotización, por favor intente nuevamente`, 'error')
+    }
+  } catch (e) {
     showAlert("Error al enviar la cotización",
-      `Hubo un error al enviar la cotización, por favor intente nuevamente`, 'error')
+      e.message, 'error')
+    isLoading.value = false
+    //set empty files  in suppliers 
+    suppliers.value = []
+    console.error(e)
   }
 };
 const deleteSupplier = (index) => {
-  console.log("Deleting supplier:", index);
   suppliers.value.splice(index, 1);
   if (suppliers.value.length == 0) {
     currentSupplier.value = 0;
@@ -710,7 +711,7 @@ main {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index:10000;
+  z-index: 10000;
   display: flex;
   align-items: center;
   justify-content: center;
