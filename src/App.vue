@@ -63,7 +63,7 @@
                       :key="`${supplierIndex}-${indicator.key}`">
                       <customized-input :value="indicator.value" :text="indicator.name" :type="indicator.type"
                         :key="`${supplierIndex}-${indicator.key}`" :optionalText="indicator.optionalText"
-                        @input="(e) => (indicator.value = e)" v-if="index != supplierIndicators.length - 1"
+                        @input="(e) => (indicator.value = e)" v-if="indicator.key!='proforma'"
                         :is-error="indicator.error" :options="indicator.options" :keyRender="indicator.keyRender"
                         @select="(e) => changeSelected(supplierIndex, e)" />
 
@@ -418,14 +418,7 @@ const supplierIndicators = ref([
     keyRender: 0
 
   },
-  {
-    name: "Proforma y Packing",
-    key: "proforma",
-    value: null,
-    error: false,
-    keyRender: 0
 
-  },
 ]);
 const suppliers = ref([]);
 
