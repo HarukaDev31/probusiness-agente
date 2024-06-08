@@ -3,14 +3,14 @@
   <!-- <customized-input :text="'waos'" :optionalText="true" :type="'text'"/> -->
   <div class="app-container">
     <div v-if="isLoading || isInStepByStep" class="backdrop">
-      <div class="spinner-border text-primary" role="status">
+      <div class="spinner-border text-primary" v-if="isLoading" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
     </div>
     <navbar />
-    <main class="main-container">
+    <main class="main-container" style="position:relative">
       <div id="first-row" class="d-flex flex-column flex-md-row gap-4">
-        <div id="card-cliente">
+        <div id="card-cliente" class="step step-1">
           <h1 class="fw-bold">Cliente</h1>
           <card class="card">
             <template #body>
@@ -18,26 +18,86 @@
               <customized-input v-for="(input, index) in formValuesComputedPair" :key="index" :text="input.text"
                 :optionalText="input.optionalText" :type="input.type" @input="(e) => (input.value = e)"
                 :value="input.value" :validation="input.validate" :is-error="input.error" :prepend="input.prepend"
-                :keyRender="input.keyRender" />
+                :keyRender="input.keyRender" :class="`step step-${2 + index}`" />
             </template>
           </card>
         </div>
-        <div id="card-empresa">
+        <div id="description-step-1" style="position:absolute;height: auto;width:30vw;min-width: 300px;right: 0;"
+          class=" hidden-description d-flex flex-column justify-content-end align-items-end">
+          <div class="d-flex flex-column gap-2 card">
+            <p>
+              En esta sección,debés ingresar tus datos personales, como tu DNI/ID, nombres, apellidos y correo electrónico.
+              Esto es muy importante para poder contactarte y enviarte la cotización.
+            </p>
+           
+          </div>
+          <div>
+            <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
+              src="/src/assets/probusiness.png" alt="Logo ProBusiness">
+
+          </div>
+        </div>
+        <div v-for="(desc, descIndex) in formValuesComputedPair"
+          :id="`description-step-${descIndex + 2}`"
+          style="position:absolute;height: auto;width:30vw;min-width: 300px;right: 0;"
+          class=" hidden-description d-flex flex-column justify-content-end align-items-end"> 
+          <div class="d-flex flex-column gap-2 card">
+            <p>
+              {{ desc.helpText }}
+            </p>
+          </div>
+          <div>
+            <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
+              src="/src/assets/probusiness.png" alt="Logo ProBusiness">
+          </div>
+        </div>
+        
+        <div id="card-empresa" :class="`step step-${formValuesComputedPair.length + 2}`">
           <h1 class="fw-bold">Empresa</h1>
           <card class="card">
             <template #body>
               <customized-input v-for="(input, index) in formValuesComputedOdd" :key="index" :text="input.text"
                 :value="input.value" :optionalText="input.optionalText" :type="input.type"
                 @input="(e) => (input.value = e)" :validation="input.validate" :is-error="input.error"
-                :prepend="input.prepend" :keyRender="input.keyRender" />
+                :prepend="input.prepend" :keyRender="input.keyRender"
+                :class="`step step-${3 + formValuesComputedPair.length + index}`" />
+
             </template>
           </card>
         </div>
+        <div id="description-step-6" style="position:absolute;height: auto;width:30vw;min-width: 300px;right: 0;"
+          class=" hidden-description d-flex flex-column justify-content-end align-items-end">
+          <div class="d-flex flex-column gap-2 card">
+            <p>
+              En esta sección, deberás ingresar los datos de la empresa, como el nombre de la empresa y el RUC.
+            </p>
+            
+          </div>
+          <div>
+            <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
+              src="/src/assets/probusiness.png" alt="Logo ProBusiness">
+
+          </div>
+        </div>
+        <div v-for="(desc, descIndex) in formValuesComputedOdd" :id="`description-step-${descIndex + 3 + formValuesComputedPair.length}`"
+          style="position:absolute;height: auto;width:30vw;min-width: 300px;left: 0;"
+          class=" hidden-description d-flex flex-column justify-content-end align-items-start">
+          <div class="d-flex flex-column gap-2 card">
+            <p>
+              {{ desc.helpText }}
+            </p>
+          </div>
+          <div>
+            <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
+              src="/src/assets/probusiness.png" alt="Logo ProBusiness">
+          </div>
+        </div>
       </div>
-      <div id="second-row">
+      <div id="second-row" >
         <div class="proveedores-container d-flex flex-column mt-3 align-items-center">
           <h1>Proveedores</h1>
-          <customized-button @click="addNewSupplier()" v-if="suppliers.length == 0">
+          <customized-button @click="addNewSupplier()" v-if="suppliers.length == 0"
+            :class="`step step-${3 + formValuesComputedPair.length + formValuesComputedOdd.length}`">
             <template #text>Agregar Proveedor</template>
           </customized-button>
           <div id="suppliers-list" class="mt-3" v-if="suppliers.length != 0">
@@ -63,7 +123,7 @@
                       :key="`${supplierIndex}-${indicator.key}`">
                       <customized-input :value="indicator.value" :text="indicator.name" :type="indicator.type"
                         :key="`${supplierIndex}-${indicator.key}`" :optionalText="indicator.optionalText"
-                        @input="(e) => (indicator.value = e)" v-if="indicator.key!='proforma'"
+                        @input="(e) => (indicator.value = e)" v-if="indicator.key != 'proforma'"
                         :is-error="indicator.error" :options="indicator.options" :keyRender="indicator.keyRender"
                         @select="(e) => changeSelected(supplierIndex, e)" />
 
@@ -126,6 +186,7 @@
           </div>
           <!-- <supplier-card v-for="supplier in suppliers" :key="supplier.id" :supplier="supplier" /> -->
         </div>
+  
       </div>
     </main>
     <floatting-button />
@@ -143,7 +204,7 @@ import Navbar from "./components/Navbar.vue";
 import FooterCuz from "./components/FooterCuz.vue";
 import SendButton from "./components/SendButton.vue";
 import FloattingButton from "./components/FloattingButton.vue";
-import { ref, computed, reactive, } from "vue";
+import { ref, computed, reactive, onMounted } from "vue";
 import { sendCotization, getClientDataByDNIID } from "./services/send-cotization";
 import Swal from 'sweetalert2';
 const validateNotEmpy = (value) => {
@@ -213,7 +274,8 @@ const formValues = ref([
       //send function to component and call it when icon is clicked
       action: getClientData
     },
-    keyRender: 0
+    keyRender: 0,
+    helpText: "Ingresa tu DNI/ID para buscar tus datos y dale click al icono de búsqueda para autocompletar tus datos."
   },
 
   {
@@ -224,7 +286,8 @@ const formValues = ref([
     value: "",
     validate: validateNumber,
     error: false,
-    keyRender: 0
+    keyRender: 0,
+    helpText: "Ingresa tu número de whatsapp para poder contactarte."
 
   },
   {
@@ -235,7 +298,8 @@ const formValues = ref([
     value: "",
     validate: validateNotEmpy,
     error: false,
-    keyRender: 0
+    keyRender: 0,
+    helpText: "Ingresa tus nombres completos."
   },
 
   {
@@ -245,7 +309,8 @@ const formValues = ref([
     type: "text",
     value: "",
     error: false,
-    keyRender: 0
+    keyRender: 0,
+    helpText: "Ingresa el nombre de la empresa a la que perteneces. Si no tienes empresa, déjalo en blanco."
   },
   {
     text: "Apellidos",
@@ -255,7 +320,8 @@ const formValues = ref([
     value: "",
     validate: validateNotEmpy,
     error: false,
-    keyRender: 0
+    keyRender: 0,
+    helpText: "Ingresa tus apellidos completos."
   },
 
   {
@@ -265,7 +331,8 @@ const formValues = ref([
     type: "text",
     value: "",
     error: false,
-    keyRender: 0
+    keyRender: 0,
+    helpText: "Ingresa el RUC de la empresa a la que perteneces. Si no tienes empresa, déjalo en blanco."
   },
   {
     text: "Email",
@@ -275,7 +342,8 @@ const formValues = ref([
     value: "",
     validate: validateNotEmpy,
     error: false,
-    keyRender: 0
+    keyRender: 0,
+    helpText: "Ingresa tu correo electrónico."
   },
 ]);
 const formValuesComputedPair = computed(() => {
@@ -619,6 +687,64 @@ const deleteSupplier = (index) => {
 };
 const isLoading = ref(false)
 const isInStepByStep = ref(false)
+const startStepByStep = () => {
+  try {
+    isInStepByStep.value = true
+    let currentStep = 1;
+    let stepTag = document.querySelector(`.step-${currentStep}`)
+    stepTag.classList.add('step-active');
+    let descriptionTag = document.querySelector(`#description-step-${currentStep}`)
+    descriptionTag.classList.remove('hidden-description')
+    descriptionTag.classList.add('show-description')
+    //SET INTERVAL TO CHANGE STEPS
+    let interval = setInterval(() => {
+      try {
+        stepTag.classList.remove('step-active');
+        if (descriptionTag) {
+          descriptionTag.classList.remove('show-description')
+          descriptionTag.classList.add('hidden-description')
+        }
+        currentStep++;
+        stepTag = document.querySelector(`.step-${currentStep}`)
+        //if steptag not visible in the screen scroll to it
+        if (stepTag) {
+          stepTag.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+        }
+        descriptionTag = document.querySelector(`#description-step-${currentStep}`)
+        console.log(currentStep,stepTag,descriptionTag,formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 3)
+        //if steptag is ! from 1 and 5
+        if (currentStep != 1 && currentStep != 6 && currentStep !== formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 3) {
+          stepTag.style.backgroundColor = "white"
+        }
+        if(currentStep !== formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 3){
+          //click on the input
+          
+        }
+        stepTag.classList.add('step-active');
+        if (descriptionTag) descriptionTag.classList.add('show-description')
+        if (currentStep >= formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 3) {
+
+          setTimeout(() => {
+            clearInterval(interval)
+            stepTag.classList.remove('step-active');
+            isInStepByStep.value = false
+          }, 1000);
+        }
+      }
+      catch (e) {
+        console.error(e)
+        clearInterval(interval)
+        isInStepByStep.value = false
+      }
+    }, 100);
+  } catch (e) {
+    console.error(e)
+  }
+
+}
+// onMounted(() => {
+//   startStepByStep()
+// })
 </script>
 <style>
 body {
@@ -719,5 +845,35 @@ input[type=number]::-webkit-outer-spin-button {
 
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.step-active {
+  transition: opacity 0.5s ease-in-out;
+  position: relative;
+  z-index: 100000;
+}
+
+.hidden-description {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  z-index: 0;
+}
+
+.show-description {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+  z-index: 1000000;
+
+}
+
+@keyframes opacity {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+
 }
 </style>
