@@ -857,6 +857,7 @@ input[type=number] {
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
   z-index: 0;
+  display: none!important;;
 }
 
 .show-description {
