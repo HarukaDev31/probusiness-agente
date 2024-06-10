@@ -15,85 +15,118 @@
           <card class="card">
             <template #body>
               <!--Customized input with index pair-->
-              <customized-input v-for="(input, index) in formValuesComputedPair" :key="index" :text="input.text"
-                :optionalText="input.optionalText" :type="input.type" @input="(e) => (input.value = e)"
-                :value="input.value" :validation="input.validate" :is-error="input.error" :prepend="input.prepend"
-                :keyRender="input.keyRender" :class="`step step-${2 + index}`" />
+              <div v-for="(desc, descIndex) in formValuesComputedPair" style="position: relative;">
+                <div :id="`description-step-${descIndex + 2}`" :style="getDescriptionPosition"
+                  class=" hidden-description d-flex flex-column justify-content-end align-items-end">
+                  <div class="d-flex flex-column gap-2 card">
+                    <p>
+                      {{ desc.helpText }} 
+                    </p>
+                  </div>
+                  <div>
+                    <div class="btn btn-outline-primary" @click="previousStep">
+                      Anterior
+                    </div>
+                    <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
+                      src="/src/assets/probusiness.png" alt="Logo ProBusiness">
+                    <!--next button-->
+                    <div class="btn btn-outline-primary" @click="nextStep">
+                      Siguiente
+                    </div>
+
+                  </div>
+                </div>
+                <customized-input :key="descIndex" :text="desc.text" :optionalText="desc.optionalText" :type="desc.type"
+                  @desc="(e) => (desc.value = e)" :value="desc.value" :validation="desc.validate" :is-error="desc.error"
+                  :prepend="desc.prepend" :keyRender="desc.keyRender" :class="`step step-${2 + descIndex}`" />
+              </div>
+
             </template>
           </card>
         </div>
-        <div id="description-step-1" style="position:absolute;height: auto;width:30vw;min-width: 300px;right: 0;"
-          class=" hidden-description d-flex flex-column justify-content-end align-items-end">
+        <div id="description-step-1" :style="getDescriptionPosition"
+          class="hidden-description d-flex flex-column justify-content-end align-items-end">
           <div class="d-flex flex-column gap-2 card">
             <p>
-              En esta sección,debés ingresar tus datos personales, como tu DNI/ID, nombres, apellidos y correo electrónico.
+              En esta sección,debés ingresar tus datos personales, como tu DNI/ID, nombres, apellidos y correo
+              electrónico.
               Esto es muy importante para poder contactarte y enviarte la cotización.
             </p>
-           
+
           </div>
           <div>
+            <div class="btn btn-outline-primary" @click="previousStep">
+              Anterior
+            </div>
             <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
               src="/src/assets/probusiness.png" alt="Logo ProBusiness">
+            <!--next button-->
+            <div class="btn btn-outline-primary" @click="nextStep">
+              Siguiente
+            </div>
 
           </div>
         </div>
-        <div v-for="(desc, descIndex) in formValuesComputedPair"
-          :id="`description-step-${descIndex + 2}`"
-          style="position:absolute;height: auto;width:30vw;min-width: 300px;right: 0;"
-          class=" hidden-description d-flex flex-column justify-content-end align-items-end"> 
-          <div class="d-flex flex-column gap-2 card">
-            <p>
-              {{ desc.helpText }}
-            </p>
-          </div>
-          <div>
-            <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
-              src="/src/assets/probusiness.png" alt="Logo ProBusiness">
-          </div>
-        </div>
-        
+
+
         <div id="card-empresa" :class="`step step-${formValuesComputedPair.length + 2}`">
           <h1 class="fw-bold">Empresa</h1>
           <card class="card">
             <template #body>
-              <customized-input v-for="(input, index) in formValuesComputedOdd" :key="index" :text="input.text"
-                :value="input.value" :optionalText="input.optionalText" :type="input.type"
-                @input="(e) => (input.value = e)" :validation="input.validate" :is-error="input.error"
-                :prepend="input.prepend" :keyRender="input.keyRender"
-                :class="`step step-${3 + formValuesComputedPair.length + index}`" />
+              <div v-for="(desc, descIndex) in formValuesComputedOdd" style="position: relative;">
+                <customized-input :key="descIndex" :text="desc.text" :optionalText="desc.optionalText" :type="desc.type"
+                  @desc="(e) => (desc.value = e)" :value="desc.value" :validation="desc.validate" :is-error="desc.error"
+                  :keyRender="desc.keyRender" :class="`step step-${3 + formValuesComputedPair.length + descIndex}`" />
+                <div :id="`description-step-${descIndex + 3 + formValuesComputedPair.length}`"
+                  style="position:absolute;height: auto;width:30vw;min-width: 300px;left: 0;"
+                  class=" hidden-description d-flex flex-column justify-content-end align-items-start">
+                  <div class="d-flex flex-column gap-2 card">
+                    <p>
+                      {{ desc.helpText }}
+                    </p>
+                  </div>
+                  <div>
+                    <div class="btn btn-outline-primary" @click="previousStep">
+                      Anterior
+                    </div>
+                    <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
+                      src="/src/assets/probusiness.png" alt="Logo ProBusiness">
+                    <!--next button-->
+                    <div class="btn btn-outline-primary" @click="nextStep">
+                      Siguiente
+                    </div>
 
+                  </div>
+                </div>
+              </div>
+              <div id="description-step-6" :style="getDescriptionPosition"
+                class=" hidden-description d-flex flex-column justify-content-end align-items-end">
+                <div class="d-flex flex-column gap-2 card">
+                  <p>
+                    En esta sección, deberás ingresar los datos de la empresa, como el nombre de la empresa y el RUC.
+                  </p>
+
+                </div>
+                <div>
+                  <div class="btn btn-outline-primary" @click="previousStep">
+                    Anterior
+                  </div>
+                  <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
+                    src="/src/assets/probusiness.png" alt="Logo ProBusiness">
+                  <!--next button-->
+                  <div class="btn btn-outline-primary" @click="nextStep">
+                    Siguiente
+                  </div>
+
+                </div>
+              </div>
             </template>
           </card>
         </div>
-        <div id="description-step-6" style="position:absolute;height: auto;width:30vw;min-width: 300px;right: 0;"
-          class=" hidden-description d-flex flex-column justify-content-end align-items-end">
-          <div class="d-flex flex-column gap-2 card">
-            <p>
-              En esta sección, deberás ingresar los datos de la empresa, como el nombre de la empresa y el RUC.
-            </p>
-            
-          </div>
-          <div>
-            <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
-              src="/src/assets/probusiness.png" alt="Logo ProBusiness">
 
-          </div>
-        </div>
-        <div v-for="(desc, descIndex) in formValuesComputedOdd" :id="`description-step-${descIndex + 3 + formValuesComputedPair.length}`"
-          style="position:absolute;height: auto;width:30vw;min-width: 300px;left: 0;"
-          class=" hidden-description d-flex flex-column justify-content-end align-items-start">
-          <div class="d-flex flex-column gap-2 card">
-            <p>
-              {{ desc.helpText }}
-            </p>
-          </div>
-          <div>
-            <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
-              src="/src/assets/probusiness.png" alt="Logo ProBusiness">
-          </div>
-        </div>
+
       </div>
-      <div id="second-row" >
+      <div id="second-row">
         <div class="proveedores-container d-flex flex-column mt-3 align-items-center">
           <h1>Proveedores</h1>
           <customized-button @click="addNewSupplier()" v-if="suppliers.length == 0"
@@ -116,18 +149,62 @@
                       Eliminar
                     </div>
                   </h2>
+                  <div :id="`description-step-header-0`"
+                    style="position:absolute;height: auto;width:30vw;min-width: 300px;right: -10vw;top:-50vh"
+                    class=" hidden-description d-flex flex-column justify-content-end align-items-end">
+                    <div class="d-flex flex-column gap-2 card">
+                      <p>
+                        En esta sección, deberás ingresar los datos de tu proveedor, como el CBM total y el peso,
+                        es importante que ingreses estos datos para poder hacer el cálculo de la cotización.
+                      </p>
 
+                    </div>
+                    <div>
+                      <div class="btn btn-outline-primary" @click="previousStepSupplier">
+                        Anterior
+                      </div>
+                      <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
+                        src="/src/assets/probusiness.png" alt="Logo ProBusiness">
+                      <!--next button-->
+                      <div class="btn btn-outline-primary" @click="nextStepSupplier">
+                        Siguiente
+                      </div>
+
+                    </div>
+                  </div>
                   <div class="supplier-indicators d-flex flex-column flex-md-row gap-4 align-items-center"
                     v-if="currentSupplier.value == supplierIndex + 1">
-                    <div class="supplier-indicator d-flex" v-for="(indicator, index) in supplier.indicators"
-                      :key="`${supplierIndex}-${indicator.key}`">
+                    <div class="supplier-indicator d-flex" style="position: relative;"
+                      v-for="(indicator, index) in supplier.indicators" :key="`${supplierIndex}-${indicator.key}`">
+
                       <customized-input :value="indicator.value" :text="indicator.name" :type="indicator.type"
                         :key="`${supplierIndex}-${indicator.key}`" :optionalText="indicator.optionalText"
                         @input="(e) => (indicator.value = e)" v-if="indicator.key != 'proforma'"
                         :is-error="indicator.error" :options="indicator.options" :keyRender="indicator.keyRender"
-                        @select="(e) => changeSelected(supplierIndex, e)" />
+                        @select="(e) => changeSelected(supplierIndex, e)" :class="`step-header-${index + 1}`" />
+                      <div :id="`description-step-header-${index + 1}`"
+                        style="position:absolute;height: auto;width:30vw;min-width: 300px;right: -10vw;top:-45vh"
+                        class=" hidden-description d-flex flex-column justify-content-end align-items-end">
+                        <div class="d-flex flex-column gap-2 card">
+                          <p>
+                            {{ indicator.description }}
+                          </p>
 
-                      <file-selector v-else :not-show-drop="false" :multiple="true" :value="indicator.value"
+                        </div>
+                        <div>
+                          <div class="btn btn-outline-primary" @click="previousStepSupplier">
+                            Anterior
+                          </div>
+                          <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
+                            src="/src/assets/probusiness.png" alt="Logo ProBusiness">
+                          <!--next button-->
+                          <div class="btn btn-outline-primary" @click="nextStepSupplier">
+                            Siguiente
+                          </div>
+
+                        </div>
+                      </div>
+                      <!-- <file-selector v-else :not-show-drop="false" :multiple="true" :value="indicator.value"
                         @file-change="(files) => handleMultipleFiles(files, indicator)"
                         :accept="'image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx'">
                         <template #button>
@@ -139,7 +216,7 @@
                             </small>
                           </div>
                         </template>
-                      </file-selector>
+        </file-selector> -->
                     </div>
                   </div>
                 </div>
@@ -152,21 +229,69 @@
                   <div class="col-12 col-md-4">
                     <div v-for="(product, productItemIndex) in productList.filter(
                       (item) => item.type == 'file'
-                    )" :key="`fileSelector-${productItemIndex}`" style="height: 100%">
+                    )" :key="`fileSelector-${productItemIndex}`" style="height: 100%"
+                      :class="`step-body-${productItemIndex + 1}`">
                       <label class="fw-bold">Imagen</label>
                       <file-selector :not-show-drop="true" :multiple="false" :value="product.value"
                         @fileChange="(files) => handleFile(files, product)" :accept="'image/*'">
                         <template #text>Seleccionar foto</template>
                       </file-selector>
+                      <div :id="`description-step-body-${productItemIndex + 1}`"
+                        style="position:absolute;height: auto;width:30vw;min-width: 300px;left: min(45vh,40px);top:0"
+                        class=" hidden-description d-flex flex-column justify-content-end align-items-end">
+                        <div class="d-flex flex-column gap-2 card">
+                          <p>
+                            {{ product.description }}
+                          </p>
+
+                        </div>
+                        <div>
+                          <div class="btn btn-outline-primary" @click="previousStepSupplier">
+                            Anterior
+                          </div>
+                          <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
+                            src="/src/assets/probusiness.png" alt="Logo ProBusiness">
+                          <!--next button-->
+                          <div class="btn btn-outline-primary" @click="nextStepSupplier">
+                            Siguiente
+                          </div>
+
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div class="col-12 col-md-8">
+                  <div class="col-12 col-md-8" style="position: relative;">
                     <customized-input v-for="(product, productItemIndex) in productList.filter(
                       (item) => item.type != 'file'
                     )" :key="`${productListIndex}-${productItemIndex}`" :text="product.text"
                       :optionalText="product.optionalText" :type="product.type" :value="product.value"
-                      @input="(e) => (product.value = e)" :is-error="product.error" :key-render="product.keyRender" />
+                      @input="(e) => (product.value = e)" :is-error="product.error" :key-render="product.keyRender"
+                      :class="`step-body-${productItemIndex + 2}`" />
+                    <div v-for="(product, productItemIndex) in productList.filter(
+                      (item) => item.type != 'file'
+                    )" :key="`${productListIndex}-${productItemIndex}`"
+                      :id="`description-step-body-${productItemIndex + 2}`"
+                      style="position:absolute;height: auto;width:30vw;min-width: 300px;right: -10vw;top:-10vh"
+                      class=" hidden-description d-flex flex-column justify-content-end align-items-end">
+                      <div class="d-flex flex-column gap-2 card">
+                        <p>I
+                          {{ product.description }}
+                        </p>
 
+                      </div>
+                      <div>
+                        <div class="btn btn-outline-primary" @click="previousStepSupplierBody">
+                          Anterior
+                        </div>
+                        <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
+                          src="/src/assets/probusiness.png" alt="Logo ProBusiness">
+                        <!--next button-->
+                        <div class="btn btn-outline-primary" @click="nextStepSupplierBody">
+                          Siguiente
+                        </div>
+
+                      </div>
+                    </div>
                     <div class="btn btn-outline-danger w-100" @click="deleteProduct(productListIndex, supplierIndex)">
                       Quitar
                     </div>
@@ -176,17 +301,66 @@
             </card>
           </div>
           <div class="d-flex flex-column w-100 gap-2">
-            <div class="btn btn-outline-danger" @click="addNewProductToSupplier(currentSupplier.value)"
-              v-if="suppliers.length != 0">
-              Agregar Producto
+            <div class="btn btn-outline-danger step-agregar-producto"
+              @click="addNewProductToSupplier(currentSupplier.value)" v-if="suppliers.length != 0">
+              <span>Agregar Producto</span>
+              <div id="`description-step-agregar-producto`"
+                style="position:absolute;height: auto;width:30vw;min-width: 300px;right: -10vw;top:-10vh"
+                class=" hidden-description d-flex flex-column justify-content-end align-items-end">
+                <div class="d-flex flex-column gap-2 card">
+                  <p>
+                    Puedes agregar mas productos a tu proveedor, solo debes llenar los campos y dar click en el botón de
+                    agregar
+                    producto.
+                  </p>
+
+                </div>
+                <div>
+                  <div class="btn btn-outline-primary" @click="previousStepSupplierBody">
+                    Anterior
+                  </div>
+                  <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
+                    src="/src/assets/probusiness.png" alt="Logo ProBusiness">
+                  <!--next button-->
+                  <div class="btn btn-outline-primary" @click="nextStepSupplierBody">
+                    Siguiente
+                  </div>
+
+                </div>
+              </div>
             </div>
-            <customized-button @click="addNewSupplier()" v-if="suppliers.length != 0">
-              <template #text>Agregar Proveedor</template>
+            <customized-button @click="addNewSupplier()" v-if="suppliers.length != 0" style="position: relative;"
+              class="step-agregar-proveedor">
+              <template #text>Agregar Proveedor
+                <div id="`description-step-agregar-producto`"
+                  style="position:absolute;height: auto;width:30vw;min-width: 300px;right: -10vw;top:-10vh"
+                  class=" hidden-description d-flex flex-column justify-content-end align-items-end">
+                  <div class="d-flex flex-column gap-2 card">
+                    <p>
+                      Puedes agregar mas proveedores, solo debes dar click en el botón de agregar proveedor.
+
+                    </p>
+
+                  </div>
+                  <div>
+                    <div class="btn btn-outline-primary" @click="previousStepSupplierBody">
+                      Anterior
+                    </div>
+                    <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
+                      src="/src/assets/probusiness.png" alt="Logo ProBusiness">
+                    <!--next button-->
+                    <div class="btn btn-outline-primary" @click="nextStepSupplierBody">
+                      Siguiente
+                    </div>
+
+                  </div>
+                </div>
+              </template>
             </customized-button>
           </div>
           <!-- <supplier-card v-for="supplier in suppliers" :key="supplier.id" :supplier="supplier" /> -->
         </div>
-  
+
       </div>
     </main>
     <floatting-button />
@@ -196,6 +370,7 @@
 
 </template>
 <script setup>
+//import components
 import FileSelector from "./components/FileSelector.vue";
 import CustomizedInput from "./components/CustomizedInput.vue";
 import CustomizedButton from "./components/CustomizedButton.vue";
@@ -207,6 +382,7 @@ import FloattingButton from "./components/FloattingButton.vue";
 import { ref, computed, reactive, onMounted } from "vue";
 import { sendCotization, getClientDataByDNIID } from "./services/send-cotization";
 import Swal from 'sweetalert2';
+//validation functions
 const validateNotEmpy = (value) => {
   return value != "";
 };
@@ -214,6 +390,130 @@ const validateNumber = (value) => {
   //validate if is a number and is more than 0 and less than 100
   return !isNaN(value) && value > 0 && value < 999999999;
 };
+
+//Variables
+
+let currentStep = 1;
+let stepHeader = 0;
+let stepBody = 0;
+
+// reactive variables
+const isLoading = ref(false)
+const isInStepByStep = ref(false)
+const productParams = ref([
+  {
+    text: "Nombre Comercial",
+    optionalText: false,
+    key: "nombre",
+    type: "text",
+    value: "",
+    error: false,
+    keyRender: 0,
+    description: "Ingresa el nombre del producto que deseas cotizar."
+  },
+  {
+    text: "Uso",
+    optionalText: false,
+    type: "text",
+    key: "uso",
+    value: "",
+    error: false,
+    keyRender: 0,
+    description: "Ingresa el uso del producto que deseas cotizar."
+
+  },
+  {
+    text: "Cantidad",
+    optionalText: false,
+    type: "number",
+    key: "cantidad",
+    value: "",
+    error: false,
+    keyRender: 0,
+    description: "Ingresa la cantidad de productos que deseas cotizar. "
+
+  },
+  {
+    text: "Valor Unitario",
+    optionalText: false,
+    type: "number",
+    key: "valor",
+    value: "",
+    error: false,
+    keyRender: 0,
+    description: "Ingresa el valor unitario del producto que deseas cotizar."
+
+  },
+  {
+    text: "Agregar Foto",
+    optionalText: false,
+    type: "file",
+    key: "foto",
+    value: null,
+    error: false,
+    keyRender: 0,
+    description: "Puedes subir una foto del producto que deseas cotizar."
+  },
+  {
+    text: "Link",
+    optionalText: true,
+    key: "link",
+    type: "link",
+    value: "",
+    error: false,
+    keyRender: 0,
+    description: "Ingresa el link del producto que deseas cotizar. Si no tienes un link, déjalo en blanco."
+
+  },
+]);
+const supplierIndicators = ref([
+  {
+    name: "CBM TOTAL ",
+    key: "cbm",
+    type: "number",
+    value: "",
+    error: false,
+    optionalText: false,
+    keyRender: 0,
+    description: "Ingresa el CBM total de los productos que deseas cotizar.El CBM es el volumen total que ocupan tus productos en metros cúbicos."
+  },
+  {
+    name: "PESO TOTAL",
+    type: "number",
+    options: [
+      { text: "Kg", value: "Kg", selected: false },
+      { text: "Tn", value: "Tn", selected: false },
+    ],
+    key: "peso",
+    value: "",
+    error: false,
+    optionalText: true,
+    keyRender: 0,
+    description: "Ingresa el peso total de los productos que deseas cotizar y selecciona la unidad de medida.Si no sabes el peso total, déjalo en blanco."
+
+  },
+
+]);
+const suppliers = ref([]);
+//position of description
+//get current window width
+const windowWidth = ref(window.innerWidth);
+window.addEventListener("resize", () => {
+  windowWidth.value = window.innerWidth;
+});
+const getDescriptionPosition = ()=>{
+  if (windowWidth.value < 768) {
+    //set it top of window
+    return "position:absolute;height: auto;width:30vw;min-width: 300px;right: 0; top:12vh;";
+  } else {
+    console.log(currentStep)
+    if (currentStep == 1) {
+      return "position:absolute;height: auto;width:30vw;min-width: 300px;right: 0;";
+    } else {
+      return "position:absolute;height: auto;width:30vw;min-width: 300px;right: -40vw;";
+    }
+  }
+}
 const changeSelected = (supplierIndex, value) => {
   const supplier = suppliers.value[supplierIndex];
   const indicator = supplier.indicators.find((indicator) => indicator.key == "peso");
@@ -401,95 +701,16 @@ const addNewProductToSupplier = (supplierIndex) => {
   const newProductParams = productParams.value.map((param) => ({ ...param }));
   suppliers.value[supplierIndex - 1].products.push(newProductParams);
 };
-const productParams = ref([
-  {
-    text: "Nombre Comercial",
-    optionalText: false,
-    key: "nombre",
-    type: "text",
-    value: "",
-    error: false,
-    keyRender: 0
-  },
-  {
-    text: "Uso",
-    optionalText: false,
-    type: "text",
-    key: "uso",
-    value: "",
-    error: false,
-    keyRender: 0
 
-  },
-  {
-    text: "Cantidad",
-    optionalText: false,
-    type: "number",
-    key: "cantidad",
-    value: "",
-    error: false,
-    keyRender: 0
 
-  },
-  {
-    text: "Valor Unitario",
-    optionalText: false,
-    type: "number",
-    key: "valor",
-    value: "",
-    error: false,
-    keyRender: 0
-
-  },
-  {
-    text: "Agregar Foto",
-    optionalText: false,
-    type: "file",
-    key: "foto",
-    value: null,
-    error: false,
-    keyRender: 0
-
-  },
-  {
-    text: "Link",
-    optionalText: true,
-    key: "link",
-    type: "link",
-    value: "",
-    error: false,
-    keyRender: 0
-
-  },
-]);
-const supplierIndicators = ref([
-  {
-    name: "CBM TOTAL ",
-    key: "cbm",
-    type: "number",
-    value: "",
-    error: false,
-    optionalText: false,
-    keyRender: 0
-  },
-  {
-    name: "PESO TOTAL",
-    type: "number",
-    options: [
-      { text: "Kg", value: "Kg", selected: false },
-      { text: "Tn", value: "Tn", selected: false },
-    ],
-    key: "peso",
-    value: "",
-    error: false,
-    optionalText: true,
-    keyRender: 0
-
-  },
-
-]);
-const suppliers = ref([]);
-
+/**
+ * This function shows a sweetalert with the given parameters
+ * @param {string} title - Title of the alert
+ * @param {string} text - Text of the alert
+ * @param {string} icon - Icon of the alert
+ * @param {Function} fn - Function to execute after the alert is closed
+ * @param {string} go + Text of the button
+ */
 const showAlert = (title, text, icon, fn = null, go = "OK") => {
   Swal.fire({
     title: title,
@@ -685,58 +906,193 @@ const deleteSupplier = (index) => {
     currentSupplier.value = index > 0 ? index : 0;
   }
 };
-const isLoading = ref(false)
-const isInStepByStep = ref(false)
+
+const activateUserSteps = (step, interval) => {
+  let stepTag = document.querySelector(`.step-${step}`)
+  if (!stepTag) {
+    clearInterval(interval)
+    return;
+  }
+  stepTag.classList.add('step-active');
+  stepTag.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+  if (step != 1 && step != 6 && step !== formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 3) {
+    stepTag.style.backgroundColor = "white"
+  }
+  if (step === formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 3) {
+    addNewSupplier();
+  }
+  let descriptionTag = document.querySelector(`#description-step-${step}`)
+  if (descriptionTag) {
+    descriptionTag.classList.remove('hidden-description')
+    descriptionTag.classList.add('show-description')
+  }
+
+}
+const deactivateUserSteps = (step, interval) => {
+  let stepTag = document.querySelector(`.step-${step}`)
+  if (!stepTag) {
+    clearInterval(interval)
+    return;
+  }
+  stepTag.classList.remove('step-active');
+  let descriptionTag = document.querySelector(`#description-step-${step}`)
+  if (descriptionTag) {
+    descriptionTag.classList.remove('show-description')
+    descriptionTag.classList.add('hidden-description')
+  }
+}
+//computed current step==formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 3
+const stepInSuppliersFrom = computed(() => {
+  return formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 3
+})
+
+
+
+const previousStep = () => {
+  if (currentStep > 0) {
+    deactivateUserSteps(currentStep)
+    currentStep--;
+    activateUserSteps(currentStep)
+  }
+}
+const nextStep = () => {
+  if (currentStep < stepInSuppliersFrom.value) {
+    deactivateUserSteps(currentStep)
+    currentStep++;
+    activateUserSteps(currentStep)
+  }
+  if (currentStep >= stepInSuppliersFrom.value) {
+    activateSupplierHeaderStep(stepHeader)
+
+  }
+}
+const getSupplierForm = () => {
+  let supplierList = document.querySelector('#suppliers-list')
+  if (supplierList) {
+    supplierList.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+  }
+  return supplierList;
+}
+const nextStepSupplier = () => {
+  if (currentStep >= stepInSuppliersFrom.value) {
+    if (stepHeader <= 2) {
+      deactivateSupplierHeaderStep(stepHeader)
+      stepHeader++;
+      activateSupplierHeaderStep(stepHeader)
+    }
+    if (stepHeader > 2) {
+      deactivateSupplierBodyStep(stepBody)
+      deactivateSupplierBodyStep(stepBody)
+      stepBody++;
+      activateSupplierBodyStep(stepBody)
+    }
+  }
+}
+const previousStepSupplier = () => {
+  if (currentStep >= stepInSuppliersFrom.value) {
+
+    if (stepHeader > 0) {
+      deactivateSupplierHeaderStep(stepHeader)
+      stepHeader--;
+      activateSupplierHeaderStep(stepHeader)
+    }
+  }
+}
+const activateSupplierHeaderStep = (stepH) => {
+  setTimeout(() => {
+    let supplierHeader = document.querySelector('.header')
+    if (stepH == 0) {
+      supplierHeader.classList.add('step-active');
+      let stepHeaderDescription = document.querySelector(`#description-step-header-${stepH}`)
+      if (stepHeaderDescription) {
+        stepHeaderDescription.classList.remove('hidden-description')
+        stepHeaderDescription.classList.add('show-description')
+      }
+    }
+    else {
+      let currentHeaderTag = document.querySelector(`.step-header-${stepH}`)
+      let currentHeaderDescriptionTag = document.querySelector(`#description-step-header-${stepH}`)
+      if (currentHeaderDescriptionTag) {
+        currentHeaderDescriptionTag.classList.remove('hidden-description')
+        currentHeaderDescriptionTag.classList.add('show-description')
+      }
+      if (currentHeaderTag) {
+        currentHeaderTag.classList.add('step-active');
+        currentHeaderTag.style.backgroundColor = "white"
+        currentHeaderTag.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+
+      }
+    }
+  }, 500);
+}
+const deactivateSupplierHeaderStep = (stepH) => {
+  let supplierHeader = document.querySelector('.header')
+  if (stepH == 0) {
+    supplierHeader.classList.remove('step-active');
+    let stepHeaderDescription = document.querySelector(`#description-step-header-${stepH}`)
+    if (stepHeaderDescription) {
+      stepHeaderDescription.classList.remove('show-description')
+      stepHeaderDescription.classList.add('hidden-description')
+    }
+  }
+  else {
+    let currentHeaderTag = document.querySelector(`.step-header-${stepH}`)
+    let currentHeaderDescriptionTag = document.querySelector(`#description-step-header-${stepH}`)
+    if (currentHeaderDescriptionTag) {
+      currentHeaderDescriptionTag.classList.remove('show-description')
+      currentHeaderDescriptionTag.classList.add('hidden-description')
+    }
+    if (currentHeaderTag) {
+      currentHeaderTag.classList.remove('step-active');
+      currentHeaderTag.backgroundColor = "transparent"
+    }
+  }
+}
+const activateSupplierBodyStep = (stepB) => {
+  setTimeout(() => {
+    let currentBodyTag = document.querySelector(`.step-body-${stepB}`)
+    let currentBodyDescriptionTag = document.querySelector(`#description-step-body-${stepB}`)
+    if (currentBodyDescriptionTag) {
+      currentBodyDescriptionTag.classList.remove('hidden-description')
+      currentBodyDescriptionTag.classList.add('show-description')
+    }
+    if (currentBodyTag) {
+      currentBodyTag.classList.add('step-active');
+      currentBodyTag.style.backgroundColor = "white"
+      currentBodyTag.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+    }
+  }, 500);
+}
+const deactivateSupplierBodyStep = (stepB) => {
+  let currentBodyTag = document.querySelector(`.step-body-${stepB}`)
+  let currentBodyDescriptionTag = document.querySelector(`#description-step-body-${stepB}`)
+  if (currentBodyDescriptionTag) {
+    currentBodyDescriptionTag.classList.remove('show-description')
+    currentBodyDescriptionTag.classList.add('hidden-description')
+  }
+  if (currentBodyTag) {
+    currentBodyTag.classList.remove('step-active');
+    currentBodyTag.style.backgroundColor = "transparent"
+  }
+}
+const nextStepSupplierBody = () => {
+  if (currentStep >= stepInSuppliersFrom.value) {
+    deactivateSupplierBodyStep(stepBody)
+    stepBody++;
+    activateSupplierBodyStep(stepBody)
+  }
+}
+const previousStepSupplierBody = () => {
+  if (currentStep >= stepInSuppliersFrom.value) {
+    deactivateSupplierBodyStep(stepBody)
+    stepBody--;
+    activateSupplierBodyStep(stepBody)
+  }
+}
 const startStepByStep = () => {
   try {
     isInStepByStep.value = true
-    let currentStep = 1;
-    let stepTag = document.querySelector(`.step-${currentStep}`)
-    stepTag.classList.add('step-active');
-    let descriptionTag = document.querySelector(`#description-step-${currentStep}`)
-    descriptionTag.classList.remove('hidden-description')
-    descriptionTag.classList.add('show-description')
-    //SET INTERVAL TO CHANGE STEPS
-    let interval = setInterval(() => {
-      try {
-        stepTag.classList.remove('step-active');
-        if (descriptionTag) {
-          descriptionTag.classList.remove('show-description')
-          descriptionTag.classList.add('hidden-description')
-        }
-        currentStep++;
-        stepTag = document.querySelector(`.step-${currentStep}`)
-        //if steptag not visible in the screen scroll to it
-        if (stepTag) {
-          stepTag.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
-        }
-        descriptionTag = document.querySelector(`#description-step-${currentStep}`)
-        console.log(currentStep,stepTag,descriptionTag,formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 3)
-        //if steptag is ! from 1 and 5
-        if (currentStep != 1 && currentStep != 6 && currentStep !== formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 3) {
-          stepTag.style.backgroundColor = "white"
-        }
-        if(currentStep !== formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 3){
-          //click on the input
-          
-        }
-        stepTag.classList.add('step-active');
-        if (descriptionTag) descriptionTag.classList.add('show-description')
-        if (currentStep >= formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 3) {
-
-          setTimeout(() => {
-            clearInterval(interval)
-            stepTag.classList.remove('step-active');
-            isInStepByStep.value = false
-          }, 1000);
-        }
-      }
-      catch (e) {
-        console.error(e)
-        clearInterval(interval)
-        isInStepByStep.value = false
-      }
-    }, 100);
+    activateUserSteps(currentStep)
   } catch (e) {
     console.error(e)
   }
@@ -857,14 +1213,17 @@ input[type=number] {
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
   z-index: 0;
-  display: none!important;;
+  display: none !important;
+
 }
 
 .show-description {
   opacity: 1;
   transition: opacity 0.5s ease-in-out;
   z-index: 1000000;
-
+  display: block !important;
+  position: absolute;
+  width: 30vw;
 }
 
 @keyframes opacity {
