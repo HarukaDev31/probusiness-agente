@@ -16,23 +16,19 @@
             <template #body>
               <!--Customized input with index pair-->
               <div v-for="(desc, descIndex) in formValuesComputedPair" style="position: relative;">
-                <div :id="`description-step-${descIndex + 2}`" :style="getDescriptionPosition"
+                <div :id="`description-step-${descIndex + 2}`" :style="getDescriptionPosition()"
                   class=" hidden-description d-flex flex-column justify-content-end align-items-end">
                   <div class="d-flex flex-column gap-2 card">
                     <p>
-                      {{ desc.helpText }} 
+                      {{ desc.helpText }}
                     </p>
                   </div>
                   <div>
-                    <div class="btn btn-outline-primary" @click="previousStep">
-                      Anterior
-                    </div>
+
                     <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
                       src="/src/assets/probusiness.png" alt="Logo ProBusiness">
                     <!--next button-->
-                    <div class="btn btn-outline-primary" @click="nextStep">
-                      Siguiente
-                    </div>
+
 
                   </div>
                 </div>
@@ -44,7 +40,7 @@
             </template>
           </card>
         </div>
-        <div id="description-step-1" :style="getDescriptionPosition"
+        <div id="description-step-1" :style="getDescriptionPosition()"
           class="hidden-description d-flex flex-column justify-content-end align-items-end">
           <div class="d-flex flex-column gap-2 card">
             <p>
@@ -55,21 +51,33 @@
 
           </div>
           <div>
-            <div class="btn btn-outline-primary" @click="previousStep">
-              Anterior
-            </div>
+
             <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
               src="/src/assets/probusiness.png" alt="Logo ProBusiness">
             <!--next button-->
-            <div class="btn btn-outline-primary" @click="nextStep">
-              Siguiente
-            </div>
+
 
           </div>
         </div>
 
 
-        <div id="card-empresa" :class="`step step-${formValuesComputedPair.length + 2}`">
+        <div id="card-empresa" :class="`step step-${formValuesComputedPair.length + 2}`" style="position:relative">
+          <div id="description-step-6" :style="getDescriptionPosition()"
+            class=" hidden-description d-flex flex-column justify-content-end align-items-end">
+            <div class="d-flex flex-column gap-2 card">
+              <p>
+                En esta sección, deberás ingresar los datos de la empresa, como el nombre de la empresa y el RUC.
+              </p>
+
+            </div>
+            <div>
+
+              <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
+                src="/src/assets/probusiness.png" alt="Logo ProBusiness">
+
+
+            </div>
+          </div>
           <h1 class="fw-bold">Empresa</h1>
           <card class="card">
             <template #body>
@@ -86,38 +94,9 @@
                     </p>
                   </div>
                   <div>
-                    <div class="btn btn-outline-primary" @click="previousStep">
-                      Anterior
-                    </div>
                     <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
                       src="/src/assets/probusiness.png" alt="Logo ProBusiness">
-                    <!--next button-->
-                    <div class="btn btn-outline-primary" @click="nextStep">
-                      Siguiente
-                    </div>
-
                   </div>
-                </div>
-              </div>
-              <div id="description-step-6" :style="getDescriptionPosition"
-                class=" hidden-description d-flex flex-column justify-content-end align-items-end">
-                <div class="d-flex flex-column gap-2 card">
-                  <p>
-                    En esta sección, deberás ingresar los datos de la empresa, como el nombre de la empresa y el RUC.
-                  </p>
-
-                </div>
-                <div>
-                  <div class="btn btn-outline-primary" @click="previousStep">
-                    Anterior
-                  </div>
-                  <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
-                    src="/src/assets/probusiness.png" alt="Logo ProBusiness">
-                  <!--next button-->
-                  <div class="btn btn-outline-primary" @click="nextStep">
-                    Siguiente
-                  </div>
-
                 </div>
               </div>
             </template>
@@ -133,6 +112,23 @@
             :class="`step step-${3 + formValuesComputedPair.length + formValuesComputedOdd.length}`">
             <template #text>Agregar Proveedor</template>
           </customized-button>
+          <div :id="`description-step-${stepInSuppliersFrom}`"
+            style="position:absolute;height: auto;width:30vw;min-width: 300px;right: -10vw;top:50vh"
+            class=" hidden-description d-flex flex-column justify-content-end align-items-end">
+            <div class="d-flex flex-column gap-2 card">
+              <p>
+                Comienza agregando un proveedor, solo debes dar click en este botón.
+              </p>
+
+            </div>
+            <div>
+
+              <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
+                src="/src/assets/probusiness.png" alt="Logo ProBusiness">
+
+
+            </div>
+          </div>
           <div id="suppliers-list" class="mt-3" v-if="suppliers.length != 0">
             <card v-for="(supplier, supplierIndex) in suppliers" :key="supplierIndex" class="my-3" :background="currentSupplier.value != supplierIndex + 1 ? '#21618C' : 'white'
               ">
@@ -160,15 +156,11 @@
 
                     </div>
                     <div>
-                      <div class="btn btn-outline-primary" @click="previousStepSupplier">
-                        Anterior
-                      </div>
+
                       <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
                         src="/src/assets/probusiness.png" alt="Logo ProBusiness">
                       <!--next button-->
-                      <div class="btn btn-outline-primary" @click="nextStepSupplier">
-                        Siguiente
-                      </div>
+
 
                     </div>
                   </div>
@@ -192,15 +184,11 @@
 
                         </div>
                         <div>
-                          <div class="btn btn-outline-primary" @click="previousStepSupplier">
-                            Anterior
-                          </div>
+
                           <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
                             src="/src/assets/probusiness.png" alt="Logo ProBusiness">
                           <!--next button-->
-                          <div class="btn btn-outline-primary" @click="nextStepSupplier">
-                            Siguiente
-                          </div>
+
 
                         </div>
                       </div>
@@ -237,7 +225,7 @@
                         <template #text>Seleccionar foto</template>
                       </file-selector>
                       <div :id="`description-step-body-${productItemIndex + 1}`"
-                        style="position:absolute;height: auto;width:30vw;min-width: 300px;left: min(45vh,40px);top:0"
+                        style="position:absolute;height: auto;width:30vw;min-width: 300px;right: -10vw;top:10vh"
                         class=" hidden-description d-flex flex-column justify-content-end align-items-end">
                         <div class="d-flex flex-column gap-2 card">
                           <p>
@@ -246,50 +234,38 @@
 
                         </div>
                         <div>
-                          <div class="btn btn-outline-primary" @click="previousStepSupplier">
-                            Anterior
-                          </div>
+
                           <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
                             src="/src/assets/probusiness.png" alt="Logo ProBusiness">
-                          <!--next button-->
-                          <div class="btn btn-outline-primary" @click="nextStepSupplier">
-                            Siguiente
-                          </div>
 
                         </div>
                       </div>
                     </div>
                   </div>
                   <div class="col-12 col-md-8" style="position: relative;">
-                    <customized-input v-for="(product, productItemIndex) in productList.filter(
-                      (item) => item.type != 'file'
-                    )" :key="`${productListIndex}-${productItemIndex}`" :text="product.text"
-                      :optionalText="product.optionalText" :type="product.type" :value="product.value"
-                      @input="(e) => (product.value = e)" :is-error="product.error" :key-render="product.keyRender"
-                      :class="`step-body-${productItemIndex + 2}`" />
                     <div v-for="(product, productItemIndex) in productList.filter(
                       (item) => item.type != 'file'
-                    )" :key="`${productListIndex}-${productItemIndex}`"
-                      :id="`description-step-body-${productItemIndex + 2}`"
-                      style="position:absolute;height: auto;width:30vw;min-width: 300px;right: -10vw;top:-10vh"
-                      class=" hidden-description d-flex flex-column justify-content-end align-items-end">
-                      <div class="d-flex flex-column gap-2 card">
-                        <p>I
-                          {{ product.description }}
-                        </p>
+                    )" style="position:relative">
+                      <customized-input :key="`${productListIndex}-${productItemIndex}`" :text="product.text"
+                        :optionalText="product.optionalText" :type="product.type" :value="product.value"
+                        @input="(e) => (product.value = e)" :is-error="product.error" :key-render="product.keyRender"
+                        :class="`step-body-${productItemIndex + 2}`" />
+                      <div :key="`${productListIndex}-${productItemIndex}`"
+                        :id="`description-step-body-${productItemIndex + 2}`"
+                        style="position:absolute;height: auto;width:30vw;min-width: 300px;right: -10vw;top:10vh"
+                        class=" hidden-description d-flex flex-column justify-content-end align-items-end">
+                        <div class="d-flex flex-column gap-2 card">
+                          <p>I
+                            {{ product.description }}
+                          </p>
 
-                      </div>
-                      <div>
-                        <div class="btn btn-outline-primary" @click="previousStepSupplierBody">
-                          Anterior
                         </div>
-                        <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
-                          src="/src/assets/probusiness.png" alt="Logo ProBusiness">
-                        <!--next button-->
-                        <div class="btn btn-outline-primary" @click="nextStepSupplierBody">
-                          Siguiente
-                        </div>
+                        <div>
 
+                          <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
+                            src="/src/assets/probusiness.png" alt="Logo ProBusiness">
+
+                        </div>
                       </div>
                     </div>
                     <div class="btn btn-outline-danger w-100" @click="deleteProduct(productListIndex, supplierIndex)">
@@ -304,7 +280,7 @@
             <div class="btn btn-outline-danger step-agregar-producto"
               @click="addNewProductToSupplier(currentSupplier.value)" v-if="suppliers.length != 0">
               <span>Agregar Producto</span>
-              <div id="`description-step-agregar-producto`"
+              <div id="description-step-agregar-producto"
                 style="position:absolute;height: auto;width:30vw;min-width: 300px;right: -10vw;top:-10vh"
                 class=" hidden-description d-flex flex-column justify-content-end align-items-end">
                 <div class="d-flex flex-column gap-2 card">
@@ -316,23 +292,16 @@
 
                 </div>
                 <div>
-                  <div class="btn btn-outline-primary" @click="previousStepSupplierBody">
-                    Anterior
-                  </div>
+
                   <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
                     src="/src/assets/probusiness.png" alt="Logo ProBusiness">
-                  <!--next button-->
-                  <div class="btn btn-outline-primary" @click="nextStepSupplierBody">
-                    Siguiente
-                  </div>
-
                 </div>
               </div>
             </div>
             <customized-button @click="addNewSupplier()" v-if="suppliers.length != 0" style="position: relative;"
               class="step-agregar-proveedor">
               <template #text>Agregar Proveedor
-                <div id="`description-step-agregar-producto`"
+                <div id="description-step-agregar-proveedor"
                   style="position:absolute;height: auto;width:30vw;min-width: 300px;right: -10vw;top:-10vh"
                   class=" hidden-description d-flex flex-column justify-content-end align-items-end">
                   <div class="d-flex flex-column gap-2 card">
@@ -343,16 +312,10 @@
 
                   </div>
                   <div>
-                    <div class="btn btn-outline-primary" @click="previousStepSupplierBody">
-                      Anterior
-                    </div>
+
                     <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
                       src="/src/assets/probusiness.png" alt="Logo ProBusiness">
                     <!--next button-->
-                    <div class="btn btn-outline-primary" @click="nextStepSupplierBody">
-                      Siguiente
-                    </div>
-
                   </div>
                 </div>
               </template>
@@ -363,10 +326,25 @@
 
       </div>
     </main>
-    <floatting-button />
-    <footer-cuz />
-    <send-button @sendCotizacion="sendCotizacion" />
-  </div>
+    <div class="buttons-step-by-step-container" v-if="isInStepByStep">
+      <div class="btn-step " @click="previousStepv2" :style="isLoadingStep ? 'pointer-events:none;opacity:0.5' : ''">
+        < </div>
+          <div class="btn-step " @click="skipStepByStep"
+            :style="isLoadingStep ? 'pointer-events:none;opacity:0.5' : ''">
+            X
+          </div>
+          <div class=" btn-step " @click="nextStepv2" :style="isLoadingStep ? 'pointer-events:none;opacity:0.5' : ''">
+            >
+          </div>
+      </div>
+      <div class="floatting-buttons">
+
+        <floatting-button />
+        <step-by-step-button @click="startStepByStep" />
+      </div>
+      <footer-cuz />
+      <send-button @sendCotizacion="sendCotizacion" />
+    </div>
 
 </template>
 <script setup>
@@ -379,6 +357,7 @@ import Navbar from "./components/Navbar.vue";
 import FooterCuz from "./components/FooterCuz.vue";
 import SendButton from "./components/SendButton.vue";
 import FloattingButton from "./components/FloattingButton.vue";
+import StepByStepButton from "./components/StepByStepButton.vue";
 import { ref, computed, reactive, onMounted } from "vue";
 import { sendCotization, getClientDataByDNIID } from "./services/send-cotization";
 import Swal from 'sweetalert2';
@@ -393,7 +372,7 @@ const validateNumber = (value) => {
 
 //Variables
 
-let currentStep = 1;
+let currentStep = 0;
 let stepHeader = 0;
 let stepBody = 0;
 
@@ -501,17 +480,13 @@ const windowWidth = ref(window.innerWidth);
 window.addEventListener("resize", () => {
   windowWidth.value = window.innerWidth;
 });
-const getDescriptionPosition = ()=>{
+const getDescriptionPosition = () => {
   if (windowWidth.value < 768) {
     //set it top of window
-    return "position:absolute;height: auto;width:30vw;min-width: 300px;right: 0; top:12vh;";
+    return "position:absolute;height: auto;width:30vw;min-width: 300px!important;right: 0; top:12vh;";
   } else {
-    console.log(currentStep)
-    if (currentStep == 1) {
-      return "position:absolute;height: auto;width:30vw;min-width: 300px;right: 0;";
-    } else {
-      return "position:absolute;height: auto;width:30vw;min-width: 300px;right: -40vw;";
-    }
+    return "position:absolute;height: auto;width:30vw;min-width:300px!important;right: 0;";
+
   }
 }
 const changeSelected = (supplierIndex, value) => {
@@ -895,7 +870,6 @@ const sendCotizacion = async () => {
     //set empty files  in suppliers 
     currentSupplier.value = 0;
     suppliers.value = []
-    console.error(e)
   }
 };
 const deleteSupplier = (index) => {
@@ -909,6 +883,12 @@ const deleteSupplier = (index) => {
 
 const activateUserSteps = (step, interval) => {
   let stepTag = document.querySelector(`.step-${step}`)
+  if (step === formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 4) {
+    currentSupplier.value = 0;
+
+    addNewSupplier()
+    return;
+  }
   if (!stepTag) {
     clearInterval(interval)
     return;
@@ -919,17 +899,175 @@ const activateUserSteps = (step, interval) => {
     stepTag.style.backgroundColor = "white"
   }
   if (step === formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 3) {
-    addNewSupplier();
+    currentSupplier.value = 0;
+
+    stepTag.classList.add('step-active');
+    //remove pointer events
+    stepTag.style.pointerEvents = "none"
   }
   let descriptionTag = document.querySelector(`#description-step-${step}`)
+  console.log(descriptionTag, step, "show description");
   if (descriptionTag) {
     descriptionTag.classList.remove('hidden-description')
     descriptionTag.classList.add('show-description')
   }
+}
+const steps = [];
+const fillSteps = () => {
+  for (let i = 1; i <= formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 2; i++) {
+    steps.push({
+      step: `step-${i}`,
+      description: `description-step-${i}`,
+      info: "Client and Business Info",
+      type: "input",
+      action: null
+    })
+  }
+  steps.push({
+    step: `step-${steps.length + 1}`,
+    description: `description-step-${steps.length + 1}`,
+    info: "Button to add supplier",
+    type: "button",
+    action: addNewSupplier,
+  })
+  steps.push({
+    step: `header`,
+    description: `description-step-header-0`,
+    info: "Button to add supplier",
+    type: "button",
+    action: null
+  })
+  //for indicators of supplier add step
+  for (let i = 0; i < supplierIndicators.value.length; i++) {
+    steps.push({
+      step: `step-header-${i + 1}`,
+      description: `description-step-header-${i + 1}`,
+      info: "Supplier indicators",
+      type: "input",
+      action: null
+    })
+  }
+
+  for (let i = 0; i < productParams.value.length; i++) {
+    steps.push({
+      step: `step-body-${i + 1}`,
+      description: `description-step-body-${i + 1}`,
+      info: "Product params",
+      type: "input",
+      action: null
+    })
+  }
+  steps.push({
+    step: `step-agregar-producto`,
+    description: `description-step-agregar-producto`,
+    info: "Button to add product",
+    type: "button",
+    action: null
+  })
+  steps.push({
+    step: `step-agregar-proveedor`,
+    description: `description-step-agregar-proveedor`,
+    info: "Button to add supplier",
+    type: "button",
+    action: null
+  })
+}
+const nextStepv2 = () => {
+  if (currentStep >= steps.length) {
+    return;
+  }
+  if (currentStep == 0) {
+    activateStep(currentStep)
+    currentStep++
+    return;
+  } else {
+    deactivateStep(currentStep - 1)
+    activateStep(currentStep)
+    currentStep++
+
+  }
+}
+const previousStepv2 = () => {
+  console.log(currentStep, steps.length, "previous step")
+
+
+
+  deactivateStep(currentStep - 1 < 0 ? 0 : currentStep - 1)
+  activateStep(currentStep - 2 < 0 ? 0 : currentStep - 2)
+
+  currentStep--
+  // activateStep(currentStep)
+}
+const isLoadingStep = ref(false)
+const activateStep = (step) => {
+  console.log(steps, "steps")
+  let action = steps[step - 1]?.action
+  let stepTag = document.querySelector(`.${steps[step].step}`)
+  let descriptionTag = document.querySelector(`#${steps[step].description}`)
+  let type = steps[step].type
+  console.log(stepTag, step, descriptionTag, "activate")
+  if (step == 9 && suppliers.value.length != 0) {
+    suppliers.value = []
+    currentSupplier.value = 0;
+    isLoadingStep.value = true
+    setTimeout(() => {
+      activateStep(step)
+      isLoadingStep.value = false
+    }, 500);
+  }
+  if (action) {
+    console.log(suppliers.value.length, "action")
+    if (suppliers.value.length == 0) {
+      action()
+    }
+    isLoadingStep.value = true
+    setTimeout(() => {
+      stepTag = document.querySelector(`.${steps[step].step}`)
+      descriptionTag = document.querySelector(`#${steps[step].description}`)
+      type = steps[step].type
+      if (type == "button") {
+        stepTag.style.pointerEvents = "none"
+      } if (type == "input") {
+        stepTag.style.backgroundColor = "white!important"
+      }
+      console.log(stepTag, step, "activateintimeout")
+      stepTag.classList.add('step-active');
+      stepTag.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+      descriptionTag.classList.remove('hidden-description')
+      descriptionTag.classList.add('show-description')
+      isLoadingStep.value = false
+      return;
+    }, 500);
+  }
+  if (!stepTag) {
+    return;
+  }
+  if (type == "button") {
+    stepTag.style.pointerEvents = "none"
+  } if (type == "input") {
+    stepTag.style.backgroundColor = "white"
+  }
+  stepTag.classList.add('step-active');
+  stepTag.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+  descriptionTag.classList.remove('hidden-description')
+  descriptionTag.classList.add('show-description')
 
 }
+const deactivateStep = (step) => {
+  let stepTag = document.querySelector(`.${steps[step].step}`)
+  let descriptionTag = document.querySelector(`#${steps[step].description}`)
+  console.log(stepTag, step, "deactivate")
+  if (!stepTag) {
+    return;
+  }
+  stepTag.classList.remove('step-active');
+  descriptionTag.classList.remove('show-description')
+  descriptionTag.classList.add('hidden-description')
+}
+fillSteps()
 const deactivateUserSteps = (step, interval) => {
   let stepTag = document.querySelector(`.step-${step}`)
+  console.log(stepTag, step, "deactivate")
   if (!stepTag) {
     clearInterval(interval)
     return;
@@ -946,17 +1084,17 @@ const stepInSuppliersFrom = computed(() => {
   return formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 3
 })
 
-
-
 const previousStep = () => {
-  if (currentStep > 0) {
+  if (currentStep > 1) {
     deactivateUserSteps(currentStep)
     currentStep--;
     activateUserSteps(currentStep)
   }
 }
 const nextStep = () => {
-  if (currentStep < stepInSuppliersFrom.value) {
+  console.log(currentStep, stepInSuppliersFrom.value + 1, "next step")
+  if (currentStep < stepInSuppliersFrom.value + 1) {
+
     deactivateUserSteps(currentStep)
     currentStep++;
     activateUserSteps(currentStep)
@@ -989,12 +1127,22 @@ const nextStepSupplier = () => {
   }
 }
 const previousStepSupplier = () => {
-  if (currentStep >= stepInSuppliersFrom.value) {
+  console.log(currentStep, stepInSuppliersFrom.value, "previous step", stepHeader)
+  if (currentStep >= stepInSuppliersFrom.value + 1) {
 
     if (stepHeader > 0) {
       deactivateSupplierHeaderStep(stepHeader)
       stepHeader--;
       activateSupplierHeaderStep(stepHeader)
+    } else {
+      deactivateSupplierHeaderStep(stepHeader)
+      currentStep--;
+      //set empty supplierList
+      suppliers.value = []
+      //RERENDER SUPPLIers list
+      setTimeout(() => {
+        activateUserSteps(currentStep)
+      }, 500);
     }
   }
 }
@@ -1044,7 +1192,6 @@ const deactivateSupplierHeaderStep = (stepH) => {
     }
     if (currentHeaderTag) {
       currentHeaderTag.classList.remove('step-active');
-      currentHeaderTag.backgroundColor = "transparent"
     }
   }
 }
@@ -1072,7 +1219,6 @@ const deactivateSupplierBodyStep = (stepB) => {
   }
   if (currentBodyTag) {
     currentBodyTag.classList.remove('step-active');
-    currentBodyTag.style.backgroundColor = "transparent"
   }
 }
 const nextStepSupplierBody = () => {
@@ -1091,15 +1237,60 @@ const previousStepSupplierBody = () => {
 }
 const startStepByStep = () => {
   try {
+    
     isInStepByStep.value = true
-    activateUserSteps(currentStep)
+    //set window not scrollable
+    document.body.style.overflow = "hidden"
+    nextStepv2(currentStep)
+
   } catch (e) {
     console.error(e)
   }
 
 }
+const setStepByStepPlayer=()=>{
+  //set variable in localstorage
+  localStorage.setItem("stepByStep","true") 
+}
+const unsetStepByStepPlayer=()=>{
+  //set variable in localstorage
+  if(localStorage.getItem("stepByStep")){
+    localStorage.removeItem("stepByStep")
+  }
+}
+const isStepByStepPlayer=()=>{
+  //set variable in localstorage
+  return localStorage.getItem("stepByStep")
+}
+const skipStepByStep = () => {
+  try {
+    isInStepByStep.value = false
+    //set window scrollable
+    document.body.style.overflow = "auto"
+    //set empty files  in suppliers 
+    currentStep = 0;
+    formValues.value.forEach((input) => {
+      input.value = "";
+      input.keyRender++
+    });
+    //set empty files  in suppliers 
+    currentSupplier.value = 0;
+    suppliers.value = []
+    steps.forEach((step, index) => {
+
+      deactivateStep(index)
+    });
+    //rerender steps
+
+  } catch (e) {
+    console.error(e)
+  }
+}
 // onMounted(() => {
-//   startStepByStep()
+//   if(!isStepByStepPlayer()){
+//     startStepByStep()
+//     setStepByStepPlayer()
+//   }
 // })
 </script>
 <style>
@@ -1235,5 +1426,42 @@ input[type=number] {
     opacity: 1;
   }
 
+}
+
+.buttons-step-by-step-container {
+  position: fixed;
+  bottom: 0.4em;
+  z-index: 100000;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1em;
+}
+
+.btn-step {
+  background-color: white;
+  font-size: 2em;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-family: "Nunito", sans-serif;
+}
+
+.btn-step:hover {
+  background-color: #f2f3f4;
+  cursor: pointer;
+}.floatting-buttons{
+  position: fixed;
+  bottom: 6em;
+  right: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
 }
 </style>

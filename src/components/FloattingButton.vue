@@ -16,11 +16,7 @@
         </svg></a>
 </template>
 <style scoped>
-.flotante-wp {
-    position: fixed;
-    bottom: 100px;
-    right: 10px;
-}
+
 
 .size-wp {
     width: 50px;
