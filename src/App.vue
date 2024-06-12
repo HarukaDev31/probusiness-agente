@@ -402,7 +402,7 @@ const productParams = ref([
 
   },
   {
-    text: "Cantidad",
+    text: "Unidades Comerciales",
     optionalText: false,
     type: "number",
     key: "cantidad",
