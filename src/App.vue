@@ -146,7 +146,7 @@
                     </div>
                   </h2>
                   <div :id="`description-step-header-0`"
-                    style="position:absolute;height: auto;width:30vw;min-width: 300px;right: -10vw;top:-50vh"
+                    style="position:absolute;height: auto;width:30vw;min-width: 300px;right: -10vw;top:-30vh"
                     class=" hidden-description d-flex flex-column justify-content-end align-items-end">
                     <div class="d-flex flex-column gap-2 card">
                       <p>
@@ -192,19 +192,7 @@
 
                         </div>
                       </div>
-                      <!-- <file-selector v-else :not-show-drop="false" :multiple="true" :value="indicator.value"
-                        @file-change="(files) => handleMultipleFiles(files, indicator)"
-                        :accept="'image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx'">
-                        <template #button>
-                          <div class="btn d-flex flex-column"
-                            :class="indicator.value ? 'btn-dark' : 'btn-outline-secondary'">
-                            Subir proforma y/o Packing
-                            <small class="text-danger">
-                              {{ indicator.value ? `(${indicator.value.length} archivo(s))` : '' }}
-                            </small>
-                          </div>
-                        </template>
-        </file-selector> -->
+
                     </div>
                   </div>
                 </div>
@@ -255,7 +243,7 @@
                         style="position:absolute;height: auto;width:30vw;min-width: 300px;right: -10vw;top:10vh"
                         class=" hidden-description d-flex flex-column justify-content-end align-items-end">
                         <div class="d-flex flex-column gap-2 card">
-                          <p>I
+                          <p>
                             {{ product.description }}
                           </p>
 
