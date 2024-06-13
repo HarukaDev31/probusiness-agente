@@ -33,7 +33,7 @@
                   </div>
                 </div>
                 <customized-input :key="descIndex" :text="desc.text" :optionalText="desc.optionalText" :type="desc.type"
-                  @desc="(e) => (desc.value = e)" :value="desc.value" :validation="desc.validate" :is-error="desc.error"
+                  @input="(e) => (desc.value = e)" :value="desc.value" :validation="desc.validate" :is-error="desc.error"
                   :prepend="desc.prepend" :keyRender="desc.keyRender" :class="`step step-${2 + descIndex}`" />
               </div>
 
@@ -83,7 +83,7 @@
             <template #body>
               <div v-for="(desc, descIndex) in formValuesComputedOdd" style="position: relative;">
                 <customized-input :key="descIndex" :text="desc.text" :optionalText="desc.optionalText" :type="desc.type"
-                  @desc="(e) => (desc.value = e)" :value="desc.value" :validation="desc.validate" :is-error="desc.error"
+                  @input="(e) => (desc.value = e)" :value="desc.value" :validation="desc.validate" :is-error="desc.error"
                   :keyRender="desc.keyRender" :class="`step step-${3 + formValuesComputedPair.length + descIndex}`" />
                 <div :id="`description-step-${descIndex + 3 + formValuesComputedPair.length}`"
                   style="position:absolute;height: auto;width:30vw;min-width: 300px;left: 0;"
