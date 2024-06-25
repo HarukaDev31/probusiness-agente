@@ -422,7 +422,7 @@ const productParams = ref([
     description: "Puedes subir una foto del producto que deseas cotizar."
   },
   {
-    text: "¿TIENES UN LINK DEL PRODUCTO?",
+    text: "¿LINK DEL PRODUCTO?",
     optionalText: true,
     key: "link",
     type: "link",
