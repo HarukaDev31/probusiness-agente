@@ -267,7 +267,7 @@
           <div class="d-flex flex-column w-100 gap-2">
             <div class="btn btn-outline-danger step-agregar-producto"
               @click="addNewProductToSupplier(currentSupplier.value)" v-if="suppliers.length != 0">
-              <span>Agregar Producto</span>
+              <span>Agregar más productos</span>
               <div id="description-step-agregar-producto"
                 style="position:absolute;height: auto;width:30vw;min-width: 300px;right: -10vw;top:-10vh"
                 class=" hidden-description d-flex flex-column justify-content-end align-items-end">
@@ -288,7 +288,7 @@
             </div>
             <customized-button @click="addNewSupplier()" v-if="suppliers.length != 0" style="position: relative;"
               class="step-agregar-proveedor">
-              <template #text>Agregar Proveedor
+              <template #text>Agregar otro proveedor
                 <div id="description-step-agregar-proveedor"
                   style="position:absolute;height: auto;width:30vw;min-width: 300px;right: -10vw;top:-10vh"
                   class=" hidden-description d-flex flex-column justify-content-end align-items-end">
@@ -369,7 +369,7 @@ const isLoading = ref(false)
 const isInStepByStep = ref(false)
 const productParams = ref([
   {
-    text: "Nombre Comercial",
+    text: "¿NOMBRE DEL PRODUCTO?",
     optionalText: false,
     key: "nombre",
     type: "text",
@@ -379,7 +379,7 @@ const productParams = ref([
     description: "Ingresa el nombre del producto que deseas cotizar."
   },
   {
-    text: "Uso",
+    text: "¿USO DEL PRODUCTO?",
     optionalText: false,
     type: "text",
     key: "uso",
@@ -390,7 +390,7 @@ const productParams = ref([
 
   },
   {
-    text: "Unidades Comerciales",
+    text: "¿CANTIDAD DEL PRODUCTO?",
     optionalText: false,
     type: "number",
     key: "cantidad",
@@ -401,7 +401,7 @@ const productParams = ref([
 
   },
   {
-    text: "Valor Unitario",
+    text: "¿PRECIO EN CHINA?",
     optionalText: false,
     type: "number",
     key: "valor",
@@ -422,7 +422,7 @@ const productParams = ref([
     description: "Puedes subir una foto del producto que deseas cotizar."
   },
   {
-    text: "Link",
+    text: "¿TIENES UN LINK DEL PRODUCTO?",
     optionalText: true,
     key: "link",
     type: "link",
@@ -435,7 +435,7 @@ const productParams = ref([
 ]);
 const supplierIndicators = ref([
   {
-    name: "CBM TOTAL ",
+    name: "¿CBM TOTAL DE TU COTIZACIÓN?",
     key: "cbm",
     type: "number",
     value: "",
@@ -445,7 +445,7 @@ const supplierIndicators = ref([
     description: "Ingresa el CBM total de los productos que deseas cotizar.El CBM es el volumen total que ocupan tus productos en metros cúbicos."
   },
   {
-    name: "PESO TOTAL",
+    name: "¿PESO TOTAL DE TU COTIZACIÓN?",
     type: "number",
     options: [
       { text: "Kg", value: "Kg", selected: false },
