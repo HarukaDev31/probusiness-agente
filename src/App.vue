@@ -9,6 +9,132 @@
     </div>
     <navbar />
     <main class="main-container" style="position:relative">
+      <div class="hero-container">
+        <img class="hero-image" src="/src/assets/hero.png" alt="Hero Image" />
+      </div>
+      <div class="process-steps-container">
+        <div class="process-step" :class="getCurrentStepClass(currentProcessStep, index + 1)"
+          v-for="(step, index) in processSteps" :key="index">
+          <div class="step-number" v-if="processSteps[index].isCompleted">
+            <span>
+              <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                stroke="#ffffff">
+                <g id="SVGRepo_bgCarrier" stroke-width="0" />
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
+                <g id="SVGRepo_iconCarrier">
+                  <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </g>
+              </svg>
+            </span>
+          </div>
+          <div class="step-number" v-else>
+            <span>0{{ index + 1 }}</span>
+          </div>
+
+          <div class="step-text">
+            <span>{{ step.name }}</span>
+          </div>
+        </div>
+
+      </div>
+      <div class="process-informacion-personal" v-if="currentProcessStep == 1">
+        <h2 class="my-4 text-center">Mis datos</h2>
+        <span>Busca tu DNI o ingresa manualmente tus nombres y apellidos</span>
+        <div v-for="(desc, descIndex) in formValuesComputedPair">
+          <customized-input :key="descIndex" :text="desc.text" :optionalText="desc.optionalText" :type="desc.type"
+            @input="(e) => (desc.value = e)" :value="desc.value" :validation="desc.validate" :is-error="desc.error"
+            :prepend="desc.prepend" :keyRender="desc.keyRender" :error-text="desc.errorText"
+            :class="`step step-${2 + descIndex}`" />
+        </div>
+        <div class="process-steps-buttons">
+          <div class="btn-anterior" @click="previousProcessStep" v-if="currentProcessStep > 1">
+            <span>Anterior</span>
+          </div>
+          <div class="btn-siguiente" @click="nextProcessStep(formValuesComputedPair)"
+            v-if="currentProcessStep < processSteps.length">
+            <span>Siguiente</span>
+          </div>
+        </div>
+      </div>
+      <div class="process-informacion-personal" v-if="currentProcessStep == 2">
+        <h2 class="my-4 text-center">Datos empresa</h2>
+        <span>Ingresa los datos de tu empresa</span>
+        <div v-for="(desc, descIndex) in formValuesComputedOdd.filter((item)=>{
+          if(item.hasOwnProperty('notShow')){
+            return false
+          }
+          return true
+        })">
+          <customized-input :key="descIndex" :text="desc.text" :optionalText="desc.optionalText" :type="desc.type"
+            @input="(e) => (desc.value = e)" :value="desc.value" :validation="desc.validate" :is-error="desc.error"
+            :prepend="desc.prepend" :keyRender="desc.keyRender" :error-text="desc.errorText"
+            :class="`step step-${2 + descIndex}`" />
+        </div>
+        <div class="process-steps-buttons">
+          <div class="btn-anterior" @click="previousProcessStep" v-if="currentProcessStep > 1">
+            <span>Anterior</span>
+          </div>
+          <div class="btn-siguiente" @click="nextProcessStep(formValuesComputedOdd.filter((item)=>{
+          if(item.hasOwnProperty('notShow')){
+            return false
+          }
+          return true
+        }))"
+            v-if="currentProcessStep < processSteps.length">
+            <span>Siguiente</span>
+          </div>
+        </div>
+      </div>
+      <div class="process-proveedores" v-if="currentProcessStep == 3">
+        <h2 class="my-4 text-center">Proveedor</h2>
+        <card class="card">
+          <template #body>
+            <div v-for="(supplier,supplierIndex) in suppliers" :key="supplierIndex">
+              <div class="supplier-header d-flex flex-row justify-content-between align-items-center">
+                <h3 class="text-center mx-auto">Proveedor {{ supplierIndex + 1 }}</h3>
+                <div class="btn btn-outline-danger" @click="deleteSupplier(supplierIndex)">
+                  Eliminar
+                </div>
+              </div>
+              <!-- <div v-for="(indicator, indicatorIndex) in supplierIndicators" :key="indicatorIndex">
+                <customized-input :key="indicatorIndex" :text="indicator.name" :type="indicator.type"
+                  :value="indicator.value" @input="(e) => (indicator.value = e)" :options="indicator.options"
+                  @select="(e) => changeSelected(supplierIndex, e)" :keyRender="indicator.keyRender"
+                  :class="`step-header-${indicatorIndex + 1}`" />
+              </div> -->
+              <div class="product-list row" v-for="(productList, productListIndex) in supplier.products" :key="productListIndex">
+                <div class="col-12 col-md-6">
+                  <div v-for="(product, productItemIndex) in productList.filter((item) => item.type == 'file')" :key="`fileSelector-${productItemIndex}`" style="height: 100%"
+                    :class="`step-body-${productItemIndex + 1}`">
+                    <label class="fw-bold">Imagen</label>
+                    <file-selector :not-show-drop="true" :multiple="false" :value="product.value" @fileChange="(files) => handleFile(files, product)"
+                      :accept="'image/*'">
+                      <template #text>Seleccionar foto</template>
+                    </file-selector>
+                  </div>
+                </div>  
+                <div class="col-12 col-md-6" style="position: relative;">
+                  <div v-for="(product, productItemIndex) in productList.filter((item) => item.type != 'file')" style="position:relative">
+                    <customized-input :key="`${productListIndex}-${productItemIndex}`" :text="product.text" :optionalText="product.optionalText"
+                      :type="product.type" :value="product.value" @input="(e) => (product.value = e)" :is-error="product.error"
+                      :key-render="product.keyRender" :class="`step-body-${productItemIndex + 2}`" />
+                  </div>
+                  <div class="btn btn-outline-danger w-100" @click="deleteProduct(productListIndex, supplierIndex)">
+                    Quitar
+                  </div>
+                </div>
+                <div class="btn btn-outline-danger" @click="deleteProduct(productListIndex, supplierIndex)">
+                  Quitar
+                </div>
+              </div>
+              <div class="btn btn-outline-danger" @click="addNewProductToSupplier(supplierIndex)">
+                Agregar producto
+              </div>
+            </div>
+          </template>
+        </card>
+      </div>
       <div id="first-row" class="d-flex flex-column flex-md-row gap-4">
         <div id="card-cliente" class="step step-1">
           <h1 class="fw-bold">Cliente</h1>
@@ -33,8 +159,9 @@
                   </div>
                 </div>
                 <customized-input :key="descIndex" :text="desc.text" :optionalText="desc.optionalText" :type="desc.type"
-                  @input="(e) => (desc.value = e)" :value="desc.value" :validation="desc.validate" :is-error="desc.error"
-                  :prepend="desc.prepend" :keyRender="desc.keyRender" :class="`step step-${2 + descIndex}`" />
+                  @input="(e) => (desc.value = e)" :value="desc.value" :validation="desc.validate"
+                  :is-error="desc.error" :prepend="desc.prepend" :keyRender="desc.keyRender"
+                  :class="`step step-${2 + descIndex}`" />
               </div>
 
             </template>
@@ -83,8 +210,9 @@
             <template #body>
               <div v-for="(desc, descIndex) in formValuesComputedOdd" style="position: relative;">
                 <customized-input :key="descIndex" :text="desc.text" :optionalText="desc.optionalText" :type="desc.type"
-                  @input="(e) => (desc.value = e)" :value="desc.value" :validation="desc.validate" :is-error="desc.error"
-                  :keyRender="desc.keyRender" :class="`step step-${3 + formValuesComputedPair.length + descIndex}`" />
+                  @input="(e) => (desc.value = e)" :value="desc.value" :validation="desc.validate"
+                  :is-error="desc.error" :keyRender="desc.keyRender"
+                  :class="`step step-${3 + formValuesComputedPair.length + descIndex}`" />
                 <div :id="`description-step-${descIndex + 3 + formValuesComputedPair.length}`"
                   style="position:absolute;height: auto;width:30vw;min-width: 300px;left: 0;"
                   class=" hidden-description d-flex flex-column justify-content-end align-items-start">
@@ -353,6 +481,10 @@ import Swal from 'sweetalert2';
 const validateNotEmpy = (value) => {
   return value != "";
 };
+const validateEmail = (value) => {
+  //validate email
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+};
 const validateNumber = (value) => {
   //validate if is a number and is more than 0 and less than 100
   return !isNaN(value) && value > 0 && value < 999999999;
@@ -369,7 +501,7 @@ const isLoading = ref(false)
 const isInStepByStep = ref(false)
 const productParams = ref([
   {
-    text: "¿NOMBRE DEL PRODUCTO?",
+    text: "Nombre del producto",
     optionalText: false,
     key: "nombre",
     type: "text",
@@ -379,7 +511,7 @@ const productParams = ref([
     description: "Ingresa el nombre del producto que deseas cotizar."
   },
   {
-    text: "¿USO DEL PRODUCTO?",
+    text: "Uso del producto",
     optionalText: false,
     type: "text",
     key: "uso",
@@ -422,7 +554,7 @@ const productParams = ref([
     description: "Puedes subir una foto del producto que deseas cotizar."
   },
   {
-    text: "¿LINK DEL PRODUCTO?",
+    text: "Enlace",
     optionalText: true,
     key: "link",
     type: "link",
@@ -550,8 +682,8 @@ const formValues = ref([
     validate: validateNumber,
     error: false,
     keyRender: 0,
-    helpText: "Ingresa tu número de whatsapp para poder contactarte."
-
+    helpText: "Ingresa tu número de whatsapp para poder contactarte.",
+    notShow:true,
   },
   {
     text: "Nombres",
@@ -560,6 +692,7 @@ const formValues = ref([
     type: "text",
     value: "",
     validate: validateNotEmpy,
+    errorText: "Ingresa tus nombres completos",
     error: false,
     keyRender: 0,
     helpText: "Ingresa tus nombres completos."
@@ -571,6 +704,7 @@ const formValues = ref([
     optionalText: true,
     type: "text",
     value: "",
+    errorText: "Ingresa el nombre de la empresa a la que perteneces",
     error: false,
     keyRender: 0,
     helpText: "Ingresa el nombre de la empresa a la que perteneces. Si no tienes empresa, déjalo en blanco."
@@ -581,6 +715,7 @@ const formValues = ref([
     optionalText: false,
     type: "text",
     value: "",
+    errorText: "Ingresa tus apellidos completos",
     validate: validateNotEmpy,
     error: false,
     keyRender: 0,
@@ -593,20 +728,49 @@ const formValues = ref([
     optionalText: true,
     type: "text",
     value: "",
+    errorText: "Ingresa un RUC válido",
     error: false,
     keyRender: 0,
     helpText: "Ingresa el RUC de la empresa a la que perteneces. Si no tienes empresa, déjalo en blanco."
   },
   {
-    text: "Email",
+    text: "Correo electrónico",
     key: "email",
     optionalText: false,
     type: "email",
     value: "",
-    validate: validateNotEmpy,
+    validate: validateEmail,
+    errorText: "Ingresa un correo electrónico válido",
     error: false,
     keyRender: 0,
     helpText: "Ingresa tu correo electrónico."
+  },
+  {
+    text: "Whatsapp",
+    key: "whatsapp",
+    optionalText: false,
+    type: "text",
+    value: "",
+    validate: validateNumber,
+    errorText: "Ingresa un número de whatsapp válido",
+    error: false,
+    keyRender: 0,
+    helpText: "Ingresa tu número de whatsapp para poder contactarte.",
+    notShow:true,
+  },
+  {
+    text: "Whatsapp",
+    key: "whatsapp",
+    optionalText: false,
+    type: "text",
+    value: "",
+    validate: validateNumber,
+    errorText: "Ingresa un número de whatsapp válido",
+    error: false,
+    keyRender: 0,
+    helpText: "Ingresa tu número de whatsapp para poder contactarte.",
+    notShow:true,
+
   },
 ]);
 const formValuesComputedPair = computed(() => {
@@ -1225,7 +1389,7 @@ const previousStepSupplierBody = () => {
 }
 const startStepByStep = () => {
   try {
-    
+
     isInStepByStep.value = true
     //set window not scrollable
     document.body.style.overflow = "hidden"
@@ -1236,17 +1400,18 @@ const startStepByStep = () => {
   }
 
 }
-const setStepByStepPlayer=()=>{
+
+const setStepByStepPlayer = () => {
   //set variable in localstorage
-  localStorage.setItem("stepByStep","true") 
+  localStorage.setItem("stepByStep", "true")
 }
-const unsetStepByStepPlayer=()=>{
+const unsetStepByStepPlayer = () => {
   //set variable in localstorage
-  if(localStorage.getItem("stepByStep")){
+  if (localStorage.getItem("stepByStep")) {
     localStorage.removeItem("stepByStep")
   }
 }
-const isStepByStepPlayer=()=>{
+const isStepByStepPlayer = () => {
   //set variable in localstorage
   return localStorage.getItem("stepByStep")
 }
@@ -1280,6 +1445,60 @@ const skipStepByStep = () => {
 //     setStepByStepPlayer()
 //   }
 // })
+const processSteps = ref([
+  {
+    id: 1,
+    name: 'Información personal',
+    isCompleted: false,
+
+  },
+  {
+    id: 2,
+    name: 'Información de la empresa',
+    isCompleted: false,
+  },
+  {
+    id: 3,
+    name: 'Proveedores',
+    isCompleted: false,
+  }
+])
+const currentProcessStep = ref(2)
+const previousProcessStep = () => {
+  if (currentProcessStep.value > 1) {
+    currentProcessStep.value--
+  }
+}
+const nextProcessStep = (fields) => {
+  let hasError = false
+  fields.forEach((field) => {
+    if (!field.optionalText) {
+      field.error = !field.validate(field.value)
+      if (field.error) {
+        hasError = true
+      }
+    }
+  })
+  if (hasError) {
+    return
+  }
+  if (currentProcessStep.value < processSteps.value.length) {
+    processSteps.value[currentProcessStep.value - 1].isCompleted = true;
+    currentProcessStep.value++
+    if (currentProcessStep.value == 3) {
+      addNewSupplier()
+    }
+  }
+}
+const getCurrentStepClass = (currentStep, index) => {
+  if (currentStep == index) {
+    return "active"
+  }
+  if (processSteps.value[index - 1].isCompleted) {
+    return "completed"
+  }
+  return ""
+}
 </script>
 <style>
 body {
@@ -1326,6 +1545,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  border-bottom: 1px solid #CFD6DC; 
+  padding: 1em 0;
 }
 
 .slide-enter-active,
@@ -1346,7 +1567,7 @@ body {
   row-gap: 1rem;
   background: white !important;
   margin-bottom: 1em;
-  border-radius: 1em;
+  border-radius: 0; 
   padding: 1em;
   width: 100%;
   margin: 1em auto;
@@ -1442,7 +1663,9 @@ input[type=number] {
 .btn-step:hover {
   background-color: #f2f3f4;
   cursor: pointer;
-}.floatting-buttons{
+}
+
+.floatting-buttons {
   position: fixed;
   bottom: 6em;
   right: 1em;
@@ -1451,5 +1674,115 @@ input[type=number] {
   align-items: center;
   justify-content: center;
   gap: 1em;
+}
+
+.hero-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-image {
+  width: 70%;
+}
+
+.process-steps-container {
+  background: white;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 70%;
+  margin: 1em auto;
+}
+
+.process-step {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  column-gap: 1em;
+  padding: 0.8em 1em;
+  border: 1px solid #CFD6DC;
+
+}
+
+.process-step.active .step-number {
+  background-color: #FF500B !important;
+  color: white;
+}
+.process-step.completed  .step-number {
+  background-color: #00D680 !important;
+  color: white;
+}
+
+.process-step.active .step-text {
+  color: #FF500B !important;
+}
+
+.process-step .step-number {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid #CFD6DC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #ABB7C2;
+}
+
+.process-step .step-text {
+  color: #ABB7C2;
+}
+
+.process-informacion-personal {
+  width: 45%;
+  margin: 0 auto;
+}
+
+.process-steps-buttons {
+  width: 45%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  column-gap: 1em;
+}
+
+.btn-siguiente {
+  background: #FF500B;
+  color: white;
+  width: 100%;
+  padding: 1.2em 1em;
+  text-align: center;
+  border-radius: 0.5em
+}
+
+.btn-siguiente:hover {
+  background: #cf3c01;
+  cursor: pointer;
+}
+
+.btn-anterior {
+  background: transparent;
+  color: #7E7E7E;
+  width: 100%;
+  padding: 1.2em 1em;
+  text-align: center;
+  border: 1px solid #7E7E7E;
+  border-radius: 0.5em
+}
+
+.btn-anterior:hover {
+  background: #7E7E7E;
+  color: white;
+  cursor: pointer;
+}.process-proveedores{
+  width: 70%;
+  margin: 0 auto;
 }
 </style>
