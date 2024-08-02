@@ -60,8 +60,8 @@
       <div class="process-informacion-personal" v-if="currentProcessStep == 2">
         <h2 class="my-4 text-center">Datos empresa</h2>
         <span>Ingresa los datos de tu empresa</span>
-        <div v-for="(desc, descIndex) in formValuesComputedOdd.filter((item)=>{
-          if(item.hasOwnProperty('notShow')){
+        <div v-for="(desc, descIndex) in formValuesComputedOdd.filter((item) => {
+          if (item.hasOwnProperty('notShow')) {
             return false
           }
           return true
@@ -75,50 +75,106 @@
           <div class="btn-anterior" @click="previousProcessStep" v-if="currentProcessStep > 1">
             <span>Anterior</span>
           </div>
-          <div class="btn-siguiente" @click="nextProcessStep(formValuesComputedOdd.filter((item)=>{
-          if(item.hasOwnProperty('notShow')){
-            return false
-          }
-          return true
-        }))"
-            v-if="currentProcessStep < processSteps.length">
+          <div class="btn-siguiente" @click="nextProcessStep(formValuesComputedOdd.filter((item) => {
+            if (item.hasOwnProperty('notShow')) {
+              return false
+            }
+            return true
+          }))" v-if="currentProcessStep < processSteps.length">
             <span>Siguiente</span>
           </div>
         </div>
       </div>
       <div class="process-proveedores" v-if="currentProcessStep == 3">
         <h2 class="my-4 text-center">Proveedor</h2>
-        <card class="card">
+        {{ currentSupplier }}
+        <card >
           <template #body>
-            <div v-for="(supplier,supplierIndex) in suppliers" :key="supplierIndex">
-              <div class="supplier-header d-flex flex-row justify-content-between align-items-center">
-                <h3 class="text-center mx-auto">Proveedor {{ supplierIndex + 1 }}</h3>
-                <div class="btn btn-outline-danger" @click="deleteSupplier(supplierIndex)">
-                  Eliminar
+            <div v-for="(supplier, supplierIndex) in suppliers" :key="supplierIndex" class="card">
+              <div class="supplier-header">
+                <h3 class="text-center ">Proveedor {{ supplierIndex + 1 }}</h3>
+                <div class="btn-delete" @click="deleteSupplier(supplierIndex)"
+                  v-if="currentSupplier.value == supplierIndex + 1">
+                  <svg width="22" height="24" viewBox="0 0 22 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1.41406 5.44446H3.63628H21.4141" stroke="#FF0000" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                    <path
+                      d="M19.1923 5.44444V21C19.1923 21.5894 18.9581 22.1546 18.5414 22.5713C18.1247 22.9881 17.5594 23.2222 16.9701 23.2222H5.85894C5.26957 23.2222 4.70434 22.9881 4.28759 22.5713C3.87084 22.1546 3.63672 21.5894 3.63672 21V5.44444M6.97005 5.44444V3.22222C6.97005 2.63285 7.20418 2.06762 7.62093 1.65087C8.03767 1.23413 8.6029 1 9.19227 1H13.6367C14.2261 1 14.7913 1.23413 15.2081 1.65087C15.6248 2.06762 15.8589 2.63285 15.8589 3.22222V5.44444"
+                      stroke="#FF0000" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M9.19141 11V17.6667" stroke="#FF0000" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M13.6367 11V17.6667" stroke="#FF0000" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </div>
+                <div v-else>
+                  <div class="d-flex flex-row">
+                    <div class="btn-edit">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M20.82 5.73601L20.3581 5.54466L20.82 5.736C20.9568 5.40576 21.0272 5.05181 21.0272 4.69436C21.0272 4.33691 20.9568 3.98296 20.82 3.65272L20.3581 3.84406L20.82 3.65271C20.6833 3.32247 20.4828 3.02241 20.23 2.76965C19.9772 2.5169 19.6772 2.3164 19.3469 2.17961C19.0167 2.04282 18.6627 1.97241 18.3053 1.97241C17.5834 1.97241 16.8911 2.25919 16.3806 2.76965L16.7341 3.12321L16.3806 2.76965L3.28763 15.8626C3.22355 15.9267 3.17809 16.007 3.15612 16.0949L2.10868 20.2846C2.06608 20.455 2.11601 20.6353 2.2402 20.7595C2.36439 20.8836 2.54463 20.9336 2.71502 20.891L6.90476 19.8435C6.99268 19.8216 7.07297 19.7761 7.13705 19.712L20.23 6.61907C20.4828 6.36631 20.6833 6.06625 20.82 5.73601Z"
+                          stroke="#7E7E7E" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+
+                    </div>
+                    <div class="btn-delete-saved">
+                      <svg width="22" height="24" viewBox="0 0 22 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1.41406 5.44446H3.63628H21.4141" stroke="#FF0000" stroke-linecap="round"
+                          stroke-linejoin="round" />
+                        <path
+                          d="M19.1923 5.44444V21C19.1923 21.5894 18.9581 22.1546 18.5414 22.5713C18.1247 22.9881 17.5594 23.2222 16.9701 23.2222H5.85894C5.26957 23.2222 4.70434 22.9881 4.28759 22.5713C3.87084 22.1546 3.63672 21.5894 3.63672 21V5.44444M6.97005 5.44444V3.22222C6.97005 2.63285 7.20418 2.06762 7.62093 1.65087C8.03767 1.23413 8.6029 1 9.19227 1H13.6367C14.2261 1 14.7913 1.23413 15.2081 1.65087C15.6248 2.06762 15.8589 2.63285 15.8589 3.22222V5.44444"
+                          stroke="#FF0000" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M9.19141 11V17.6667" stroke="#FF0000" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M13.6367 11V17.6667" stroke="#FF0000" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <!-- <div v-for="(indicator, indicatorIndex) in supplierIndicators" :key="indicatorIndex">
-                <customized-input :key="indicatorIndex" :text="indicator.name" :type="indicator.type"
-                  :value="indicator.value" @input="(e) => (indicator.value = e)" :options="indicator.options"
-                  @select="(e) => changeSelected(supplierIndex, e)" :keyRender="indicator.keyRender"
-                  :class="`step-header-${indicatorIndex + 1}`" />
-              </div> -->
-              <div class="product-list row" v-for="(productList, productListIndex) in supplier.products" :key="productListIndex">
+              <div class="supplier-indicators" v-if="currentSupplier.value != supplierIndex + 1">
+                <div v-for="(indicator, index) in supplier.indicators" :key="`${supplierIndex}-${indicator.key}`">
+                  <span v-if="indicator.key == 'cbm'">
+                    <span class="indicator-name">{{ indicator.name }}:
+                    </span>
+                    {{ indicator.value }} m3
+                  </span>
+                  <span v-else>
+                    <span class="indicator-name">{{ indicator.name }}:
+                    </span>
+                    {{ indicator.value }} {{ indicator.value > 1000 ? 'TN' : 'KG' }}
+                  </span>
+                </div>
+              </div>
+              <!--STEP 3-->
+              <div class="product-list row" v-for="(productList, productListIndex) in supplier.products"
+                v-if="currentSupplier.value == supplierIndex + 1" :key="productListIndex">
                 <div class="col-12 col-md-6">
-                  <div v-for="(product, productItemIndex) in productList.filter((item) => item.type == 'file')" :key="`fileSelector-${productItemIndex}`" style="height: 100%"
+                  <div v-for="(product, productItemIndex) in productList.filter((item) => item.type == 'file')"
+                    :key="`fileSelector-${productItemIndex}`" style="height: 100%"
                     :class="`step-body-${productItemIndex + 1}`">
                     <label class="fw-bold">Imagen</label>
-                    <file-selector :not-show-drop="true" :multiple="false" :value="product.value" @fileChange="(files) => handleFile(files, product)"
-                      :accept="'image/*'">
+                    <file-selector :not-show-drop="true" :multiple="false" :value="product.value"
+                      @fileChange="(files) => handleFile(files, product)" :accept="'image/*'">
                       <template #text>Seleccionar foto</template>
                     </file-selector>
                   </div>
-                </div>  
-                <div class="col-12 col-md-6" style="position: relative;">
-                  <div v-for="(product, productItemIndex) in productList.filter((item) => item.type != 'file')" style="position:relative">
-                    <customized-input :key="`${productListIndex}-${productItemIndex}`" :text="product.text" :optionalText="product.optionalText"
-                      :type="product.type" :value="product.value" @input="(e) => (product.value = e)" :is-error="product.error"
-                      :key-render="product.keyRender" :class="`step-body-${productItemIndex + 2}`" />
+                </div>
+                <div class="col-12 col-md-6 row" style="position: relative;">
+                  <div
+                    v-for="(product, productItemIndex) in productList.filter((item) => (item.type != 'file' && item.type != 'number'))"
+                    style="position:relative">
+                    <customized-input :key="`${productListIndex}-${productItemIndex}`" :text="product.text"
+                      :optionalText="product.optionalText" :type="product.type" :value="product.value"
+                      @input="(e) => (product.value = e)" :is-error="product.isError" :key-render="product.keyRender"
+                      :class="`step-body-${productItemIndex + 2}`" />
+                  </div>
+                  <div class="row">
+                    <div class="col- col-md-6"
+                      v-for="(product, productItemIndex) in productList.filter((item) => (item.type != 'file' && item.type == 'number'))"
+                      style="position:relative">
+                      <customized-input :key="`${productListIndex}-${productItemIndex}`" :text="product.text"
+                        :optionalText="product.optionalText" :type="product.type" :value="product.value"
+                        @input="(e) => (product.value = e)" :is-error="product.isError" :key-render="product.keyRender"
+                        :class="`step-body-${productItemIndex + 2}`" :show-actions="product.showActions" />
+                    </div>
                   </div>
                   <div class="btn btn-outline-danger w-100" @click="deleteProduct(productListIndex, supplierIndex)">
                     Quitar
@@ -128,19 +184,59 @@
                   Quitar
                 </div>
               </div>
-              <div class="btn btn-outline-danger" @click="addNewProductToSupplier(supplierIndex)">
-                Agregar producto
+              <div class="product-list-collapsed row py-4" v-else>
+                <div class="col col-6"
+                  v-for="(productList, productListIndex) in supplier.products" :key="productListIndex">
+                  <div class="row">
+                    <div class=" col col-6">
+                      <div class="img-container">
+                        <img :src="getObjectURL(getProductParam(productList, 'foto').value)" alt="product image"
+                        class="img img-fluid" />
+                      </div>
+                      
+                    </div>
+                    <div class="product-info col col-6">
+                      <span class="mb-2">
+                        {{ getProductParam(productList, 'nombre').value }}
+                      </span>
+                      <span>
+                        {{ getProductParam(productList, 'cantidad').name }}
+                        {{ getProductParam(productList, 'cantidad').value }} KG
+                      </span>
+                      <span>
+                        {{ getProductParam(productList, 'valor').name }}
+                        ${{ getProductParam(productList, 'valor').value }}
+                      </span>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <div class="process-steps-buttons w-100" v-if="currentSupplier.value == supplierIndex + 1">
+                <div class="btn-anterior" @click="addNewProductToSupplier(supplierIndex)">
+                  Agregar producto
+                </div>
+                <div class="btn-siguiente" @click="showLastSupplierData(supplierIndex)">
+                  Guardar
+                </div>
               </div>
             </div>
+            <div class="process-steps-buttons w-100 mt-2" v-if="currentSupplier.value>1">
+                <div class="btn-siguiente" @click="addNewProductToSupplier(supplierIndex)">
+                  Agregar proveedor
+                </div>
+                <div class="btn-enviar" @click="showLastSupplierData(supplierIndex)">
+                  Envíar cotización
+                </div>
+              </div>
           </template>
+          
         </card>
       </div>
-      <div id="first-row" class="d-flex flex-column flex-md-row gap-4">
-        <div id="card-cliente" class="step step-1">
-          <h1 class="fw-bold">Cliente</h1>
-          <card class="card">
-            <template #body>
-              <!--Customized input with index pair-->
+    </main>
+  </div>
+
+  <!--
               <div v-for="(desc, descIndex) in formValuesComputedPair" style="position: relative;">
                 <div :id="`description-step-${descIndex + 2}`" :style="getDescriptionPosition()"
                   class=" hidden-description d-flex flex-column justify-content-end align-items-end">
@@ -153,7 +249,7 @@
 
                     <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
                       src="/src/assets/probusiness.png" alt="Logo ProBusiness">
-                    <!--next button-->
+          
 
 
                   </div>
@@ -181,7 +277,6 @@
 
             <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
               src="/src/assets/probusiness.png" alt="Logo ProBusiness">
-            <!--next button-->
 
 
           </div>
@@ -287,7 +382,6 @@
 
                       <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
                         src="/src/assets/probusiness.png" alt="Logo ProBusiness">
-                      <!--next button-->
 
 
                     </div>
@@ -315,7 +409,6 @@
 
                           <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
                             src="/src/assets/probusiness.png" alt="Logo ProBusiness">
-                          <!--next button-->
 
 
                         </div>
@@ -431,13 +524,11 @@
 
                     <img class="mb-0 mb-sm-1 " style="border-radius: 50%" height="20%" width="100px"
                       src="/src/assets/probusiness.png" alt="Logo ProBusiness">
-                    <!--next button-->
                   </div>
                 </div>
               </template>
             </customized-button>
           </div>
-          <!-- <supplier-card v-for="supplier in suppliers" :key="supplier.id" :supplier="supplier" /> -->
         </div>
 
       </div>
@@ -460,7 +551,7 @@
       </div>
       <footer-cuz />
       <send-button @sendCotizacion="sendCotizacion" />
-    </div>
+      </div> -->
 
 </template>
 <script setup>
@@ -477,6 +568,7 @@ import StepByStepButton from "./components/StepByStepButton.vue";
 import { ref, computed, reactive, onMounted } from "vue";
 import { sendCotization, getClientDataByDNIID } from "./services/send-cotization";
 import Swal from 'sweetalert2';
+import { faL } from "@fortawesome/free-solid-svg-icons";
 //validation functions
 const validateNotEmpy = (value) => {
   return value != "";
@@ -499,16 +591,18 @@ let stepBody = 0;
 // reactive variables
 const isLoading = ref(false)
 const isInStepByStep = ref(false)
-const productParams = ref([
+const productParams = [
   {
     text: "Nombre del producto",
     optionalText: false,
     key: "nombre",
     type: "text",
     value: "",
-    error: false,
     keyRender: 0,
-    description: "Ingresa el nombre del producto que deseas cotizar."
+    description: "Ingresa el nombre del producto que deseas cotizar.",
+    showActions: false,
+    validate: validateNotEmpy,
+    isError: false
   },
   {
     text: "Uso del producto",
@@ -516,42 +610,12 @@ const productParams = ref([
     type: "text",
     key: "uso",
     value: "",
-    error: false,
     keyRender: 0,
-    description: "Ingresa el uso del producto que deseas cotizar."
-
-  },
-  {
-    text: "¿CANTIDAD DEL PRODUCTO?",
-    optionalText: false,
-    type: "number",
-    key: "cantidad",
-    value: "",
-    error: false,
-    keyRender: 0,
-    description: "Ingresa la cantidad de productos que deseas cotizar. "
-
-  },
-  {
-    text: "¿PRECIO EN CHINA?",
-    optionalText: false,
-    type: "number",
-    key: "valor",
-    value: "",
-    error: false,
-    keyRender: 0,
-    description: "Ingresa el valor unitario del producto que deseas cotizar."
-
-  },
-  {
-    text: "Agregar Foto",
-    optionalText: false,
-    type: "file",
-    key: "foto",
-    value: null,
-    error: false,
-    keyRender: 0,
-    description: "Puedes subir una foto del producto que deseas cotizar."
+    description: "Ingresa el uso del producto que deseas cotizar.",
+    showActions: false,
+    validate: validateNotEmpy,
+    isError: false,
+    errorText: "Ingresa el uso del producto que deseas cotizar"
   },
   {
     text: "Enlace",
@@ -559,15 +623,57 @@ const productParams = ref([
     key: "link",
     type: "link",
     value: "",
-    error: false,
     keyRender: 0,
-    description: "Ingresa el link del producto que deseas cotizar. Si no tienes un link, déjalo en blanco."
+    description: "Ingresa el link del producto que deseas cotizar. Si no tienes un link, déjalo en blanco.",
+    showActions: false,
+    isError: false,
+    validate: validateNotEmpy,
 
   },
-]);
+  {
+    text: "Cantidad",
+    optionalText: false,
+    type: "number",
+    key: "cantidad",
+    value: "",
+    keyRender: 0,
+    description: "Ingresa la cantidad de productos que deseas cotizar. ",
+    showActions: true,
+    validate: validateNumber,
+    isError: false,
+    errorText: "Ingresa una cantidad mayor a 0"
+  },
+  {
+    text: "Precio en China",
+    optionalText: false,
+    type: "number",
+    key: "valor",
+    value: "",
+    keyRender: 0,
+    description: "Ingresa el valor unitario del producto que deseas cotizar.",
+    showActions: false,
+    validate: validateNumber,
+    isError: false,
+    errorText: "Ingresa un precio mayor a 0"
+
+  },
+  {
+    text: "Agregar Foto",
+    optionalText: true,
+    type: "file",
+    key: "foto",
+    value: null,
+    keyRender: 0,
+    description: "Puedes subir una foto del producto que deseas cotizar.",
+    isError: false,
+    errorText: "Ingresa una foto del producto que deseas cotizar",
+    validate: validateNotEmpy,
+  },
+
+]
 const supplierIndicators = ref([
   {
-    name: "¿CBM TOTAL DE TU COTIZACIÓN?",
+    name: "CBM total",
     key: "cbm",
     type: "number",
     value: "",
@@ -577,7 +683,7 @@ const supplierIndicators = ref([
     description: "Ingresa el CBM total de los productos que deseas cotizar.El CBM es el volumen total que ocupan tus productos en metros cúbicos."
   },
   {
-    name: "¿PESO TOTAL DE TU COTIZACIÓN?",
+    name: "Peso total",
     type: "number",
     options: [
       { text: "Kg", value: "Kg", selected: false },
@@ -655,6 +761,10 @@ const getClientData = async (value) => {
     console.error(e)
   }
 };
+const getProductParam = (paramsList, paramKey) => {
+  return paramsList.find((param) => param.key == paramKey)
+}
+
 const formValues = ref([
   {
     text: "DNI/ID",
@@ -683,7 +793,7 @@ const formValues = ref([
     error: false,
     keyRender: 0,
     helpText: "Ingresa tu número de whatsapp para poder contactarte.",
-    notShow:true,
+    notShow: true,
   },
   {
     text: "Nombres",
@@ -756,7 +866,7 @@ const formValues = ref([
     error: false,
     keyRender: 0,
     helpText: "Ingresa tu número de whatsapp para poder contactarte.",
-    notShow:true,
+    notShow: true,
   },
   {
     text: "Whatsapp",
@@ -769,7 +879,7 @@ const formValues = ref([
     error: false,
     keyRender: 0,
     helpText: "Ingresa tu número de whatsapp para poder contactarte.",
-    notShow:true,
+    notShow: true,
 
   },
 ]);
@@ -815,8 +925,7 @@ const addNewSupplier = () => {
     indicators: newSupplierIndicators,
     products: [],
   });
-
-  const newProductParams = productParams.value.map((param) => ({ ...param }));
+  const newProductParams = productParams.map((param) => ({ ...param }));
   if (suppliers.value.length == 1) {
     suppliers.value[0].products.push(newProductParams);
   } else {
@@ -824,9 +933,52 @@ const addNewSupplier = () => {
   }
   currentSupplier.value++;
 };
+let currentProduct = 0;
+const validateSupplier = (supplierIndex) => {
+  const supplier = suppliers.value[supplierIndex];
+  let isValid = true;
+  console.log(supplier.products, 'products')
+  supplier.products.forEach((product) => {
+    console.log(product, 'product', validateProduct(product), 'validate');
+    product.forEach((param) => {
+      console.log(param)
+      if (param.validate && !param.optionalText) {
+        if (!param.validate(param.value) && !param.optionalText) {
+          param.isError = true;
+          isValid = false;
+        } else {
+          param.isError = false;
+        }
+      }
+
+    });
+  });
+  console.log(isValid)
+  return isValid;
+}
+const validateProduct = (product) => {
+  console.log(product)
+  product.forEach((param) => {
+    console.log(param)
+    if (param.validate && !param.optionalText) {
+      if (!param.validate(param.value)) {
+        param.isError = true;
+        return false;
+      } else {
+        param.isError = false;
+      }
+    }
+  })
+  return true;
+}
 const addNewProductToSupplier = (supplierIndex) => {
-  const newProductParams = productParams.value.map((param) => ({ ...param }));
-  suppliers.value[supplierIndex - 1].products.push(newProductParams);
+  console.log(suppliers.value[supplierIndex], 'suppliers')
+  let supplier = suppliers.value[supplierIndex];
+  validateSupplier(supplierIndex);
+
+
+  const newProductParams = productParams.map((param) => ({ ...param }));
+  suppliers.value[supplierIndex].products.push(newProductParams);
 };
 
 
@@ -852,6 +1004,115 @@ const showAlert = (title, text, icon, fn = null, go = "OK") => {
       }
     }
   });
+}
+
+//show modal swall when save button supplier button is clicked
+const showLastSupplierData = async (supplierIndex) => {
+  console.log(suppliers.value, "waos")
+
+  const supplier = suppliers.value[supplierIndex];
+  console.log(supplier, 'supplier to validate')
+  const isValid = validateSupplier(supplierIndex);
+  if (!isValid) {
+    showAlert("Error al guardar proveedor", "Debes llenar todos los campos obligatorios", "error");
+    return;
+  }
+  console.log(isValid);
+  const indicators = supplier.indicators;
+  const swall = await Swal.fire({
+    title: "<span style='font-weight:100'>Un último paso</span>",
+    backdrop: true,
+    width: "40%",
+    html: `
+   <div class="modal-save">
+    <p>Antes de terminar con la información de tu proveedor ingresa los siguientes datos  de tu cotización</p>
+    <div class="save-supplier-inputs">
+      <div class="cbm-total input-container">
+        <div class="input-header ">
+          <span>CBM total <span style="color:red">*</span></span>
+          <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16.5046 8C16.5046 12.2477 12.887 15.7143 8.39515 15.7143C3.90329 15.7143 0.285714 12.2477 0.285714 8C0.285714 3.75234 3.90329 0.285714 8.39515 0.285714C12.887 0.285714 16.5046 3.75234 16.5046 8Z" fill="white" stroke="#FF500B" stroke-width="0.571429"/>
+          <path d="M6.96811 12.5715V11.9858L8.12525 11.7858V6.7001L6.98239 6.5001V5.91439L8.95382 5.51439L9.29668 5.64296V11.7858L10.411 11.9858V12.5715H6.96811ZM8.55382 4.45725C8.31573 4.45725 8.12049 4.3763 7.96811 4.21439C7.82525 4.04296 7.75382 3.82868 7.75382 3.57153C7.75382 3.32391 7.83477 3.10487 7.99668 2.91439C8.15858 2.72391 8.36811 2.62868 8.62525 2.62868C8.86335 2.62868 9.05382 2.70487 9.19668 2.85725C9.34906 3.00011 9.42525 3.20963 9.42525 3.48582C9.42525 3.74296 9.34906 3.97153 9.19668 4.17153C9.0443 4.36201 8.83001 4.45725 8.55382 4.45725Z" fill="#FF500B"/>
+          </svg>
+        </div>
+        <input type="number" class="input w-100" placeholder="0.0" value="${indicators[0].value}" />
+        <span class="error-cbm error d-none">Ingresa un CBM válido</span>
+      </div>
+      <div class="peso-total input-container">
+        <div class="input-header">
+          <span>CBM total <span style="color:red">*</span></span>
+          <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16.5046 8C16.5046 12.2477 12.887 15.7143 8.39515 15.7143C3.90329 15.7143 0.285714 12.2477 0.285714 8C0.285714 3.75234 3.90329 0.285714 8.39515 0.285714C12.887 0.285714 16.5046 3.75234 16.5046 8Z" fill="white" stroke="#FF500B" stroke-width="0.571429"/>
+            <path d="M6.96811 12.5715V11.9858L8.12525 11.7858V6.7001L6.98239 6.5001V5.91439L8.95382 5.51439L9.29668 5.64296V11.7858L10.411 11.9858V12.5715H6.96811ZM8.55382 4.45725C8.31573 4.45725 8.12049 4.3763 7.96811 4.21439C7.82525 4.04296 7.75382 3.82868 7.75382 3.57153C7.75382 3.32391 7.83477 3.10487 7.99668 2.91439C8.15858 2.72391 8.36811 2.62868 8.62525 2.62868C8.86335 2.62868 9.05382 2.70487 9.19668 2.85725C9.34906 3.00011 9.42525 3.20963 9.42525 3.48582C9.42525 3.74296 9.34906 3.97153 9.19668 4.17153C9.0443 4.36201 8.83001 4.45725 8.55382 4.45725Z" fill="#FF500B"/>
+            </svg>
+        </div>
+        <div class="input-prepend">
+          <span class="prepend">
+              Kg    
+          </span>
+          <input type="number" class="input" placeholder="0" value="${indicators[1].value}" style="width:70%!important" >
+          </input>
+        </div>
+        <span class="error-peso error d-none">Ingresa un peso válido</span>
+
+      </div>
+    </div>
+    <div class="process-steps-buttons mt-4" style="width:85%!important">
+      <div class="btn-anterior" id="btn-back-supplier"<span>Volver</span></div>
+      <div class="btn-siguiente" id="btn-guardar-supplier"><span>Guardar</span>
+    </div>
+  `,
+    showConfirmButton: false,
+    didOpen: () => {
+      document.getElementById('btn-guardar-supplier').addEventListener('click', () => {
+        const cbm = document.querySelector('.cbm-total input').value;
+        const peso = document.querySelector('.peso-total input').value;
+        const showErrors = (cbmError, pesoError) => {
+          const cbmElement = document.querySelector('.error-cbm');
+          const pesoElement = document.querySelector('.error-peso');
+
+          cbmElement.classList.toggle('d-none', !cbmError);
+          cbmElement.classList.toggle('d-flex', cbmError);
+
+          pesoElement.classList.toggle('d-none', !pesoError);
+          pesoElement.classList.toggle('d-flex', pesoError);
+        };
+
+        if (cbm === "" || peso === "") {
+          showErrors(cbm === "", peso === "");
+        } else {
+          // Hide errors
+          showErrors(false, false);
+
+          // Set values
+          indicators[0].value = parseInt(cbm);
+          indicators[1].value = parseInt(peso);
+
+          Swal.close();
+        }
+
+
+
+      });
+      document.getElementById('btn-back-supplier').addEventListener('click', () => {
+        Swal.close();
+      });
+    }
+  }).then(() => {
+    currentSupplier.value ++; 
+  });
+
+}
+const getObjectURL = (file) => {
+  let url = null;
+  if (window.createObjectURL != undefined) { // basic
+    url = window.createObjectURL(file);
+  } else if (window.URL != undefined) { // mozilla(firefox)
+    url = window.URL.createObjectURL(file);
+  } else if (window.webkitURL != undefined) { // webkit or chrome
+    url = window.webkitURL.createObjectURL(file);
+  }
+  return url;
 }
 const redirectoWhatsapp = (num) => {
   window.open(`https://wa.me/${num}`, '_blank')
@@ -1024,445 +1285,6 @@ const sendCotizacion = async () => {
     suppliers.value = []
   }
 };
-const deleteSupplier = (index) => {
-  suppliers.value.splice(index, 1);
-  if (suppliers.value.length == 0) {
-    currentSupplier.value = 0;
-  } else {
-    currentSupplier.value = index > 0 ? index : 0;
-  }
-};
-
-const activateUserSteps = (step, interval) => {
-  let stepTag = document.querySelector(`.step-${step}`)
-  if (step === formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 4) {
-    currentSupplier.value = 0;
-
-    addNewSupplier()
-    return;
-  }
-  if (!stepTag) {
-    clearInterval(interval)
-    return;
-  }
-  stepTag.classList.add('step-active');
-  stepTag.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
-  if (step != 1 && step != 6 && step !== formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 3) {
-    stepTag.style.backgroundColor = "white"
-  }
-  if (step === formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 3) {
-    currentSupplier.value = 0;
-
-    stepTag.classList.add('step-active');
-    //remove pointer events
-    stepTag.style.pointerEvents = "none"
-  }
-  let descriptionTag = document.querySelector(`#description-step-${step}`)
-  console.log(descriptionTag, step, "show description");
-  if (descriptionTag) {
-    descriptionTag.classList.remove('hidden-description')
-    descriptionTag.classList.add('show-description')
-  }
-}
-const steps = [];
-const fillSteps = () => {
-  for (let i = 1; i <= formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 2; i++) {
-    steps.push({
-      step: `step-${i}`,
-      description: `description-step-${i}`,
-      info: "Client and Business Info",
-      type: "input",
-      action: null
-    })
-  }
-  steps.push({
-    step: `step-${steps.length + 1}`,
-    description: `description-step-${steps.length + 1}`,
-    info: "Button to add supplier",
-    type: "button",
-    action: addNewSupplier,
-  })
-  steps.push({
-    step: `header`,
-    description: `description-step-header-0`,
-    info: "Button to add supplier",
-    type: "button",
-    action: null
-  })
-  //for indicators of supplier add step
-  for (let i = 0; i < supplierIndicators.value.length; i++) {
-    steps.push({
-      step: `step-header-${i + 1}`,
-      description: `description-step-header-${i + 1}`,
-      info: "Supplier indicators",
-      type: "input",
-      action: null
-    })
-  }
-
-  for (let i = 0; i < productParams.value.length; i++) {
-    steps.push({
-      step: `step-body-${i + 1}`,
-      description: `description-step-body-${i + 1}`,
-      info: "Product params",
-      type: "input",
-      action: null
-    })
-  }
-  steps.push({
-    step: `step-agregar-producto`,
-    description: `description-step-agregar-producto`,
-    info: "Button to add product",
-    type: "button",
-    action: null
-  })
-  steps.push({
-    step: `step-agregar-proveedor`,
-    description: `description-step-agregar-proveedor`,
-    info: "Button to add supplier",
-    type: "button",
-    action: null
-  })
-}
-const nextStepv2 = () => {
-  if (currentStep >= steps.length) {
-    return;
-  }
-  if (currentStep == 0) {
-    activateStep(currentStep)
-    currentStep++
-    return;
-  } else {
-    deactivateStep(currentStep - 1)
-    activateStep(currentStep)
-    currentStep++
-
-  }
-}
-const previousStepv2 = () => {
-  console.log(currentStep, steps.length, "previous step")
-
-
-
-  deactivateStep(currentStep - 1 < 0 ? 0 : currentStep - 1)
-  activateStep(currentStep - 2 < 0 ? 0 : currentStep - 2)
-
-  currentStep--
-  // activateStep(currentStep)
-}
-const isLoadingStep = ref(false)
-const activateStep = (step) => {
-  console.log(steps, "steps")
-  let action = steps[step - 1]?.action
-  let stepTag = document.querySelector(`.${steps[step].step}`)
-  let descriptionTag = document.querySelector(`#${steps[step].description}`)
-  let type = steps[step].type
-  console.log(stepTag, step, descriptionTag, "activate")
-  if (step == 9 && suppliers.value.length != 0) {
-    suppliers.value = []
-    currentSupplier.value = 0;
-    isLoadingStep.value = true
-    setTimeout(() => {
-      activateStep(step)
-      isLoadingStep.value = false
-    }, 500);
-  }
-  if (action) {
-    console.log(suppliers.value.length, "action")
-    if (suppliers.value.length == 0) {
-      action()
-    }
-    isLoadingStep.value = true
-    setTimeout(() => {
-      stepTag = document.querySelector(`.${steps[step].step}`)
-      descriptionTag = document.querySelector(`#${steps[step].description}`)
-      type = steps[step].type
-      if (type == "button") {
-        stepTag.style.pointerEvents = "none"
-      } if (type == "input") {
-        stepTag.style.backgroundColor = "white!important"
-      }
-      console.log(stepTag, step, "activateintimeout")
-      stepTag.classList.add('step-active');
-      stepTag.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
-      descriptionTag.classList.remove('hidden-description')
-      descriptionTag.classList.add('show-description')
-      isLoadingStep.value = false
-      return;
-    }, 500);
-  }
-  if (!stepTag) {
-    return;
-  }
-  if (type == "button") {
-    stepTag.style.pointerEvents = "none"
-  } if (type == "input") {
-    stepTag.style.backgroundColor = "white"
-  }
-  stepTag.classList.add('step-active');
-  stepTag.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
-  descriptionTag.classList.remove('hidden-description')
-  descriptionTag.classList.add('show-description')
-
-}
-const deactivateStep = (step) => {
-  let stepTag = document.querySelector(`.${steps[step].step}`)
-  let descriptionTag = document.querySelector(`#${steps[step].description}`)
-  console.log(stepTag, step, "deactivate")
-  if (!stepTag) {
-    return;
-  }
-  stepTag.classList.remove('step-active');
-  descriptionTag.classList.remove('show-description')
-  descriptionTag.classList.add('hidden-description')
-}
-fillSteps()
-const deactivateUserSteps = (step, interval) => {
-  let stepTag = document.querySelector(`.step-${step}`)
-  console.log(stepTag, step, "deactivate")
-  if (!stepTag) {
-    clearInterval(interval)
-    return;
-  }
-  stepTag.classList.remove('step-active');
-  let descriptionTag = document.querySelector(`#description-step-${step}`)
-  if (descriptionTag) {
-    descriptionTag.classList.remove('show-description')
-    descriptionTag.classList.add('hidden-description')
-  }
-}
-//computed current step==formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 3
-const stepInSuppliersFrom = computed(() => {
-  return formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 3
-})
-
-const previousStep = () => {
-  if (currentStep > 1) {
-    deactivateUserSteps(currentStep)
-    currentStep--;
-    activateUserSteps(currentStep)
-  }
-}
-const nextStep = () => {
-  console.log(currentStep, stepInSuppliersFrom.value + 1, "next step")
-  if (currentStep < stepInSuppliersFrom.value + 1) {
-
-    deactivateUserSteps(currentStep)
-    currentStep++;
-    activateUserSteps(currentStep)
-  }
-  if (currentStep >= stepInSuppliersFrom.value) {
-    activateSupplierHeaderStep(stepHeader)
-
-  }
-}
-const getSupplierForm = () => {
-  let supplierList = document.querySelector('#suppliers-list')
-  if (supplierList) {
-    supplierList.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
-  }
-  return supplierList;
-}
-const nextStepSupplier = () => {
-  if (currentStep >= stepInSuppliersFrom.value) {
-    if (stepHeader <= 2) {
-      deactivateSupplierHeaderStep(stepHeader)
-      stepHeader++;
-      activateSupplierHeaderStep(stepHeader)
-    }
-    if (stepHeader > 2) {
-      deactivateSupplierBodyStep(stepBody)
-      deactivateSupplierBodyStep(stepBody)
-      stepBody++;
-      activateSupplierBodyStep(stepBody)
-    }
-  }
-}
-const previousStepSupplier = () => {
-  console.log(currentStep, stepInSuppliersFrom.value, "previous step", stepHeader)
-  if (currentStep >= stepInSuppliersFrom.value + 1) {
-
-    if (stepHeader > 0) {
-      deactivateSupplierHeaderStep(stepHeader)
-      stepHeader--;
-      activateSupplierHeaderStep(stepHeader)
-    } else {
-      deactivateSupplierHeaderStep(stepHeader)
-      currentStep--;
-      //set empty supplierList
-      suppliers.value = []
-      //RERENDER SUPPLIers list
-      setTimeout(() => {
-        activateUserSteps(currentStep)
-      }, 500);
-    }
-  }
-}
-const activateSupplierHeaderStep = (stepH) => {
-  setTimeout(() => {
-    let supplierHeader = document.querySelector('.header')
-    if (stepH == 0) {
-      supplierHeader.classList.add('step-active');
-      let stepHeaderDescription = document.querySelector(`#description-step-header-${stepH}`)
-      if (stepHeaderDescription) {
-        stepHeaderDescription.classList.remove('hidden-description')
-        stepHeaderDescription.classList.add('show-description')
-      }
-    }
-    else {
-      let currentHeaderTag = document.querySelector(`.step-header-${stepH}`)
-      let currentHeaderDescriptionTag = document.querySelector(`#description-step-header-${stepH}`)
-      if (currentHeaderDescriptionTag) {
-        currentHeaderDescriptionTag.classList.remove('hidden-description')
-        currentHeaderDescriptionTag.classList.add('show-description')
-      }
-      if (currentHeaderTag) {
-        currentHeaderTag.classList.add('step-active');
-        currentHeaderTag.style.backgroundColor = "white"
-        currentHeaderTag.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
-
-      }
-    }
-  }, 500);
-}
-const deactivateSupplierHeaderStep = (stepH) => {
-  let supplierHeader = document.querySelector('.header')
-  if (stepH == 0) {
-    supplierHeader.classList.remove('step-active');
-    let stepHeaderDescription = document.querySelector(`#description-step-header-${stepH}`)
-    if (stepHeaderDescription) {
-      stepHeaderDescription.classList.remove('show-description')
-      stepHeaderDescription.classList.add('hidden-description')
-    }
-  }
-  else {
-    let currentHeaderTag = document.querySelector(`.step-header-${stepH}`)
-    let currentHeaderDescriptionTag = document.querySelector(`#description-step-header-${stepH}`)
-    if (currentHeaderDescriptionTag) {
-      currentHeaderDescriptionTag.classList.remove('show-description')
-      currentHeaderDescriptionTag.classList.add('hidden-description')
-    }
-    if (currentHeaderTag) {
-      currentHeaderTag.classList.remove('step-active');
-    }
-  }
-}
-const activateSupplierBodyStep = (stepB) => {
-  setTimeout(() => {
-    let currentBodyTag = document.querySelector(`.step-body-${stepB}`)
-    let currentBodyDescriptionTag = document.querySelector(`#description-step-body-${stepB}`)
-    if (currentBodyDescriptionTag) {
-      currentBodyDescriptionTag.classList.remove('hidden-description')
-      currentBodyDescriptionTag.classList.add('show-description')
-    }
-    if (currentBodyTag) {
-      currentBodyTag.classList.add('step-active');
-      currentBodyTag.style.backgroundColor = "white"
-      currentBodyTag.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
-    }
-  }, 500);
-}
-const deactivateSupplierBodyStep = (stepB) => {
-  let currentBodyTag = document.querySelector(`.step-body-${stepB}`)
-  let currentBodyDescriptionTag = document.querySelector(`#description-step-body-${stepB}`)
-  if (currentBodyDescriptionTag) {
-    currentBodyDescriptionTag.classList.remove('show-description')
-    currentBodyDescriptionTag.classList.add('hidden-description')
-  }
-  if (currentBodyTag) {
-    currentBodyTag.classList.remove('step-active');
-  }
-}
-const nextStepSupplierBody = () => {
-  if (currentStep >= stepInSuppliersFrom.value) {
-    deactivateSupplierBodyStep(stepBody)
-    stepBody++;
-    activateSupplierBodyStep(stepBody)
-  }
-}
-const previousStepSupplierBody = () => {
-  if (currentStep >= stepInSuppliersFrom.value) {
-    deactivateSupplierBodyStep(stepBody)
-    stepBody--;
-    activateSupplierBodyStep(stepBody)
-  }
-}
-const startStepByStep = () => {
-  try {
-
-    isInStepByStep.value = true
-    //set window not scrollable
-    document.body.style.overflow = "hidden"
-    nextStepv2(currentStep)
-
-  } catch (e) {
-    console.error(e)
-  }
-
-}
-
-const setStepByStepPlayer = () => {
-  //set variable in localstorage
-  localStorage.setItem("stepByStep", "true")
-}
-const unsetStepByStepPlayer = () => {
-  //set variable in localstorage
-  if (localStorage.getItem("stepByStep")) {
-    localStorage.removeItem("stepByStep")
-  }
-}
-const isStepByStepPlayer = () => {
-  //set variable in localstorage
-  return localStorage.getItem("stepByStep")
-}
-const skipStepByStep = () => {
-  try {
-    isInStepByStep.value = false
-    //set window scrollable
-    document.body.style.overflow = "auto"
-    //set empty files  in suppliers 
-    currentStep = 0;
-    formValues.value.forEach((input) => {
-      input.value = "";
-      input.keyRender++
-    });
-    //set empty files  in suppliers 
-    currentSupplier.value = 0;
-    suppliers.value = []
-    steps.forEach((step, index) => {
-
-      deactivateStep(index)
-    });
-    //rerender steps
-
-  } catch (e) {
-    console.error(e)
-  }
-}
-// onMounted(() => {
-//   if(!isStepByStepPlayer()){
-//     startStepByStep()
-//     setStepByStepPlayer()
-//   }
-// })
-const processSteps = ref([
-  {
-    id: 1,
-    name: 'Información personal',
-    isCompleted: false,
-
-  },
-  {
-    id: 2,
-    name: 'Información de la empresa',
-    isCompleted: false,
-  },
-  {
-    id: 3,
-    name: 'Proveedores',
-    isCompleted: false,
-  }
-])
 const currentProcessStep = ref(2)
 const previousProcessStep = () => {
   if (currentProcessStep.value > 1) {
@@ -1499,6 +1321,442 @@ const getCurrentStepClass = (currentStep, index) => {
   }
   return ""
 }
+const processSteps = ref([
+  {
+    id: 1,
+    name: 'Información personal',
+    isCompleted: false,
+
+  },
+  {
+    id: 2,
+    name: 'Información de la empresa',
+    isCompleted: false,
+  },
+  {
+    id: 3,
+    name: 'Proveedores',
+    isCompleted: false,
+  }
+])
+// const deleteSupplier = (index) => {
+//   suppliers.value.splice(index, 1);
+//   if (suppliers.value.length == 0) {
+//     currentSupplier.value = 0;
+//   } else {
+//     currentSupplier.value = index > 0 ? index : 0;
+//   }
+// };
+
+// const activateUserSteps = (step, interval) => {
+//   let stepTag = document.querySelector(`.step-${step}`)
+//   if (step === formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 4) {
+//     currentSupplier.value = 0;
+
+//     addNewSupplier()
+//     return;
+//   }
+//   if (!stepTag) {
+//     clearInterval(interval)
+//     return;
+//   }
+//   stepTag.classList.add('step-active');
+//   stepTag.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+//   if (step != 1 && step != 6 && step !== formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 3) {
+//     stepTag.style.backgroundColor = "white"
+//   }
+//   if (step === formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 3) {
+//     currentSupplier.value = 0;
+
+//     stepTag.classList.add('step-active');
+//     //remove pointer events
+//     stepTag.style.pointerEvents = "none"
+//   }
+//   let descriptionTag = document.querySelector(`#description-step-${step}`)
+//   console.log(descriptionTag, step, "show description");
+//   if (descriptionTag) {
+//     descriptionTag.classList.remove('hidden-description')
+//     descriptionTag.classList.add('show-description')
+//   }
+// }
+// const steps = [];
+// const fillSteps = () => {
+//   for (let i = 1; i <= formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 2; i++) {
+//     steps.push({
+//       step: `step-${i}`,
+//       description: `description-step-${i}`,
+//       info: "Client and Business Info",
+//       type: "input",
+//       action: null
+//     })
+//   }
+//   steps.push({
+//     step: `step-${steps.length + 1}`,
+//     description: `description-step-${steps.length + 1}`,
+//     info: "Button to add supplier",
+//     type: "button",
+//     action: addNewSupplier,
+//   })
+//   steps.push({
+//     step: `header`,
+//     description: `description-step-header-0`,
+//     info: "Button to add supplier",
+//     type: "button",
+//     action: null
+//   })
+//   //for indicators of supplier add step
+//   for (let i = 0; i < supplierIndicators.value.length; i++) {
+//     steps.push({
+//       step: `step-header-${i + 1}`,
+//       description: `description-step-header-${i + 1}`,
+//       info: "Supplier indicators",
+//       type: "input",
+//       action: null
+//     })
+//   }
+
+//   for (let i = 0; i < productParams.value.length; i++) {
+//     steps.push({
+//       step: `step-body-${i + 1}`,
+//       description: `description-step-body-${i + 1}`,
+//       info: "Product params",
+//       type: "input",
+//       action: null
+//     })
+//   }
+//   steps.push({
+//     step: `step-agregar-producto`,
+//     description: `description-step-agregar-producto`,
+//     info: "Button to add product",
+//     type: "button",
+//     action: null
+//   })
+//   steps.push({
+//     step: `step-agregar-proveedor`,
+//     description: `description-step-agregar-proveedor`,
+//     info: "Button to add supplier",
+//     type: "button",
+//     action: null
+//   })
+// }
+// const nextStepv2 = () => {
+//   if (currentStep >= steps.length) {
+//     return;
+//   }
+//   if (currentStep == 0) {
+//     activateStep(currentStep)
+//     currentStep++
+//     return;
+//   } else {
+//     deactivateStep(currentStep - 1)
+//     activateStep(currentStep)
+//     currentStep++
+
+//   }
+// }
+// const previousStepv2 = () => {
+//   console.log(currentStep, steps.length, "previous step")
+
+
+
+//   deactivateStep(currentStep - 1 < 0 ? 0 : currentStep - 1)
+//   activateStep(currentStep - 2 < 0 ? 0 : currentStep - 2)
+
+//   currentStep--
+//   // activateStep(currentStep)
+// }
+// const isLoadingStep = ref(false)
+// const activateStep = (step) => {
+//   console.log(steps, "steps")
+//   let action = steps[step - 1]?.action
+//   let stepTag = document.querySelector(`.${steps[step].step}`)
+//   let descriptionTag = document.querySelector(`#${steps[step].description}`)
+//   let type = steps[step].type
+//   console.log(stepTag, step, descriptionTag, "activate")
+//   if (step == 9 && suppliers.value.length != 0) {
+//     suppliers.value = []
+//     currentSupplier.value = 0;
+//     isLoadingStep.value = true
+//     setTimeout(() => {
+//       activateStep(step)
+//       isLoadingStep.value = false
+//     }, 500);
+//   }
+//   if (action) {
+//     console.log(suppliers.value.length, "action")
+//     if (suppliers.value.length == 0) {
+//       action()
+//     }
+//     isLoadingStep.value = true
+//     setTimeout(() => {
+//       stepTag = document.querySelector(`.${steps[step].step}`)
+//       descriptionTag = document.querySelector(`#${steps[step].description}`)
+//       type = steps[step].type
+//       if (type == "button") {
+//         stepTag.style.pointerEvents = "none"
+//       } if (type == "input") {
+//         stepTag.style.backgroundColor = "white!important"
+//       }
+//       console.log(stepTag, step, "activateintimeout")
+//       stepTag.classList.add('step-active');
+//       stepTag.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+//       descriptionTag.classList.remove('hidden-description')
+//       descriptionTag.classList.add('show-description')
+//       isLoadingStep.value = false
+//       return;
+//     }, 500);
+//   }
+//   if (!stepTag) {
+//     return;
+//   }
+//   if (type == "button") {
+//     stepTag.style.pointerEvents = "none"
+//   } if (type == "input") {
+//     stepTag.style.backgroundColor = "white"
+//   }
+//   stepTag.classList.add('step-active');
+//   stepTag.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+//   descriptionTag.classList.remove('hidden-description')
+//   descriptionTag.classList.add('show-description')
+
+// }
+// const deactivateStep = (step) => {
+//   let stepTag = document.querySelector(`.${steps[step].step}`)
+//   let descriptionTag = document.querySelector(`#${steps[step].description}`)
+//   console.log(stepTag, step, "deactivate")
+//   if (!stepTag) {
+//     return;
+//   }
+//   stepTag.classList.remove('step-active');
+//   descriptionTag.classList.remove('show-description')
+//   descriptionTag.classList.add('hidden-description')
+// }
+// fillSteps()
+// const deactivateUserSteps = (step, interval) => {
+//   let stepTag = document.querySelector(`.step-${step}`)
+//   console.log(stepTag, step, "deactivate")
+//   if (!stepTag) {
+//     clearInterval(interval)
+//     return;
+//   }
+//   stepTag.classList.remove('step-active');
+//   let descriptionTag = document.querySelector(`#description-step-${step}`)
+//   if (descriptionTag) {
+//     descriptionTag.classList.remove('show-description')
+//     descriptionTag.classList.add('hidden-description')
+//   }
+// }
+// //computed current step==formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 3
+// const stepInSuppliersFrom = computed(() => {
+//   return formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 3
+// })
+
+// const previousStep = () => {
+//   if (currentStep > 1) {
+//     deactivateUserSteps(currentStep)
+//     currentStep--;
+//     activateUserSteps(currentStep)
+//   }
+// }
+// const nextStep = () => {
+//   console.log(currentStep, stepInSuppliersFrom.value + 1, "next step")
+//   if (currentStep < stepInSuppliersFrom.value + 1) {
+
+//     deactivateUserSteps(currentStep)
+//     currentStep++;
+//     activateUserSteps(currentStep)
+//   }
+//   if (currentStep >= stepInSuppliersFrom.value) {
+//     activateSupplierHeaderStep(stepHeader)
+
+//   }
+// }
+// const getSupplierForm = () => {
+//   let supplierList = document.querySelector('#suppliers-list')
+//   if (supplierList) {
+//     supplierList.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+//   }
+//   return supplierList;
+// }
+// const nextStepSupplier = () => {
+//   if (currentStep >= stepInSuppliersFrom.value) {
+//     if (stepHeader <= 2) {
+//       deactivateSupplierHeaderStep(stepHeader)
+//       stepHeader++;
+//       activateSupplierHeaderStep(stepHeader)
+//     }
+//     if (stepHeader > 2) {
+//       deactivateSupplierBodyStep(stepBody)
+//       deactivateSupplierBodyStep(stepBody)
+//       stepBody++;
+//       activateSupplierBodyStep(stepBody)
+//     }
+//   }
+// }
+// const previousStepSupplier = () => {
+//   console.log(currentStep, stepInSuppliersFrom.value, "previous step", stepHeader)
+//   if (currentStep >= stepInSuppliersFrom.value + 1) {
+
+//     if (stepHeader > 0) {
+//       deactivateSupplierHeaderStep(stepHeader)
+//       stepHeader--;
+//       activateSupplierHeaderStep(stepHeader)
+//     } else {
+//       deactivateSupplierHeaderStep(stepHeader)
+//       currentStep--;
+//       //set empty supplierList
+//       suppliers.value = []
+//       //RERENDER SUPPLIers list
+//       setTimeout(() => {
+//         activateUserSteps(currentStep)
+//       }, 500);
+//     }
+//   }
+// }
+// const activateSupplierHeaderStep = (stepH) => {
+//   setTimeout(() => {
+//     let supplierHeader = document.querySelector('.header')
+//     if (stepH == 0) {
+//       supplierHeader.classList.add('step-active');
+//       let stepHeaderDescription = document.querySelector(`#description-step-header-${stepH}`)
+//       if (stepHeaderDescription) {
+//         stepHeaderDescription.classList.remove('hidden-description')
+//         stepHeaderDescription.classList.add('show-description')
+//       }
+//     }
+//     else {
+//       let currentHeaderTag = document.querySelector(`.step-header-${stepH}`)
+//       let currentHeaderDescriptionTag = document.querySelector(`#description-step-header-${stepH}`)
+//       if (currentHeaderDescriptionTag) {
+//         currentHeaderDescriptionTag.classList.remove('hidden-description')
+//         currentHeaderDescriptionTag.classList.add('show-description')
+//       }
+//       if (currentHeaderTag) {
+//         currentHeaderTag.classList.add('step-active');
+//         currentHeaderTag.style.backgroundColor = "white"
+//         currentHeaderTag.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+
+//       }
+//     }
+//   }, 500);
+// }
+// const deactivateSupplierHeaderStep = (stepH) => {
+//   let supplierHeader = document.querySelector('.header')
+//   if (stepH == 0) {
+//     supplierHeader.classList.remove('step-active');
+//     let stepHeaderDescription = document.querySelector(`#description-step-header-${stepH}`)
+//     if (stepHeaderDescription) {
+//       stepHeaderDescription.classList.remove('show-description')
+//       stepHeaderDescription.classList.add('hidden-description')
+//     }
+//   }
+//   else {
+//     let currentHeaderTag = document.querySelector(`.step-header-${stepH}`)
+//     let currentHeaderDescriptionTag = document.querySelector(`#description-step-header-${stepH}`)
+//     if (currentHeaderDescriptionTag) {
+//       currentHeaderDescriptionTag.classList.remove('show-description')
+//       currentHeaderDescriptionTag.classList.add('hidden-description')
+//     }
+//     if (currentHeaderTag) {
+//       currentHeaderTag.classList.remove('step-active');
+//     }
+//   }
+// }
+// const activateSupplierBodyStep = (stepB) => {
+//   setTimeout(() => {
+//     let currentBodyTag = document.querySelector(`.step-body-${stepB}`)
+//     let currentBodyDescriptionTag = document.querySelector(`#description-step-body-${stepB}`)
+//     if (currentBodyDescriptionTag) {
+//       currentBodyDescriptionTag.classList.remove('hidden-description')
+//       currentBodyDescriptionTag.classList.add('show-description')
+//     }
+//     if (currentBodyTag) {
+//       currentBodyTag.classList.add('step-active');
+//       currentBodyTag.style.backgroundColor = "white"
+//       currentBodyTag.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+//     }
+//   }, 500);
+// }
+// const deactivateSupplierBodyStep = (stepB) => {
+//   let currentBodyTag = document.querySelector(`.step-body-${stepB}`)
+//   let currentBodyDescriptionTag = document.querySelector(`#description-step-body-${stepB}`)
+//   if (currentBodyDescriptionTag) {
+//     currentBodyDescriptionTag.classList.remove('show-description')
+//     currentBodyDescriptionTag.classList.add('hidden-description')
+//   }
+//   if (currentBodyTag) {
+//     currentBodyTag.classList.remove('step-active');
+//   }
+// }
+// const nextStepSupplierBody = () => {
+//   if (currentStep >= stepInSuppliersFrom.value) {
+//     deactivateSupplierBodyStep(stepBody)
+//     stepBody++;
+//     activateSupplierBodyStep(stepBody)
+//   }
+// }
+// const previousStepSupplierBody = () => {
+//   if (currentStep >= stepInSuppliersFrom.value) {
+//     deactivateSupplierBodyStep(stepBody)
+//     stepBody--;
+//     activateSupplierBodyStep(stepBody)
+//   }
+// }
+// const startStepByStep = () => {
+//   try {
+
+//     isInStepByStep.value = true
+//     //set window not scrollable
+//     document.body.style.overflow = "hidden"
+//     nextStepv2(currentStep)
+
+//   } catch (e) {
+//     console.error(e)
+//   }
+
+// }
+
+// const setStepByStepPlayer = () => {
+//   //set variable in localstorage
+//   localStorage.setItem("stepByStep", "true")
+// }
+// const unsetStepByStepPlayer = () => {
+//   //set variable in localstorage
+//   if (localStorage.getItem("stepByStep")) {
+//     localStorage.removeItem("stepByStep")
+//   }
+// }
+// const isStepByStepPlayer = () => {
+//   //set variable in localstorage
+//   return localStorage.getItem("stepByStep")
+// }
+// const skipStepByStep = () => {
+//   try {
+//     isInStepByStep.value = false
+//     //set window scrollable
+//     document.body.style.overflow = "auto"
+//     //set empty files  in suppliers 
+//     currentStep = 0;
+//     formValues.value.forEach((input) => {
+//       input.value = "";
+//       input.keyRender++
+//     });
+//     //set empty files  in suppliers 
+//     currentSupplier.value = 0;
+//     suppliers.value = []
+//     steps.forEach((step, index) => {
+
+//       deactivateStep(index)
+//     });
+//     //rerender steps
+
+//   } catch (e) {
+//     console.error(e)
+//   }
+// }
+
+
+
 </script>
 <style>
 body {
@@ -1524,11 +1782,11 @@ body {
   height: 100%;
 }
 
-.supplier-header {
+/* .supplier-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
+} */
 
 .supplier-indicators {
   display: flex;
@@ -1545,8 +1803,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  border-bottom: 1px solid #CFD6DC; 
-  padding: 1em 0;
+  border-bottom: 1px solid #CFD6DC;
+  padding: 1em;
 }
 
 .slide-enter-active,
@@ -1567,7 +1825,7 @@ body {
   row-gap: 1rem;
   background: white !important;
   margin-bottom: 1em;
-  border-radius: 0; 
+  border-radius: 0;
   padding: 1em;
   width: 100%;
   margin: 1em auto;
@@ -1713,7 +1971,8 @@ input[type=number] {
   background-color: #FF500B !important;
   color: white;
 }
-.process-step.completed  .step-number {
+
+.process-step.completed .step-number {
   background-color: #00D680 !important;
   color: white;
 }
@@ -1776,13 +2035,115 @@ input[type=number] {
   border: 1px solid #7E7E7E;
   border-radius: 0.5em
 }
-
+.btn-enviar{
+  width: 100%;
+  padding: 1.2em 1em;
+  text-align: center;
+  border-radius: 0.5em;
+  color: black;
+  background: #00D680;
+}
 .btn-anterior:hover {
   background: #7E7E7E;
   color: white;
   cursor: pointer;
-}.process-proveedores{
+}
+
+.process-proveedores {
   width: 70%;
   margin: 0 auto;
+}
+
+.save-supplier-inputs {
+  display: flex;
+  flex-direction: row;
+  column-gap: 1em;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.input-header {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 0.5em;
+}
+
+.input-container .input {
+  padding: 0.5em;
+  border-radius: 0.4em;
+  border: 1px solid #DFDFDF;
+  height: 40px;
+  text-align: center;
+}
+
+.input-container {
+  width: 50%;
+
+}
+
+.input-prepend {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 40px;
+}
+
+.input-prepend .input {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.prepend {
+  width: 30%;
+  background-color: #DFDFDF;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 100;
+  border-radius: 0.5em;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.modal-save {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1em;
+}
+
+.error {
+  margin-top: 0.2em;
+  color: red;
+  font-size: 0.8em;
+
+  align-self: flex-start;
+}
+
+.supplier-indicators {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  width: 100%;
+  justify-content: center;
+  border-bottom: 1px solid #DFDFDF;
+  padding: 1em;
+}
+
+.indicator-name {
+  color: #7E7E7E;
+}.product-info{
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  justify-content: center;
+  padding: 0 1em;
+}.img-container{
+  width: 80%;
+    margin: 0 auto;
+    border: 1px solid #DFDFDF;
+    padding: 2em
 }
 </style>

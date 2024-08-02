@@ -2,10 +2,24 @@
     <div class="customized-input d-flex flex-column" >
         <!-- <span class="fw-bold ">{{ props.text }} <span v-if="!props.optionalText" class="text-danger">*</span></span> -->
         
-        <div class="w-100 d-flex flex-row gap align-items-center" style="position: relative;" >
-            <input :type="props.type" class="customized-input__input" :key="props.keyRender"
-                :placeholder="props.optionalText ? `${props.text} (Opcional)` : props.text+'*'" v-model="inputValue" @input="emitInput"
+        <div class="w-100 d-flex flex-column gap align-items-center" style="position: relative;" >
+            <label class="w-100 mb-1 " v-if="props.type=='number'">
+                {{ props.text }}<label class="text-danger" v-if="!props.optionalText">*</label>
+            </label>
+            <div class="w-100 d-flex flex-row gap align-items-center">
+                <span v-if="props.showActions" class="input-actions"
+                @click="() => inputValue>1?inputValue--:inputValue=1">-</span>
+
+            <input
+            :class="props.type=='number'?'input-actions':''"
+            :type="props.type" class="customized-input__input" :key="props.keyRender"
+                :placeholder="getPlaceHolder(props)" v-model="inputValue" @input="emitInput"
                 :style="props.options?'border-radius:0px':''" />
+            <span v-if="props.showActions" class="input-actions"
+            @click="()=>inputValue++
+            "> +</span>
+            </div>
+
             <!-- if prepend is object props.prepend.icon -->
             <div v-if="props.options" class="selector">
                 
@@ -23,7 +37,7 @@
 <script setup>
 import { ref, watch,computed } from 'vue'
 
-const props = defineProps(['text', 'optionalText', 'type', 'value', 'validate', 'isError', 'prepend', 'keyRender', 'options','errorText'])
+const props = defineProps(['text', 'optionalText', 'type', 'value', 'validate', 'isError', 'prepend', 'keyRender', 'options','errorText','showActions'])
 const emit = defineEmits(['input','select'])
 const inputValue = ref(props.value)
 //watch keyRender to update inputValue
@@ -34,6 +48,16 @@ watch(() => props.keyRender, () => {
 
 const isError = ref(false)
 const selected=ref(null)
+const getPlaceHolder=(props)=>{
+
+    if (props.type == 'number') {
+        return ''
+    }
+    if(props.optionalText){
+        return `${props.text} (Opcional)`
+    }
+    return props.text+'*'
+}
 const emitInput = () => {
 
     emit('input', inputValue.value)
@@ -79,6 +103,20 @@ const selectOption=(value)=>{
     border: none;
     border-bottom: 1px solid #ccc;
     position: relative;
+}.input-actions{
+    border: 1px solid #ccc!important;
+} span{
+    padding: 0.5em 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+span:hover{
+    background-color: #ccc;
 }
 #prepend-icon{
     position: absolute;
@@ -88,5 +126,7 @@ const selectOption=(value)=>{
     cursor: pointer;
     color: #007bff;
     
+}span,label,input{
+    color:#7E7E7E;
 }
 </style>
