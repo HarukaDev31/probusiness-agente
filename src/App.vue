@@ -15,7 +15,9 @@
       <div class="process-steps-container">
         <div class="process-step" :class="getCurrentStepClass(currentProcessStep, index + 1)"
           v-for="(step, index) in processSteps" :key="index">
-          <div class="step-number" v-if="processSteps[index].isCompleted">
+          <div class="step-number 
+          
+          " v-if="processSteps[index].isCompleted">
             <span>
               <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
                 stroke="#ffffff">
@@ -28,38 +30,38 @@
               </svg>
             </span>
           </div>
-          <div class="step-number" v-else>
+          <div class="step-number sora-semibold" v-else>
             <span>0{{ index + 1 }}</span>
           </div>
 
-          <div class="step-text">
+          <div class="step-text ">
             <span>{{ step.name }}</span>
           </div>
         </div>
 
       </div>
       <div class="process-informacion-personal" v-if="currentProcessStep == 1">
-        <h2 class="my-4 text-center">Mis datos</h2>
-        <span>Busca tu DNI o ingresa manualmente tus nombres y apellidos</span>
+        <h1 class="my-4 sora-regular">Mis datos</h1>
+        <span class="epilogue-regular">Busca tu DNI o ingresa manualmente tus nombres y apellidos</span>
         <div v-for="(desc, descIndex) in formValuesComputedPair">
           <customized-input :key="descIndex" :text="desc.text" :optionalText="desc.optionalText" :type="desc.type"
             @input="(e) => (desc.value = e)" :value="desc.value" :validation="desc.validate" :is-error="desc.error"
             :prepend="desc.prepend" :keyRender="desc.keyRender" :error-text="desc.errorText"
             :class="`step step-${2 + descIndex}`" />
         </div>
-        <div class="process-steps-buttons">
+        <div class="process-steps-buttons mt-5">
           <div class="btn-anterior" @click="previousProcessStep" v-if="currentProcessStep > 1">
             <span>Anterior</span>
           </div>
-          <div class="btn-siguiente" @click="nextProcessStep(formValuesComputedPair)"
+          <div class="btn-siguiente epilogue-regular" @click="nextProcessStep(formValuesComputedPair)"
             v-if="currentProcessStep < processSteps.length">
             <span>Siguiente</span>
           </div>
         </div>
       </div>
       <div class="process-informacion-personal" v-if="currentProcessStep == 2">
-        <h2 class="my-4 text-center">Datos empresa</h2>
-        <span>Ingresa los datos de tu empresa</span>
+        <h2 class="my-4  sora-regular">Datos empresa</h2>
+        <span class="epilogue-regular">Ingresa los datos de tu empresa</span>
         <div v-for="(desc, descIndex) in formValuesComputedOdd.filter((item) => {
           if (item.hasOwnProperty('notShow')) {
             return false
@@ -71,11 +73,11 @@
             :prepend="desc.prepend" :keyRender="desc.keyRender" :error-text="desc.errorText"
             :class="`step step-${2 + descIndex}`" />
         </div>
-        <div class="process-steps-buttons">
-          <div class="btn-anterior" @click="previousProcessStep" v-if="currentProcessStep > 1">
-            <span>Anterior</span>
+        <div class="process-steps-buttons mt-5">
+          <div class="btn-anterior epilogue-regular" @click="previousProcessStep" v-if="currentProcessStep > 1">
+            <span>Volver</span>
           </div>
-          <div class="btn-siguiente" @click="nextProcessStep(formValuesComputedOdd.filter((item) => {
+          <div class="btn-siguiente epilogue-regular" @click="nextProcessStep(formValuesComputedOdd.filter((item) => {
             if (item.hasOwnProperty('notShow')) {
               return false
             }
@@ -86,13 +88,13 @@
         </div>
       </div>
       <div class="process-proveedores" v-if="currentProcessStep == 3">
-        <h2 class="my-4 text-center">Proveedor</h2>
+        <h2 class="my-4 text-center sora-regular">Proveedor</h2>
         {{ currentSupplier }}
-        <card >
+        <card>
           <template #body>
             <div v-for="(supplier, supplierIndex) in suppliers" :key="supplierIndex" class="card">
               <div class="supplier-header">
-                <h3 class="text-center ">Proveedor {{ supplierIndex + 1 }}</h3>
+                <h3 class="text-center mx-auto sora-regular">Proveedor 0{{ supplierIndex + 1 }}</h3>
                 <div class="btn-delete" @click="deleteSupplier(supplierIndex)"
                   v-if="currentSupplier.value == supplierIndex + 1">
                   <svg width="22" height="24" viewBox="0 0 22 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -106,8 +108,8 @@
                   </svg>
                 </div>
                 <div v-else>
-                  <div class="d-flex flex-row">
-                    <div class="btn-edit">
+                  <div class="d-flex flex-row" style="column-gap:1em">
+                    <div class="btn-edit" @click="changeCurrentSupplier(supplierIndex)">
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                           d="M20.82 5.73601L20.3581 5.54466L20.82 5.736C20.9568 5.40576 21.0272 5.05181 21.0272 4.69436C21.0272 4.33691 20.9568 3.98296 20.82 3.65272L20.3581 3.84406L20.82 3.65271C20.6833 3.32247 20.4828 3.02241 20.23 2.76965C19.9772 2.5169 19.6772 2.3164 19.3469 2.17961C19.0167 2.04282 18.6627 1.97241 18.3053 1.97241C17.5834 1.97241 16.8911 2.25919 16.3806 2.76965L16.7341 3.12321L16.3806 2.76965L3.28763 15.8626C3.22355 15.9267 3.17809 16.007 3.15612 16.0949L2.10868 20.2846C2.06608 20.455 2.11601 20.6353 2.2402 20.7595C2.36439 20.8836 2.54463 20.9336 2.71502 20.891L6.90476 19.8435C6.99268 19.8216 7.07297 19.7761 7.13705 19.712L20.23 6.61907C20.4828 6.36631 20.6833 6.06625 20.82 5.73601Z"
@@ -132,12 +134,12 @@
               <div class="supplier-indicators" v-if="currentSupplier.value != supplierIndex + 1">
                 <div v-for="(indicator, index) in supplier.indicators" :key="`${supplierIndex}-${indicator.key}`">
                   <span v-if="indicator.key == 'cbm'">
-                    <span class="indicator-name">{{ indicator.name }}:
+                    <span class="indicator-name epilogue-regular">{{ indicator.name }}:
                     </span>
                     {{ indicator.value }} m3
                   </span>
                   <span v-else>
-                    <span class="indicator-name">{{ indicator.name }}:
+                    <span class="indicator-name epilogue-regular">{{ indicator.name }}:
                     </span>
                     {{ indicator.value }} {{ indicator.value > 1000 ? 'TN' : 'KG' }}
                   </span>
@@ -145,12 +147,11 @@
               </div>
               <!--STEP 3-->
               <div class="product-list row" v-for="(productList, productListIndex) in supplier.products"
-                v-if="currentSupplier.value == supplierIndex + 1" :key="productListIndex">
+                v-if="currentSupplier.value == supplierIndex + 1 && !supplier.isCompleted" :key="productListIndex">
                 <div class="col-12 col-md-6">
                   <div v-for="(product, productItemIndex) in productList.filter((item) => item.type == 'file')"
                     :key="`fileSelector-${productItemIndex}`" style="height: 100%"
                     :class="`step-body-${productItemIndex + 1}`">
-                    <label class="fw-bold">Imagen</label>
                     <file-selector :not-show-drop="true" :multiple="false" :value="product.value"
                       @fileChange="(files) => handleFile(files, product)" :accept="'image/*'">
                       <template #text>Seleccionar foto</template>
@@ -185,26 +186,26 @@
                 </div>
               </div>
               <div class="product-list-collapsed row py-4" v-else>
-                <div class="col col-6"
-                  v-for="(productList, productListIndex) in supplier.products" :key="productListIndex">
+                <div class="col col-6" v-for="(productList, productListIndex) in supplier.products"
+                  :key="productListIndex">
                   <div class="row">
                     <div class=" col col-6">
                       <div class="img-container">
                         <img :src="getObjectURL(getProductParam(productList, 'foto').value)" alt="product image"
-                        class="img img-fluid" />
+                          class="img img-fluid" />
                       </div>
-                      
+
                     </div>
                     <div class="product-info col col-6">
-                      <span class="mb-2">
+                      <span class="mb-2 epilogue-bold">
                         {{ getProductParam(productList, 'nombre').value }}
                       </span>
-                      <span>
-                        {{ getProductParam(productList, 'cantidad').name }}
+                      <span class="epilogue-regular">
+                        Cantidad: 
                         {{ getProductParam(productList, 'cantidad').value }} KG
                       </span>
-                      <span>
-                        {{ getProductParam(productList, 'valor').name }}
+                      <span class="epilogue-regular">
+                        Precio:
                         ${{ getProductParam(productList, 'valor').value }}
                       </span>
                     </div>
@@ -212,26 +213,108 @@
 
                 </div>
               </div>
-              <div class="process-steps-buttons w-100" v-if="currentSupplier.value == supplierIndex + 1">
+              <div class="process-steps-buttons w-100"
+                v-if="currentSupplier.value == supplierIndex + 1 && !supplier.isCompleted">
                 <div class="btn-anterior" @click="addNewProductToSupplier(supplierIndex)">
                   Agregar producto
                 </div>
-                <div class="btn-siguiente" @click="showLastSupplierData(supplierIndex)">
+                <div class="btn-siguiente epilogue-regular" @click="showLastSupplierData(supplierIndex)">
                   Guardar
                 </div>
               </div>
             </div>
-            <div class="process-steps-buttons w-100 mt-2" v-if="currentSupplier.value>1">
-                <div class="btn-siguiente" @click="addNewProductToSupplier(supplierIndex)">
-                  Agregar proveedor
-                </div>
-                <div class="btn-enviar" @click="showLastSupplierData(supplierIndex)">
-                  Envíar cotización
+            <div class="process-steps-buttons w-100 mt-2" v-if="currentSupplier.value > 1">
+              <div class="btn-siguiente epilogue-regular" @click="addNewSupplier()">
+                Agregar proveedor
+              </div>
+              <div class="btn-enviar" @click="showOrderResume()">
+                Envíar Pedido
+              </div>
+            </div>
+          </template>
+
+        </card>
+      </div>
+      <!--Order Resume-->
+      <div class="order-resume" v-if="currentProcessStep == 4">
+        <h2 class="my-4 text-center">Resumen de pedido</h2>
+        <div class="informacion-personal resume-section">
+          <div class="section-content">
+            <h2>Información personal</h2>
+            <div class="d-flex flex-column">
+              <span>{{ getFormParam(formValuesComputedPair, 'nombres').value }} {{
+                getFormParam(formValuesComputedPair, 'apellidos').value }}</span>
+              <span>{{ getFormParam(formValuesComputedPair, 'email').value }}</span>
+              <span>{{ getFormParam(formValuesComputedPair, 'dni').value }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="empresa resume-section">
+          <div class="section-content">
+            <h2>Empresa</h2>
+
+            <div class="d-flex flex-column">
+              <span>{{ getFormParam(formValuesComputedOdd, 'empresa').value }}</span>
+              <span>{{ getFormParam(formValuesComputedOdd, 'ruc').value }}</span>
+            </div>
+          </div>
+
+        </div>
+        <div class="proveedores resume-section">
+          <h2 style="margin-bottom: 1px solid #DFDFDF;">Proveedores</h2>
+
+          <div v-for="(supplier, supplierIndex) in suppliers" :key="supplierIndex">
+            <div class="resume-supplier-indicators">
+
+              <h3 class="">Proveedor {{ supplierIndex + 1 }}</h3>
+              <div class="d-flex flex-row" style="column-gap: 1em;">
+                <div v-for="(indicator, index) in supplier.indicators" :key="`${supplierIndex}-${indicator.key}`">
+                  <span v-if="indicator.key == 'cbm'">
+                    <span class="indicator-name epilogue-regular">{{ indicator.name }}:
+                    </span>
+                    {{ indicator.value }} m3
+                  </span>
+                  <span v-else>
+                    <span class="indicator-name epilogue-regular">{{ indicator.name }}:
+                    </span>
+                    {{ indicator.value }} {{ indicator.value > 1000 ? 'TN' : 'KG' }}
+                  </span>
                 </div>
               </div>
-          </template>
-          
-        </card>
+
+            </div>
+            <div class="product-list-collapsed row py-4">
+              <div class="col col-6" v-for="(productList, productListIndex) in supplier.products"
+                :key="productListIndex">
+                <div class="row">
+                  <div class=" col col-6">
+                    <div class="img-container">
+                      <img :src="getObjectURL(getProductParam(productList, 'foto').value)" alt="product image"
+                        class="img img-fluid" />
+                    </div>
+
+                  </div>
+                  <div class="product-info col col-6">
+                    <span class="mb-2">
+                      {{ getProductParam(productList, 'nombre').value }}
+                    </span>
+                    <span>
+                      {{ getProductParam(productList, 'cantidad').name }}
+                      {{ getProductParam(productList, 'cantidad').value }} KG
+                    </span>
+                    <span>
+                      {{ getProductParam(productList, 'valor').name }}
+                      ${{ getProductParam(productList, 'valor').value }}
+                    </span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+
       </div>
     </main>
   </div>
@@ -569,6 +652,7 @@ import { ref, computed, reactive, onMounted } from "vue";
 import { sendCotization, getClientDataByDNIID } from "./services/send-cotization";
 import Swal from 'sweetalert2';
 import { faL } from "@fortawesome/free-solid-svg-icons";
+const currentProcessStep = ref(1)
 //validation functions
 const validateNotEmpy = (value) => {
   return value != "";
@@ -764,7 +848,9 @@ const getClientData = async (value) => {
 const getProductParam = (paramsList, paramKey) => {
   return paramsList.find((param) => param.key == paramKey)
 }
-
+const getFormParam = (paramsList, paramKey) => {
+  return paramsList.find((param) => param.key == paramKey)
+}
 const formValues = ref([
   {
     text: "DNI/ID",
@@ -894,8 +980,8 @@ const currentSupplier = reactive({
   value: 0,
 });
 const changeCurrentSupplier = (index) => {
-  currentSupplier.value = index;
-
+  currentSupplier.value = index + 1;
+  suppliers.value[index].isCompleted = false;
 
 
 };
@@ -923,6 +1009,7 @@ const addNewSupplier = () => {
   suppliers.value.push({
     id: suppliers.value.length + 1,
     indicators: newSupplierIndicators,
+    isCompleted: false,
     products: [],
   });
   const newProductParams = productParams.map((param) => ({ ...param }));
@@ -931,7 +1018,11 @@ const addNewSupplier = () => {
   } else {
     suppliers.value[suppliers.value.length - 1].products.push(newProductParams);
   }
-  currentSupplier.value++;
+  if (currentSupplier.value >= suppliers.value.length) {
+    currentSupplier.value = suppliers.value.length
+  } else {
+    currentSupplier.value++;
+  }
 };
 let currentProduct = 0;
 const validateSupplier = (supplierIndex) => {
@@ -939,7 +1030,6 @@ const validateSupplier = (supplierIndex) => {
   let isValid = true;
   console.log(supplier.products, 'products')
   supplier.products.forEach((product) => {
-    console.log(product, 'product', validateProduct(product), 'validate');
     product.forEach((param) => {
       console.log(param)
       if (param.validate && !param.optionalText) {
@@ -953,7 +1043,6 @@ const validateSupplier = (supplierIndex) => {
 
     });
   });
-  console.log(isValid)
   return isValid;
 }
 const validateProduct = (product) => {
@@ -972,12 +1061,8 @@ const validateProduct = (product) => {
   return true;
 }
 const addNewProductToSupplier = (supplierIndex) => {
-  console.log(suppliers.value[supplierIndex], 'suppliers')
-  let supplier = suppliers.value[supplierIndex];
-  validateSupplier(supplierIndex);
-
-
   const newProductParams = productParams.map((param) => ({ ...param }));
+  console.log(newProductParams, 'newProductParams', supplierIndex)
   suppliers.value[supplierIndex].products.push(newProductParams);
 };
 
@@ -1020,37 +1105,37 @@ const showLastSupplierData = async (supplierIndex) => {
   console.log(isValid);
   const indicators = supplier.indicators;
   const swall = await Swal.fire({
-    title: "<span style='font-weight:100'>Un último paso</span>",
+    title: "<span class='epilogue-regular my-2' >Un último paso</span>",
     backdrop: true,
     width: "40%",
     html: `
    <div class="modal-save">
-    <p>Antes de terminar con la información de tu proveedor ingresa los siguientes datos  de tu cotización</p>
+    <p class='epilogue-regular mt-5'>Antes de terminar con la información de tu proveedor ingresa los siguientes datos  de tu cotización</p>
     <div class="save-supplier-inputs">
       <div class="cbm-total input-container">
         <div class="input-header ">
-          <span>CBM total <span style="color:red">*</span></span>
+          <span class='epilogue-regular'>CBM total <span style="color:red">*</span></span>
           <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M16.5046 8C16.5046 12.2477 12.887 15.7143 8.39515 15.7143C3.90329 15.7143 0.285714 12.2477 0.285714 8C0.285714 3.75234 3.90329 0.285714 8.39515 0.285714C12.887 0.285714 16.5046 3.75234 16.5046 8Z" fill="white" stroke="#FF500B" stroke-width="0.571429"/>
           <path d="M6.96811 12.5715V11.9858L8.12525 11.7858V6.7001L6.98239 6.5001V5.91439L8.95382 5.51439L9.29668 5.64296V11.7858L10.411 11.9858V12.5715H6.96811ZM8.55382 4.45725C8.31573 4.45725 8.12049 4.3763 7.96811 4.21439C7.82525 4.04296 7.75382 3.82868 7.75382 3.57153C7.75382 3.32391 7.83477 3.10487 7.99668 2.91439C8.15858 2.72391 8.36811 2.62868 8.62525 2.62868C8.86335 2.62868 9.05382 2.70487 9.19668 2.85725C9.34906 3.00011 9.42525 3.20963 9.42525 3.48582C9.42525 3.74296 9.34906 3.97153 9.19668 4.17153C9.0443 4.36201 8.83001 4.45725 8.55382 4.45725Z" fill="#FF500B"/>
           </svg>
         </div>
-        <input type="number" class="input w-100" placeholder="0.0" value="${indicators[0].value}" />
-        <span class="error-cbm error d-none">Ingresa un CBM válido</span>
+        <input type="number" class="input w-100 sora-regular" placeholder="0.0" value="${indicators[0].value}" />
+        <span class="error-cbm error d-none sora-light">Ingresa un CBM válido</span>
       </div>
       <div class="peso-total input-container">
         <div class="input-header">
-          <span>CBM total <span style="color:red">*</span></span>
+          <span class='epilogue-regular'>CBM total <span style="color:red">*</span></span>
           <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M16.5046 8C16.5046 12.2477 12.887 15.7143 8.39515 15.7143C3.90329 15.7143 0.285714 12.2477 0.285714 8C0.285714 3.75234 3.90329 0.285714 8.39515 0.285714C12.887 0.285714 16.5046 3.75234 16.5046 8Z" fill="white" stroke="#FF500B" stroke-width="0.571429"/>
             <path d="M6.96811 12.5715V11.9858L8.12525 11.7858V6.7001L6.98239 6.5001V5.91439L8.95382 5.51439L9.29668 5.64296V11.7858L10.411 11.9858V12.5715H6.96811ZM8.55382 4.45725C8.31573 4.45725 8.12049 4.3763 7.96811 4.21439C7.82525 4.04296 7.75382 3.82868 7.75382 3.57153C7.75382 3.32391 7.83477 3.10487 7.99668 2.91439C8.15858 2.72391 8.36811 2.62868 8.62525 2.62868C8.86335 2.62868 9.05382 2.70487 9.19668 2.85725C9.34906 3.00011 9.42525 3.20963 9.42525 3.48582C9.42525 3.74296 9.34906 3.97153 9.19668 4.17153C9.0443 4.36201 8.83001 4.45725 8.55382 4.45725Z" fill="#FF500B"/>
             </svg>
         </div>
         <div class="input-prepend">
-          <span class="prepend">
+          <span class="prepend sora-regular">
               Kg    
           </span>
-          <input type="number" class="input" placeholder="0" value="${indicators[1].value}" style="width:70%!important" >
+          <input type="number" class="input sora-regular" placeholder="0" value="${indicators[1].value}" style="width:70%!important" >
           </input>
         </div>
         <span class="error-peso error d-none">Ingresa un peso válido</span>
@@ -1058,8 +1143,8 @@ const showLastSupplierData = async (supplierIndex) => {
       </div>
     </div>
     <div class="process-steps-buttons mt-4" style="width:85%!important">
-      <div class="btn-anterior" id="btn-back-supplier"<span>Volver</span></div>
-      <div class="btn-siguiente" id="btn-guardar-supplier"><span>Guardar</span>
+      <div class="btn-anterior epilogue-regular" id="btn-back-supplier"<span>Volver</span></div>
+      <div class="btn-siguiente epilogue-regular" id="btn-guardar-supplier"><span>Guardar</span>
     </div>
   `,
     showConfirmButton: false,
@@ -1090,6 +1175,8 @@ const showLastSupplierData = async (supplierIndex) => {
 
           Swal.close();
         }
+        console.log(currentSupplier.value, 'currentSupplier', suppliers.value);
+        supplier.isCompleted = true;
 
 
 
@@ -1099,20 +1186,25 @@ const showLastSupplierData = async (supplierIndex) => {
       });
     }
   }).then(() => {
-    currentSupplier.value ++; 
+    currentSupplier.value++;
   });
 
 }
 const getObjectURL = (file) => {
   let url = null;
-  if (window.createObjectURL != undefined) { // basic
-    url = window.createObjectURL(file);
-  } else if (window.URL != undefined) { // mozilla(firefox)
-    url = window.URL.createObjectURL(file);
-  } else if (window.webkitURL != undefined) { // webkit or chrome
-    url = window.webkitURL.createObjectURL(file);
+  try {
+    if (window.createObjectURL != undefined) { // basic
+      url = window.createObjectURL(file);
+    } else if (window.URL != undefined) { // mozilla(firefox)
+      url = window.URL.createObjectURL(file);
+    } else if (window.webkitURL != undefined) { // webkit or chrome
+      url = window.webkitURL.createObjectURL(file);
+    }
+    return url;
+  } catch (e) {
+    console.error(e)
+    return null;
   }
-  return url;
 }
 const redirectoWhatsapp = (num) => {
   window.open(`https://wa.me/${num}`, '_blank')
@@ -1285,7 +1377,7 @@ const sendCotizacion = async () => {
     suppliers.value = []
   }
 };
-const currentProcessStep = ref(2)
+
 const previousProcessStep = () => {
   if (currentProcessStep.value > 1) {
     currentProcessStep.value--
@@ -1330,7 +1422,7 @@ const processSteps = ref([
   },
   {
     id: 2,
-    name: 'Información de la empresa',
+    name: 'Información empresa',
     isCompleted: false,
   },
   {
@@ -1339,15 +1431,50 @@ const processSteps = ref([
     isCompleted: false,
   }
 ])
-// const deleteSupplier = (index) => {
-//   suppliers.value.splice(index, 1);
-//   if (suppliers.value.length == 0) {
-//     currentSupplier.value = 0;
-//   } else {
-//     currentSupplier.value = index > 0 ? index : 0;
-//   }
-// };
+const deleteSupplier = (index) => {
 
+  if (index == 0) {
+    console.log("delete first supplier")
+  } else {
+    showDeleteSupplierSwall(index);
+
+  }
+};
+const showDeleteSupplierSwall = (index) => {
+  Swal.fire({
+    backdrop: true,
+    width: "40%",
+    html: `
+   <div class="modal-delete">
+    <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M32.0007 58.6667C46.7282 58.6667 58.6673 46.7276 58.6673 32C58.6673 17.2724 46.7282 5.33337 32.0007 5.33337C17.2731 5.33337 5.33398 17.2724 5.33398 32C5.33398 46.7276 17.2731 58.6667 32.0007 58.6667Z" stroke="#FF0000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M32 18.5V35" stroke="#FF0000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M32 42.6666H32.0267" stroke="#FF0000" stroke-width="5.33333" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <h2>¿Estás seguro que deseas eliminar este proveedor?  </h2>
+    <div class="process-steps-buttons mt-4" style="width:85%!important">
+      <div class="btn-anterior" id="btn-back-supplier"<span>Volver</span></div>
+      <div class="btn-siguiente epilogue-regular" id="btn-delete-supplier"><span>Sí,eliminar</span>
+    </div>
+  `,
+    showConfirmButton: false,
+    didOpen: () => {
+      document.getElementById('btn-delete-supplier').addEventListener('click', () => {
+        suppliers.value.splice(index, 1);
+        Swal.close();
+
+      });
+
+
+      document.getElementById('btn-back-supplier').addEventListener('click', () => {
+        Swal.close();
+      });
+    }
+  })
+}
+const showOrderResume = () => {
+  currentProcessStep.value = 4
+}
 // const activateUserSteps = (step, interval) => {
 //   let stepTag = document.querySelector(`.step-${step}`)
 //   if (step === formValuesComputedPair.value.length + formValuesComputedOdd.value.length + 4) {
@@ -1759,6 +1886,10 @@ const processSteps = ref([
 
 </script>
 <style>
+ @import url('https://fonts.googleapis.com/css2?family=Epilogue:wght@100..900&family=Sora:wght@100..800&display=swap');
+</style>
+<style>
+
 body {
   font-family: "Nunito", sans-serif;
   margin: 0;
@@ -1822,7 +1953,6 @@ body {
 .product-list,
 .card {
   display: flex;
-  row-gap: 1rem;
   background: white !important;
   margin-bottom: 1em;
   border-radius: 0;
@@ -2003,7 +2133,7 @@ input[type=number] {
 }
 
 .process-steps-buttons {
-  width: 45%;
+  width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: row;
@@ -2035,7 +2165,8 @@ input[type=number] {
   border: 1px solid #7E7E7E;
   border-radius: 0.5em
 }
-.btn-enviar{
+
+.btn-enviar {
   width: 100%;
   padding: 1.2em 1em;
   text-align: center;
@@ -2043,6 +2174,7 @@ input[type=number] {
   color: black;
   background: #00D680;
 }
+
 .btn-anterior:hover {
   background: #7E7E7E;
   color: white;
@@ -2111,7 +2243,7 @@ input[type=number] {
 .modal-save {
   display: flex;
   flex-direction: column;
-  row-gap: 1em;
+  row-gap: 1.5em;
 }
 
 .error {
@@ -2130,20 +2262,174 @@ input[type=number] {
   justify-content: center;
   border-bottom: 1px solid #DFDFDF;
   padding: 1em;
+  align-items: center;
 }
 
 .indicator-name {
   color: #7E7E7E;
-}.product-info{
+}
+
+.product-info {
   display: flex;
   flex-direction: column;
   gap: 1em;
   justify-content: center;
   padding: 0 1em;
-}.img-container{
+}
+
+.img-container {
   width: 80%;
-    margin: 0 auto;
-    border: 1px solid #DFDFDF;
-    padding: 2em
+  margin: 0 auto;
+  border: 1px solid #DFDFDF;
+  padding: 2em
+}
+
+.modal-delete {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1em;
+  align-items: center;
+  padding: 1em 0;
+}
+
+.order-resume {
+  background: white;
+  width: 50%;
+  margin: 0 auto;
+  border-radius: 0.5em;
+}
+
+.resume-section {
+  border-bottom: 1px solid #DFDFDF;
+
+}
+
+.section-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 1em;
+}
+
+.resume-supplier-indicators {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 1em;
+  border-bottom: 1px solid #DFDFDF;
+}
+.sora-ultra-light {
+  font-family: 'Sora', sans-serif;
+  font-weight: 100;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+.sora-extra-light {
+  font-family: 'Sora', sans-serif;
+  font-weight: 200;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+.sora-light {
+  font-family: 'Sora', sans-serif;
+  font-weight: 300;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+.sora-regular {
+  font-family: 'Sora', sans-serif;
+  font-weight: 400;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+.sora-medium {
+  font-family: 'Sora', sans-serif;
+  font-weight: 500;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+.sora-semibold {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+.sora-bold {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+.sora-extra-bold {
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+.sora-black {
+  font-family: 'Sora', sans-serif;
+  font-weight: 900;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+.epilogue-ultra-light {
+  font-family: 'Epilogue', sans-serif;
+  font-weight: 100;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+.epilogue-extra-light {
+  font-family: 'Epilogue', sans-serif;
+  font-weight: 200;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+.epilogue-light {
+  font-family: 'Epilogue', sans-serif;
+  font-weight: 300;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+.epilogue-regular {
+  font-family: 'Epilogue', sans-serif;
+  font-weight: 400;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+.epilogue-medium {
+  font-family: 'Epilogue', sans-serif;
+  font-weight: 500;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+.epilogue-semibold {
+  font-family: 'Epilogue', sans-serif;
+  font-weight: 600;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+.epilogue-bold {
+  font-family: 'Epilogue', sans-serif;
+  font-weight: 700;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+.epilogue-extra-bold {
+  font-family: 'Epilogue', sans-serif;
+  font-weight: 800;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+.epilogue-black {
+  font-family: 'Epilogue', sans-serif;
+  font-weight: 900;
+  font-optical-sizing: auto;
+  font-style: normal;
+}.process-step.active .step-text {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-optical-sizing: auto;
+  font-style: normal;
 }
 </style>

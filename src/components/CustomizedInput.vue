@@ -3,19 +3,19 @@
         <!-- <span class="fw-bold ">{{ props.text }} <span v-if="!props.optionalText" class="text-danger">*</span></span> -->
         
         <div class="w-100 d-flex flex-column gap align-items-center" style="position: relative;" >
-            <label class="w-100 mb-1 " v-if="props.type=='number'">
+            <label class="w-100 mb-1 epilogue-regular" v-if="props.type=='number'">
                 {{ props.text }}<label class="text-danger" v-if="!props.optionalText">*</label>
             </label>
             <div class="w-100 d-flex flex-row gap align-items-center">
-                <span v-if="props.showActions" class="input-actions"
+                <span v-if="props.showActions" class="input-actions epilogue-regular"
                 @click="() => inputValue>1?inputValue--:inputValue=1">-</span>
 
             <input
             :class="props.type=='number'?'input-actions':''"
-            :type="props.type" class="customized-input__input" :key="props.keyRender"
+            :type="props.type" class="customized-input__input epilogue-regular" :key="props.keyRender"
                 :placeholder="getPlaceHolder(props)" v-model="inputValue" @input="emitInput"
                 :style="props.options?'border-radius:0px':''" />
-            <span v-if="props.showActions" class="input-actions"
+            <span v-if="props.showActions" class="input-actions "
             @click="()=>inputValue++
             "> +</span>
             </div>
@@ -30,7 +30,7 @@
             <i v-if="props.prepend" :class="props.prepend.icon" id="prepend-icon"
                 @click="() => props.prepend.action(inputValue)"></i>
         </div>
-        <small v-if="props.isError" class="text-danger">{{props.errorText?props.errorText:'Este campo es obligatorio'}}</small>
+        <small v-if="props.isError" class="text-danger epilogue-light">{{props.errorText?props.errorText:'Este campo es obligatorio'}}</small>
     </div>
 </template>
 
@@ -92,7 +92,8 @@ const selectOption=(value)=>{
     display: flex;
     flex-direction: column;
     padding: 0.5em 0;
-    margin:1em 0;
+    margin-bottom: 1em;
+    margin-top: 1em;
 }
 
 .customized-input__input {
@@ -121,6 +122,7 @@ span:hover{
 #prepend-icon{
     position: absolute;
     right: 1em;
+    top:0.5em
 }
 #prepend-icon:hover {
     cursor: pointer;
