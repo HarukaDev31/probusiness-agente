@@ -9,10 +9,10 @@
     </div>
     <navbar />
     <main class="main-container" style="position:relative">
-      <div class="hero-container">
+      <div class="hero-container" v-if="currentProcessStep != 4">
         <img class="hero-image" src="/src/assets/hero.png" alt="Hero Image" />
       </div>
-      <div class="process-steps-container">
+      <div class="process-steps-container" v-if="currentProcessStep != 4">
         <div class="process-step" :class="getCurrentStepClass(currentProcessStep, index + 1)"
           v-for="(step, index) in processSteps" :key="index">
           <div class="step-number 
@@ -89,12 +89,11 @@
       </div>
       <div class="process-proveedores" v-if="currentProcessStep == 3">
         <h2 class="my-4 text-center sora-regular">Proveedor</h2>
-        {{ currentSupplier }}
         <card>
           <template #body>
             <div v-for="(supplier, supplierIndex) in suppliers" :key="supplierIndex" class="card">
               <div class="supplier-header">
-                <h3 class="text-center mx-auto sora-regular">Proveedor 0{{ supplierIndex + 1 }}</h3>
+                <h5 class="text-center mx-auto sora-regular">Proveedor 0{{ supplierIndex + 1 }}</h5>
                 <div class="btn-delete" @click="deleteSupplier(supplierIndex)"
                   v-if="currentSupplier.value == supplierIndex + 1">
                   <svg width="22" height="24" viewBox="0 0 22 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -181,9 +180,7 @@
                     Quitar
                   </div>
                 </div>
-                <div class="btn btn-outline-danger" @click="deleteProduct(productListIndex, supplierIndex)">
-                  Quitar
-                </div>
+
               </div>
               <div class="product-list-collapsed row py-4" v-else>
                 <div class="col col-6" v-for="(productList, productListIndex) in supplier.products"
@@ -197,11 +194,11 @@
 
                     </div>
                     <div class="product-info col col-6">
-                      <span class="mb-2 epilogue-bold">
+                      <span class="mb-2 epilogue-regular">
                         {{ getProductParam(productList, 'nombre').value }}
                       </span>
                       <span class="epilogue-regular">
-                        Cantidad: 
+                        Cantidad:
                         {{ getProductParam(productList, 'cantidad').value }} KG
                       </span>
                       <span class="epilogue-regular">
@@ -237,84 +234,117 @@
       </div>
       <!--Order Resume-->
       <div class="order-resume" v-if="currentProcessStep == 4">
-        <h2 class="my-4 text-center">Resumen de pedido</h2>
+        <div class="resume-header">
+          <svg @click="currentProcessStep = 3" class="icon-edit" width="23" height="23" viewBox="0 0 23 23" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M6.45602 18.5643C6.54393 18.5424 6.62422 18.4969 6.6883 18.4328L18.916 6.20508C19.1552 5.96596 19.3448 5.68208 19.4743 5.36965C19.6037 5.05722 19.6703 4.72237 19.6703 4.3842C19.6703 4.04603 19.6037 3.71117 19.4743 3.39874C19.3448 3.08631 19.1552 2.80244 18.916 2.56332C18.6769 2.32419 18.393 2.13451 18.0806 2.0051C17.7682 1.87569 17.4333 1.80908 17.0952 1.80908C16.4122 1.80908 15.7572 2.08039 15.2743 2.56332L3.04654 14.7911C2.98246 14.8551 2.937 14.9354 2.91502 15.0233L1.9368 18.9362C1.89421 19.1066 1.94413 19.2868 2.06832 19.411C2.19251 19.5352 2.37276 19.5851 2.54314 19.5426L6.45602 18.5643Z"
+              stroke="#7E7E7E" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+
+        </div>
         <div class="informacion-personal resume-section">
           <div class="section-content">
-            <h2>Información personal</h2>
+            <h2 class="sora-regular">Información personal</h2>
             <div class="d-flex flex-column">
-              <span>{{ getFormParam(formValuesComputedPair, 'nombres').value }} {{
+              <span class="epilogue-regular">{{ getFormParam(formValuesComputedPair, 'nombres').value }} {{
                 getFormParam(formValuesComputedPair, 'apellidos').value }}</span>
-              <span>{{ getFormParam(formValuesComputedPair, 'email').value }}</span>
-              <span>{{ getFormParam(formValuesComputedPair, 'dni').value }}</span>
+              <span class="epilogue-regular">{{ getFormParam(formValuesComputedPair, 'email').value }}</span>
+              <span class="epilogue-regular">{{ getFormParam(formValuesComputedPair, 'dni').value }}</span>
             </div>
           </div>
         </div>
         <div class="empresa resume-section">
           <div class="section-content">
-            <h2>Empresa</h2>
+            <h2 class="sora-regular">Empresa</h2>
 
             <div class="d-flex flex-column">
-              <span>{{ getFormParam(formValuesComputedOdd, 'empresa').value }}</span>
-              <span>{{ getFormParam(formValuesComputedOdd, 'ruc').value }}</span>
+              <span class="epilogue-regular">{{ getFormParam(formValuesComputedOdd, 'empresa').value }}</span>
+              <span class="epilogue-regular">{{ getFormParam(formValuesComputedOdd, 'ruc').value }}</span>
             </div>
           </div>
 
         </div>
-        <div class="proveedores resume-section">
-          <h2 style="margin-bottom: 1px solid #DFDFDF;">Proveedores</h2>
+        <div class="proveedores">
+          <div class="section-content">
+            <h2 class="sora-regular py-3">Proveedores</h2>
 
-          <div v-for="(supplier, supplierIndex) in suppliers" :key="supplierIndex">
-            <div class="resume-supplier-indicators">
+            <div v-for="(supplier, supplierIndex) in suppliers" :key="supplierIndex"
+              style="border-bottom: 1px solid #DFDFDF;">
+              <div class="resume-supplier-indicators">
 
-              <h3 class="">Proveedor {{ supplierIndex + 1 }}</h3>
-              <div class="d-flex flex-row" style="column-gap: 1em;">
-                <div v-for="(indicator, index) in supplier.indicators" :key="`${supplierIndex}-${indicator.key}`">
-                  <span v-if="indicator.key == 'cbm'">
-                    <span class="indicator-name epilogue-regular">{{ indicator.name }}:
+                <h4 class="sora-regular">Proveedor {{ supplierIndex + 1 }}</h4>
+                <div class="d-flex flex-row" style="column-gap: 1em;">
+                  <div v-for="(indicator, index) in supplier.indicators" :key="`${supplierIndex}-${indicator.key}`">
+                    <span v-if="indicator.key == 'cbm'">
+                      <span class="indicator-name epilogue-regular">{{ indicator.name }}:
+                      </span>
+                      {{ indicator.value }} m3
                     </span>
-                    {{ indicator.value }} m3
-                  </span>
-                  <span v-else>
-                    <span class="indicator-name epilogue-regular">{{ indicator.name }}:
+                    <span v-else>
+                      <span class="indicator-name epilogue-regular">{{ indicator.name }}:
+                      </span>
+                      {{ indicator.value }} {{ indicator.value > 1000 ? 'TN' : 'KG' }}
                     </span>
-                    {{ indicator.value }} {{ indicator.value > 1000 ? 'TN' : 'KG' }}
-                  </span>
+                  </div>
                 </div>
-              </div>
 
-            </div>
-            <div class="product-list-collapsed row py-4">
-              <div class="col col-6" v-for="(productList, productListIndex) in supplier.products"
-                :key="productListIndex">
-                <div class="row">
-                  <div class=" col col-6">
-                    <div class="img-container">
-                      <img :src="getObjectURL(getProductParam(productList, 'foto').value)" alt="product image"
-                        class="img img-fluid" />
+              </div>
+              <div class="product-list-collapsed row py-4 ">
+                <div class=" col col-6" v-for="(productList, productListIndex) in supplier.products"
+                  :key="productListIndex">
+                  <span class="sora-regular">Producto {{ productListIndex + 1 }}</span>
+
+                  <div class="row mt-2">
+                    <div class=" col col-6">
+
+                      <div class="img-container">
+                        <img :src="getObjectURL(getProductParam(productList, 'foto').value)" alt="product image"
+                          class="img img-fluid" />
+                      </div>
+
                     </div>
+                    <div class="product-info col col-6">
+                      <span class="mb-2 epilogue-regular">
+                        {{ getProductParam(productList, 'nombre').value }}
+                      </span>
+                      <span class="epilogue-regular">
+                        {{ getProductParam(productList, 'cantidad').name }}
+                        {{ getProductParam(productList, 'cantidad').value }} KG
+                      </span>
+                      <span class="epilogue-regular">
+                        {{ getProductParam(productList, 'valor').name }}
+                        ${{ getProductParam(productList, 'valor').value }}
+                      </span>
+                    </div>
+                  </div>
 
-                  </div>
-                  <div class="product-info col col-6">
-                    <span class="mb-2">
-                      {{ getProductParam(productList, 'nombre').value }}
-                    </span>
-                    <span>
-                      {{ getProductParam(productList, 'cantidad').name }}
-                      {{ getProductParam(productList, 'cantidad').value }} KG
-                    </span>
-                    <span>
-                      {{ getProductParam(productList, 'valor').name }}
-                      ${{ getProductParam(productList, 'valor').value }}
-                    </span>
-                  </div>
                 </div>
-
               </div>
+
             </div>
+
           </div>
+
         </div>
 
 
+      </div>
+      <div v-if="currentProcessStep == 4"
+        class="terms-and-conditions w-50 mx-auto text-center epilogue-regular pt-5 pb-2" style="font-size: 0.8em;">
+        <span>
+          Al enviar este formulario confirmo que he leído y acepto la
+          <a href="#" class="epilogue-regular">Política de privacidad</a>
+        </span>
+      </div>
+      <div class="mx-auto w-50 mt-2 d-flex flex-column" style="row-gap: 1em" v-if="currentProcessStep == 4">
+
+        <div class="btn-enviar epilogue-regular" @click="sendCotizacion">
+          Envíar Pedido
+        </div>
+        <div class="btn-anterior epilogue-regular" @click="currentProcessStep = 3">
+          Volver
+        </div>
       </div>
     </main>
   </div>
@@ -651,7 +681,6 @@ import StepByStepButton from "./components/StepByStepButton.vue";
 import { ref, computed, reactive, onMounted } from "vue";
 import { sendCotization, getClientDataByDNIID } from "./services/send-cotization";
 import Swal from 'sweetalert2';
-import { faL } from "@fortawesome/free-solid-svg-icons";
 const currentProcessStep = ref(1)
 //validation functions
 const validateNotEmpy = (value) => {
@@ -783,7 +812,7 @@ const supplierIndicators = ref([
   },
 
 ]);
-const suppliers = ref([]);
+const suppliers = ref([])
 //position of description
 //get current window width
 const windowWidth = ref(window.innerWidth);
@@ -982,8 +1011,6 @@ const currentSupplier = reactive({
 const changeCurrentSupplier = (index) => {
   currentSupplier.value = index + 1;
   suppliers.value[index].isCompleted = false;
-
-
 };
 const handleFile = (file, product) => {
   product.value = file;
@@ -1886,10 +1913,9 @@ const showOrderResume = () => {
 
 </script>
 <style>
- @import url('https://fonts.googleapis.com/css2?family=Epilogue:wght@100..900&family=Sora:wght@100..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Epilogue:wght@100..900&family=Sora:wght@100..800&display=swap');
 </style>
 <style>
-
 body {
   font-family: "Nunito", sans-serif;
   margin: 0;
@@ -2085,6 +2111,7 @@ input[type=number] {
   margin: 1em auto;
 }
 
+
 .process-step {
   width: 100%;
   display: flex;
@@ -2095,6 +2122,72 @@ input[type=number] {
   padding: 0.8em 1em;
   border: 1px solid #CFD6DC;
 
+}
+
+@media (max-width: 1068px) {
+  .process-steps-container {
+    flex-direction: column;
+  }
+
+  .process-step {
+    width: 100%;
+    column-gap: 0.4em;
+    font-size: 0.8em;
+    padding: 0.5em 0.5em;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar{
+    padding: 2em 0!important;
+    margin: 0!important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%!important;  
+  }
+  .process-informacion-personal{
+    width: 80%!important;
+  }
+  .process-steps-container {
+    flex-direction: column;
+    width: 80%;
+  }
+
+  .process-step {
+    padding: 0.5em 0.5em;
+
+
+  }
+
+  .step-text {
+    width: 60%;
+    text-align: center;
+  }
+
+  .hero-container {
+    width: 100%;
+    background: linear-gradient(180deg, rgba(17, 17, 17, 0) 50%, #111111 100%);
+    position: relative;
+    height: 280px
+
+  }
+
+  .hero-image {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: url(./assets/hero-sm.jpeg) no-repeat;
+    top: 0;
+    left: 0;
+    z-index: -1;
+
+  }
+
+  .main-container {
+    width: 100%;
+  }
+  
 }
 
 .process-step.active .step-number {
@@ -2173,6 +2266,11 @@ input[type=number] {
   border-radius: 0.5em;
   color: black;
   background: #00D680;
+}
+
+.btn-enviar:hover {
+  background: #00b26b;
+  cursor: pointer;
 }
 
 .btn-anterior:hover {
@@ -2272,14 +2370,12 @@ input[type=number] {
 .product-info {
   display: flex;
   flex-direction: column;
-  gap: 1em;
   justify-content: center;
   padding: 0 1em;
 }
 
 .img-container {
   width: 80%;
-  margin: 0 auto;
   border: 1px solid #DFDFDF;
   padding: 2em
 }
@@ -2297,6 +2393,7 @@ input[type=number] {
   width: 50%;
   margin: 0 auto;
   border-radius: 0.5em;
+  padding: 2em 0;
 }
 
 .resume-section {
@@ -2306,9 +2403,11 @@ input[type=number] {
 
 .section-content {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
-  padding: 1em;
+  padding: 1em 2em;
+  row-gap: 1em;
+  border-bottom: 1px solid #DFDFDF;
 }
 
 .resume-supplier-indicators {
@@ -2316,120 +2415,151 @@ input[type=number] {
   width: 100%;
   flex-direction: row;
   justify-content: space-between;
-  padding: 1em;
+  padding-bottom: 1em;
   border-bottom: 1px solid #DFDFDF;
 }
+
 .sora-ultra-light {
   font-family: 'Sora', sans-serif;
   font-weight: 100;
   font-optical-sizing: auto;
   font-style: normal;
 }
+
 .sora-extra-light {
   font-family: 'Sora', sans-serif;
   font-weight: 200;
   font-optical-sizing: auto;
   font-style: normal;
 }
+
 .sora-light {
   font-family: 'Sora', sans-serif;
   font-weight: 300;
   font-optical-sizing: auto;
   font-style: normal;
 }
+
 .sora-regular {
   font-family: 'Sora', sans-serif;
   font-weight: 400;
   font-optical-sizing: auto;
   font-style: normal;
 }
+
 .sora-medium {
   font-family: 'Sora', sans-serif;
   font-weight: 500;
   font-optical-sizing: auto;
   font-style: normal;
 }
+
 .sora-semibold {
   font-family: 'Sora', sans-serif;
   font-weight: 600;
   font-optical-sizing: auto;
   font-style: normal;
 }
+
 .sora-bold {
   font-family: 'Sora', sans-serif;
   font-weight: 700;
   font-optical-sizing: auto;
   font-style: normal;
 }
+
 .sora-extra-bold {
   font-family: 'Sora', sans-serif;
   font-weight: 800;
   font-optical-sizing: auto;
   font-style: normal;
 }
+
 .sora-black {
   font-family: 'Sora', sans-serif;
   font-weight: 900;
   font-optical-sizing: auto;
   font-style: normal;
 }
+
 .epilogue-ultra-light {
   font-family: 'Epilogue', sans-serif;
   font-weight: 100;
   font-optical-sizing: auto;
   font-style: normal;
 }
+
 .epilogue-extra-light {
   font-family: 'Epilogue', sans-serif;
   font-weight: 200;
   font-optical-sizing: auto;
   font-style: normal;
 }
+
 .epilogue-light {
   font-family: 'Epilogue', sans-serif;
   font-weight: 300;
   font-optical-sizing: auto;
   font-style: normal;
 }
+
 .epilogue-regular {
   font-family: 'Epilogue', sans-serif;
   font-weight: 400;
   font-optical-sizing: auto;
   font-style: normal;
 }
+
 .epilogue-medium {
   font-family: 'Epilogue', sans-serif;
   font-weight: 500;
   font-optical-sizing: auto;
   font-style: normal;
 }
+
 .epilogue-semibold {
   font-family: 'Epilogue', sans-serif;
   font-weight: 600;
   font-optical-sizing: auto;
   font-style: normal;
 }
+
 .epilogue-bold {
   font-family: 'Epilogue', sans-serif;
   font-weight: 700;
   font-optical-sizing: auto;
   font-style: normal;
 }
+
 .epilogue-extra-bold {
   font-family: 'Epilogue', sans-serif;
   font-weight: 800;
   font-optical-sizing: auto;
   font-style: normal;
 }
+
 .epilogue-black {
   font-family: 'Epilogue', sans-serif;
   font-weight: 900;
   font-optical-sizing: auto;
   font-style: normal;
-}.process-step.active .step-text {
+}
+
+.process-step.active .step-text {
   font-family: 'Sora', sans-serif;
   font-weight: 700;
   font-optical-sizing: auto;
   font-style: normal;
+}
+
+.resume-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 0 1em
+}
+
+.icon-edit:hover path {
+  stroke: #FF500B;
 }
 </style>
