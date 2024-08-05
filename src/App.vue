@@ -210,7 +210,7 @@
 
                 </div>
               </div>
-              <div class="process-steps-buttons w-100"
+              <div class="process-steps-buttons"
                 v-if="currentSupplier.value == supplierIndex + 1 && !supplier.isCompleted">
                 <div class="btn-anterior" @click="addNewProductToSupplier(supplierIndex)">
                   Agregar producto
@@ -720,7 +720,7 @@ const productParams = [
   {
     text: "Uso del producto",
     optionalText: false,
-    type: "text",
+    type: "textarea",
     key: "uso",
     value: "",
     keyRender: 0,
@@ -2226,7 +2226,7 @@ input[type=number] {
 }
 
 .process-steps-buttons {
-  width: 100%;
+  width: 90%;
   margin: 0 auto;
   display: flex;
   flex-direction: row;

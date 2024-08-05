@@ -10,12 +10,14 @@
                 <span v-if="props.showActions" class="input-actions epilogue-regular"
                 @click="() => inputValue>1?inputValue--:inputValue=1">-</span>
 
+            <textarea v-if="props.type=='textarea'" :placeholder="getPlaceHolder(props)" :value="inputValue" @input="emitInput" class="customized-input__input epilogue-regular" :style="props.isError?'border-color:red':''"></textarea>
             <input
+            v-else
             :class="props.type=='number'?'input-actions':''"
             :type="props.type" class="customized-input__input epilogue-regular" :key="props.keyRender"
                 :placeholder="getPlaceHolder(props)" v-model="inputValue" @input="emitInput"
                 :style="props.options?'border-radius:0px':''" />
-            <span v-if="props.showActions" class="input-actions "
+            <span v-if="props.showActions && props.type!='textarea'" class="input-actions "
             @click="()=>inputValue++
             "> +</span>
             </div>
