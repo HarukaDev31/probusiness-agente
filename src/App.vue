@@ -681,7 +681,7 @@ import StepByStepButton from "./components/StepByStepButton.vue";
 import { ref, computed, reactive, onMounted } from "vue";
 import { sendCotization, getClientDataByDNIID } from "./services/send-cotization";
 import Swal from 'sweetalert2';
-const currentProcessStep = ref(1)
+const currentProcessStep = ref(2)
 //validation functions
 const validateNotEmpy = (value) => {
   return value != "";
@@ -2561,5 +2561,19 @@ input[type=number] {
 
 .icon-edit:hover path {
   stroke: #FF500B;
+}
+textarea::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+textarea::-webkit-scrollbar-thumb {
+    background: #DFDFDF; /* Color del thumb */
+    border-radius: 5px; /* Radio del borde del thumb */
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    cursor: pointer;
 }
 </style>

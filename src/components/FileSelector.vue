@@ -3,7 +3,7 @@
 
         <div @click="openFileExplorer" class="w-100">
             <slot name="button">
-                <div class="btn  btn-outline-secondary w-100">
+                <div class="btn  btn-outline-secondary w-100 upload-button">
                     <slot name="text">Seleccionar archivo</slot>
                 </div>
             </slot>
@@ -11,10 +11,10 @@
 
         <input type="file" class="d-none" ref="fileInput" :multiple="props.multiple"
             :accept="props.accept" @change="handleInputChange" />
-
+<!-- 
         <div class="file-selector_drop d-flex align-items-center" @dragover.prevent @drop="handleDrop"
             v-if="props.notShowDrop">
-            <div class="file-selector_drop_container d-flex  flex-column ">
+            <div class="file-selector_drop_container d-flex  flex-column "   v-if="!props.notShowDrop">
                 <div v-if="!files.length" class="d-flex flex-column ">
                 </div>
                 <div class="file-list" v-if="files.length > 0" :style="{
@@ -27,7 +27,7 @@
 
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 </template>
 <script setup>
@@ -152,6 +152,7 @@ if (props.value) {
     display: flex;
     flex-direction: column;
     row-gap: 1em;
+    height: 100%;
 }
 
 .file-selector_drop {
@@ -206,5 +207,7 @@ if (props.value) {
     font-weight: bold;
     text-align: center;
     margin-bottom: 1rem;
+}.upload-button{
+    height: 100%
 }
 </style>
