@@ -2229,7 +2229,7 @@ input[type=number] {
     width: 100%;
     background: linear-gradient(180deg, rgba(17, 17, 17, 0) 50%, #111111 100%);
     position: relative;
-    height: 280px
+    height: 230px
   }
 
   .hero-image {
