@@ -211,9 +211,9 @@
                         :class="`step-body-${productItemIndex + 2}`" :show-actions="product.showActions" />
                     </div>
                   </div>
-                  <div class="btn btn-outline-danger w-100" @click="deleteProduct(productListIndex, supplierIndex)">
+                  <!-- <div class="btn btn-outline-danger w-100" @click="deleteProduct(productListIndex, supplierIndex)">
                     Quitar
-                  </div>
+                  </div> -->
                 </div>
 
               </div>
@@ -1235,10 +1235,10 @@ const showLastSupplierData = async (supplierIndex) => {
           // Set values
           indicators[0].value = parseInt(cbm);
           indicators[1].value = parseInt(peso);
+          currentSupplier.value++;
 
           Swal.close();
         }
-        console.log(currentSupplier.value, 'currentSupplier', suppliers.value);
         supplier.isCompleted = true;
 
 
@@ -1247,9 +1247,9 @@ const showLastSupplierData = async (supplierIndex) => {
       document.getElementById('btn-back-supplier').addEventListener('click', () => {
         Swal.close();
       });
+      d
     }
   }).then(() => {
-    currentSupplier.value++;
   });
 
 }
