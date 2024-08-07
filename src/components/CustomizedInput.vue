@@ -10,7 +10,7 @@
                 <span v-if="props.showActions" class="input-actions epilogue-regular"
                     @click="() => inputValue > 1 ? inputValue-- : inputValue = 1">-</span>
                 <div class="text-area w-100" v-if="props.type == 'textarea'">
-                    <div class="info-tooltip" style="display: none;">
+                    <div class="info-tooltip epilogue-regular   " style="display: none;">
                         <p>Ingresa información específica del uso de producto, ejemplo:</p>
                         <ul>
                             <li>Medidas alto 23 cm x 55 m de ancho</li>
@@ -18,7 +18,7 @@
                             <li>Protección etc.</li>
                         </ul>
                     </div>
-                    <textarea :placeholder="getPlaceHolder(props)" :value="inputValue" @input="emitInput"
+                    <textarea :placeholder="getPlaceHolder(props)" v-model="inputValue" @input="emitInput"
                         class="customized-input__input epilogue-regular"
                         :style="props.isError ? 'border-color:red' : ''"></textarea>
                     <svg 
@@ -80,7 +80,7 @@ const getPlaceHolder = (props) => {
     return props.text + '*'
 }
 const emitInput = () => {
-
+    console.log(inputValue.value)
     emit('input', inputValue.value)
 
 }

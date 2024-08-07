@@ -62,11 +62,15 @@
       <div class="process-informacion-personal" v-if="currentProcessStep == 2">
         <h2 class="my-4  sora-regular">Datos empresa</h2>
         <span class="epilogue-regular">Ingresa los datos de tu empresa</span>
+        
         <div v-for="(desc, descIndex) in formValuesComputedOdd.filter((item) => {
           if (item.hasOwnProperty('notShow')) {
-            return false
+            if (!item.notShow) {
+              return item
+            }
+            return
           }
-          return true
+          return item
         })">
           <customized-input :key="descIndex" :text="desc.text" :optionalText="desc.optionalText" :type="desc.type"
             @input="(e) => (desc.value = e)" :value="desc.value" :validation="desc.validate" :is-error="desc.error"
@@ -79,9 +83,12 @@
           </div>
           <div class="btn-siguiente epilogue-regular" @click="nextProcessStep(formValuesComputedOdd.filter((item) => {
             if (item.hasOwnProperty('notShow')) {
-              return false
+              if (!item.notShow) {
+                return item
+              }
+              return
             }
-            return true
+            return item 
           }))" v-if="currentProcessStep < processSteps.length">
             <span>Siguiente</span>
           </div>
@@ -93,10 +100,17 @@
           <template #body>
             <div v-for="(supplier, supplierIndex) in suppliers" :key="supplierIndex" class="card">
               <div class="supplier-header">
-                <h5 class="text-center mx-auto sora-regular">Proveedor 0{{ supplierIndex + 1 }}</h5>
+                <h5 class="text-center mx-auto sora-regular">Proveedor {{ getFormattedNumber(supplierIndex + 1) }}</h5>
                 <div class="btn-delete" @click="deleteSupplier(supplierIndex)"
                   v-if="currentSupplier.value == supplierIndex + 1">
-                  <svg width="22" height="24" viewBox="0 0 22 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="26.5967" y="8.59692" width="1.63637" height="25.4558"
+                      transform="rotate(45 26.5967 8.59692)" fill="#CCCCCC" />
+                    <rect x="27.4033" y="26.5969" width="1.63637" height="25.4558"
+                      transform="rotate(135 27.4033 26.5969)" fill="#CCCCCC" />
+                  </svg>
+
+                  <!-- <svg width="22" height="24" viewBox="0 0 22 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M1.41406 5.44446H3.63628H21.4141" stroke="#FF0000" stroke-linecap="round"
                       stroke-linejoin="round" />
                     <path
@@ -104,7 +118,7 @@
                       stroke="#FF0000" stroke-linecap="round" stroke-linejoin="round" />
                     <path d="M9.19141 11V17.6667" stroke="#FF0000" stroke-linecap="round" stroke-linejoin="round" />
                     <path d="M13.6367 11V17.6667" stroke="#FF0000" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
+                  </svg> -->
                 </div>
                 <div v-else>
                   <div class="d-flex flex-row" style="column-gap:1em">
@@ -147,13 +161,34 @@
               <!--STEP 3-->
               <div class="product-list row" v-for="(productList, productListIndex) in supplier.products"
                 v-if="currentSupplier.value == supplierIndex + 1 && !supplier.isCompleted" :key="productListIndex">
+                <span @click="deleteProduct(productListIndex, supplierIndex)" v-if="productListIndex != 0"
+                  class="delete-product">
+                  <svg width="25" height="25" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="26.5967" y="8.59692" width="1.63637" height="25.4558"
+                      transform="rotate(45 26.5967 8.59692)" fill="#CCCCCC"></rect>
+                    <rect x="27.4033" y="26.5969" width="1.63637" height="25.4558"
+                      transform="rotate(135 27.4033 26.5969)" fill="#CCCCCC"></rect>
+                  </svg>
+                </span>
+
                 <div class="col-12 col-md-6">
                   <div v-for="(product, productItemIndex) in productList.filter((item) => item.type == 'file')"
                     :key="`fileSelector-${productItemIndex}`" style="height: 100%"
                     :class="`step-body-${productItemIndex + 1}`">
                     <file-selector :not-show-drop="true" :multiple="false" :value="product.value"
                       @fileChange="(files) => handleFile(files, product)" :accept="'image/*'">
-                      <template #text>Seleccionar foto</template>
+                      <template #text>Subir Imagen
+                        <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M22.5 12.6924H16.5769C16.1281 12.6924 15.6976 12.8707 15.3803 13.188C15.0629 13.5054 14.8846 13.9359 14.8846 14.3847C14.8846 15.2823 14.528 16.1432 13.8933 16.778C13.2585 17.4127 12.3976 17.7693 11.5 17.7693C10.6023 17.7693 9.74145 17.4127 9.10672 16.778C8.47197 16.1432 8.11538 15.2823 8.11538 14.3847C8.11538 13.9359 7.93708 13.5054 7.61972 13.188C7.30235 12.8707 6.87191 12.6924 6.42308 12.6924H0.5V20.3078C0.5 20.7566 0.678296 21.1871 0.995665 21.5044C1.31304 21.8217 1.74347 22.0001 2.19231 22.0001H20.8077C21.2565 22.0001 21.687 21.8217 22.0043 21.5044C22.3216 21.1871 22.5 20.7566 22.5 20.3078V12.6924Z"
+                            stroke="#7E7E7E" stroke-linecap="round" stroke-linejoin="round" />
+                          <path d="M7.26855 6.23077L11.4993 2L15.7301 6.23077" stroke="#7E7E7E" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                          <path d="M11.5005 12.1538V2" stroke="#7E7E7E" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        </svg>
+
+                      </template>
                     </file-selector>
                   </div>
                 </div>
@@ -183,17 +218,17 @@
 
               </div>
               <div class="product-list-collapsed row py-4" v-else>
-                <div class="col col-6" v-for="(productList, productListIndex) in supplier.products"
+                <div class="col-12 col-md-6" v-for="(productList, productListIndex) in supplier.products"
                   :key="productListIndex">
                   <div class="row">
-                    <div class=" col col-6">
+                    <div class=" col-12 col-md-6">
                       <div class="img-container">
                         <img :src="getObjectURL(getProductParam(productList, 'foto').value)" alt="product image"
                           class="img img-fluid" />
                       </div>
 
                     </div>
-                    <div class="product-info col col-6">
+                    <div class="product-info col-12 col-md-6">
                       <span class="mb-2 epilogue-regular">
                         {{ getProductParam(productList, 'nombre').value }}
                       </span>
@@ -245,7 +280,7 @@
         </div>
         <div class="informacion-personal resume-section">
           <div class="section-content">
-            <h2 class="sora-regular">Información personal</h2>
+            <h3 class="sora-regular">Información personal</h3>
             <div class="d-flex flex-column">
               <span class="epilogue-regular">{{ getFormParam(formValuesComputedPair, 'nombres').value }} {{
                 getFormParam(formValuesComputedPair, 'apellidos').value }}</span>
@@ -256,7 +291,7 @@
         </div>
         <div class="empresa resume-section">
           <div class="section-content">
-            <h2 class="sora-regular">Empresa</h2>
+            <h3 class="sora-regular">Empresa</h3>
 
             <div class="d-flex flex-column">
               <span class="epilogue-regular">{{ getFormParam(formValuesComputedOdd, 'empresa').value }}</span>
@@ -267,13 +302,13 @@
         </div>
         <div class="proveedores">
           <div class="section-content">
-            <h2 class="sora-regular py-3">Proveedores</h2>
+            <h3 class="sora-regular py-3">Proveedores</h3>
 
             <div v-for="(supplier, supplierIndex) in suppliers" :key="supplierIndex"
-              style="border-bottom: 1px solid #DFDFDF;">
+              :style="supplierIndex + 1 != suppliers.length ? 'border-bottom: 1px solid #DFDFDF;' : ''">
               <div class="resume-supplier-indicators">
 
-                <h4 class="sora-regular">Proveedor {{ supplierIndex + 1 }}</h4>
+                <h5 class="sora-regular">Proveedor {{ getFormattedNumber(supplierIndex + 1) }}</h5>
                 <div class="d-flex flex-row" style="column-gap: 1em;">
                   <div v-for="(indicator, index) in supplier.indicators" :key="`${supplierIndex}-${indicator.key}`">
                     <span v-if="indicator.key == 'cbm'">
@@ -293,7 +328,7 @@
               <div class="product-list-collapsed row py-4 ">
                 <div class=" col col-6" v-for="(productList, productListIndex) in supplier.products"
                   :key="productListIndex">
-                  <span class="sora-regular">Producto {{ productListIndex + 1 }}</span>
+                  <span class="sora-regular">Producto {{ getFormattedNumber(productListIndex + 1) }}</span>
 
                   <div class="row mt-2">
                     <div class=" col col-6">
@@ -662,10 +697,10 @@
         <floatting-button />
         <step-by-step-button @click="startStepByStep" />
       </div>
-      <footer-cuz />
+      
       <send-button @sendCotizacion="sendCotizacion" />
       </div> -->
-
+  <footer-cuz />
 </template>
 <script setup>
 //import components
@@ -681,7 +716,7 @@ import StepByStepButton from "./components/StepByStepButton.vue";
 import { ref, computed, reactive, onMounted } from "vue";
 import { sendCotization, getClientDataByDNIID } from "./services/send-cotization";
 import Swal from 'sweetalert2';
-const currentProcessStep = ref(2)
+const currentProcessStep = ref(1)
 //validation functions
 const validateNotEmpy = (value) => {
   return value != "";
@@ -994,7 +1029,7 @@ const formValues = ref([
     error: false,
     keyRender: 0,
     helpText: "Ingresa tu número de whatsapp para poder contactarte.",
-    notShow: true,
+    notShow: false,
 
   },
 ]);
@@ -1120,10 +1155,8 @@ const showAlert = (title, text, icon, fn = null, go = "OK") => {
 
 //show modal swall when save button supplier button is clicked
 const showLastSupplierData = async (supplierIndex) => {
-  console.log(suppliers.value, "waos")
 
   const supplier = suppliers.value[supplierIndex];
-  console.log(supplier, 'supplier to validate')
   const isValid = validateSupplier(supplierIndex);
   if (!isValid) {
     showAlert("Error al guardar proveedor", "Debes llenar todos los campos obligatorios", "error");
@@ -1131,10 +1164,13 @@ const showLastSupplierData = async (supplierIndex) => {
   }
   console.log(isValid);
   const indicators = supplier.indicators;
+  //GET CURRENT WINDOW WIDTH
+  const windowWidth = window.innerWidth;
+  const modalSize = windowWidth < 768 ? "100%" : "40%";
   const swall = await Swal.fire({
     title: "<span class='epilogue-regular my-2' >Un último paso</span>",
     backdrop: true,
-    width: "40%",
+    width: modalSize,
     html: `
    <div class="modal-save">
     <p class='epilogue-regular mt-5'>Antes de terminar con la información de tu proveedor ingresa los siguientes datos  de tu cotización</p>
@@ -1240,6 +1276,18 @@ const sendCotizacion = async () => {
   //send all in formdata format
   const formData = new FormData();
   let isValid = true;
+  //filter formvalue with property  notShow
+  formValues.value = formValues.value.filter((input) => {
+    if (input.hasOwnProperty('notShow')) {
+      if (!input.notShow) {
+        return input
+      } else {
+        return 
+      }
+    }
+    return input
+  });
+  console.log(formValues.value, 'formValues')
   formValues.value.forEach((input) => {
     if (
       (input.type == "text" || input.type == "email") &&
@@ -1307,7 +1355,7 @@ const sendCotizacion = async () => {
             isValid = false;
           }
         } else if (indicator.key == "peso") {
-          const existsSelected = indicator.options.find(option => option.selected)
+          const existsSelected = indicator.value
           if (existsSelected) {
             if (validateNumber(indicator.value)) {
               formData.append(
@@ -1501,6 +1549,12 @@ const showDeleteSupplierSwall = (index) => {
 }
 const showOrderResume = () => {
   currentProcessStep.value = 4
+}
+const getFormattedNumber = (number) => {
+  if (number < 10) {
+    return `0${number}`
+  }
+  return number
 }
 // const activateUserSteps = (step, interval) => {
 //   let stepTag = document.querySelector(`.step-${step}`)
@@ -2135,20 +2189,26 @@ input[type=number] {
     font-size: 0.8em;
     padding: 0.5em 0.5em;
   }
+
+  .order-resume {
+    width: 80% !important;
+  }
 }
 
-@media (max-width: 768px) {
-  .navbar{
-    padding: 2em 0!important;
-    margin: 0!important;
+@media (max-width: 1098px) {
+  .navbar {
+    padding: 2em 0 !important;
+    margin: 0 !important;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%!important;  
+    width: 100% !important;
   }
-  .process-informacion-personal{
-    width: 80%!important;
+
+  .process-informacion-personal {
+    width: 80% !important;
   }
+
   .process-steps-container {
     flex-direction: column;
     width: 80%;
@@ -2170,7 +2230,6 @@ input[type=number] {
     background: linear-gradient(180deg, rgba(17, 17, 17, 0) 50%, #111111 100%);
     position: relative;
     height: 280px
-
   }
 
   .hero-image {
@@ -2187,7 +2246,7 @@ input[type=number] {
   .main-container {
     width: 100%;
   }
-  
+
 }
 
 .process-step.active .step-number {
@@ -2377,7 +2436,7 @@ input[type=number] {
 .img-container {
   width: 80%;
   border: 1px solid #DFDFDF;
-  padding: 2em
+  padding: 1.5em
 }
 
 .modal-delete {
@@ -2562,18 +2621,47 @@ input[type=number] {
 .icon-edit:hover path {
   stroke: #FF500B;
 }
+
 textarea::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+  width: 8px;
+  height: 8px;
 }
 
 textarea::-webkit-scrollbar-thumb {
-    background: #DFDFDF; /* Color del thumb */
-    border-radius: 5px; /* Radio del borde del thumb */
+  background: #DFDFDF;
+  /* Color del thumb */
+  border-radius: 5px;
+  /* Radio del borde del thumb */
 }
 
 textarea::-webkit-scrollbar-thumb:hover {
-    background: #555;
-    cursor: pointer;
+  background: #555;
+  cursor: pointer;
+}
+
+.btn-delete:hover svg {
+  cursor: pointer;
+  stroke: black
+}
+
+.btn-delete-saved:hover svg {
+  cursor: pointer;
+}
+
+.btn-edit:hover svg path {
+  cursor: pointer;
+  stroke: black
+}
+
+.delete-product {
+  width: 100%;
+  margin: 0 auto;
+  align-self: flex-end;
+  text-align: end;
+}
+
+.delete-product svg:hover {
+  cursor: pointer;
+  stroke: black
 }
 </style>

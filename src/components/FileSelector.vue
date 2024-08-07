@@ -1,33 +1,43 @@
 <template>
-    <div class="file-selector_container">
+    <div class="main-file-containe d-flex flex-column align-items-center"  style="height: 100%;">
+        <div class="file-selector_container">
 
-        <div @click="openFileExplorer" class="w-100">
-            <slot name="button">
-                <div class="btn  btn-outline-secondary w-100 upload-button">
-                    <slot name="text">Seleccionar archivo</slot>
-                </div>
-            </slot>
-        </div>
-
-        <input type="file" class="d-none" ref="fileInput" :multiple="props.multiple"
-            :accept="props.accept" @change="handleInputChange" />
-<!-- 
-        <div class="file-selector_drop d-flex align-items-center" @dragover.prevent @drop="handleDrop"
-            v-if="props.notShowDrop">
-            <div class="file-selector_drop_container d-flex  flex-column "   v-if="!props.notShowDrop">
-                <div v-if="!files.length" class="d-flex flex-column ">
-                </div>
-                <div class="file-list" v-if="files.length > 0" :style="{
-                    gridTemplateColumns: `repeat(${Math.min(2, files.length)}, 1fr)`,
-                    gridTemplateRows: `repeat(${Math.ceil(files.length / 2)}, 1fr)`
-
-                }">
-                    <img v-for="(file, index) in files" :key="index" :src="file.iconUrl" alt="preview"
-                        class="file-item" />
-
-                </div>
+            <div @click="openFileExplorer" class="w-100" style="height: 100%;">
+                <slot name="button">
+                    <div v-if="!files.length"
+                        class="btn  w-100 upload-button d-flex align-items-center justify-content-center gap-3">
+                        <slot name="text">Seleccionar archivo</slot>
+                    </div>
+                    <div v-else class="d-flex align-items-center justify-content-center" style="height: 100%;">
+                        <img v-for="(file, index) in files" :key="index" :src="file.iconUrl" alt="preview"
+                            class="file-item" />
+                    </div>
+                </slot>
             </div>
-        </div> -->
+
+            <input type="file" class="d-none" ref="fileInput" :multiple="props.multiple" :accept="props.accept"
+                @change="handleInputChange" />
+
+            <!-- <div class="file-selector_drop d-flex align-items-center" @dragover.prevent @drop="handleDrop"
+    v-if="props.notShowDrop">
+    <div class="file-selector_drop_container d-flex  flex-column "   >
+        <div v-if="!files.length" class="d-flex flex-column ">
+        </div>
+        <div class="file-list" v-if="files.length > 0" :style="{
+            gridTemplateColumns: `repeat(${Math.min(2, files.length)}, 1fr)`,
+            gridTemplateRows: `repeat(${Math.ceil(files.length / 2)}, 1fr)`
+
+        }">
+            <img v-for="(file, index) in files" :key="index" :src="file.iconUrl" alt="preview"
+                class="file-item" />
+
+        </div>
+    </div>
+</div> -->
+        </div>
+        <small class="text-center mx-auto mt-2 epilogue-regular upload-again"
+        @click="uploadAgain" v-if="files.length > 0" 
+        >Volver a subir imagen</small>
     </div>
 </template>
 <script setup>
@@ -35,15 +45,15 @@ import { ref, defineEmits } from 'vue'
 import Swal from 'sweetalert2';
 
 const showAlert = (title, text, icon,) => {
-  Swal.fire({
-    title: title,
-    text: text,
-    icon: icon,
-    confirmButtonText: 'OK',
-    confirmButtonColor: '#21618C',
-  });
+    Swal.fire({
+        title: title,
+        text: text,
+        icon: icon,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#21618C',
+    });
 }
-const props = defineProps(['notShowDrop', 'value', 'multiple','accept'])
+const props = defineProps(['notShowDrop', 'value', 'multiple', 'accept'])
 const emit = defineEmits(['fileChange'])
 const files = ref([])
 const fileInput = ref(null)
@@ -52,6 +62,12 @@ const openFileExplorer = () => {
     input.click()
 }
 
+const uploadAgain = () => {
+    files.value = []
+    emit('fileChange', files.value)
+    openFileExplorer()
+
+}
 const getImgUrl = (file) => URL.createObjectURL(file)
 
 const handleDrop = (e) => {
@@ -62,7 +78,7 @@ const handleDrop = (e) => {
 const handleInputChange = (e) => {
     const fileList = e.target.files || e.dataTransfer.files
     //check size and type of file if size is greater than 5mb or file type is not supported then return
-    if (fileList.length && !validSize(fileList[0]) ){
+    if (fileList.length && !validSize(fileList[0])) {
         showAlert('Error', 'El archivo es demasiado grande', 'error')
         return
     }
@@ -101,16 +117,16 @@ const handleInputChange = (e) => {
 
 const isValidFile = (file) => {
 
-    return  isValidAccept(file)
+    return isValidAccept(file)
 }
 const isValidAccept = (file) => {
-    const accept=props.accept.split(',')
+    const accept = props.accept.split(',')
     //if image/* is in accept then check if file is image
-    if(accept[0].includes('image/*' ) && accept.length==1){
+    if (accept[0].includes('image/*') && accept.length == 1) {
         return isImage(file)
     }
 
-    return isSupportedFileType(file) && accept.includes("."+file.name.split('.').pop().toLowerCase())
+    return isSupportedFileType(file) && accept.includes("." + file.name.split('.').pop().toLowerCase())
 }
 const isImage = (file) => file.type.split('/')[0] === 'image'
 
@@ -153,6 +169,14 @@ if (props.value) {
     flex-direction: column;
     row-gap: 1em;
     height: 100%;
+    border: 1px solid #ccc;
+    padding: 1em;
+}
+
+.file-selector_container:hover {
+    border: 1px solid #21618C;
+    border-radius: 10px;
+    transition: 0.3s;
 }
 
 .file-selector_drop {
@@ -207,7 +231,16 @@ if (props.value) {
     font-weight: bold;
     text-align: center;
     margin-bottom: 1rem;
-}.upload-button{
+}
+
+.upload-button {
     height: 100%
+}
+.upload-again{
+    color:#7E7E7E;
+}
+.upload-again:hover {
+    cursor: pointer;
+    color: #21618C;
 }
 </style>
