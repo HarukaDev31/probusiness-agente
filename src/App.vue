@@ -9,10 +9,10 @@
     </div>
     <navbar />
     <main class="main-container" style="position:relative">
-      <div class="hero-container" v-if="currentProcessStep != 4">
+      <div class="hero-container" v-if="currentProcessStep <4">
         <img class="hero-image" src="/src/assets/hero.png" alt="Hero Image" />
       </div>
-      <div class="process-steps-container" v-if="currentProcessStep != 4">
+      <div class="process-steps-container" v-if="currentProcessStep <4">
         <div class="process-step" :class="getCurrentStepClass(currentProcessStep, index + 1)"
           v-for="(step, index) in processSteps" :key="index">
           <div class="step-number 
@@ -700,6 +700,9 @@
       
       <send-button @sendCotizacion="sendCotizacion" />
       </div> -->
+      <end-view v-if="currentProcessStep == 5"
+        @back="restartProcess" />
+      />
   <footer-cuz />
 </template>
 <script setup>
@@ -716,6 +719,7 @@ import StepByStepButton from "./components/StepByStepButton.vue";
 import { ref, computed, reactive, onMounted } from "vue";
 import { sendCotization, getClientDataByDNIID } from "./services/send-cotization";
 import Swal from 'sweetalert2';
+import EndView from "./components/EndView.vue";
 const currentProcessStep = ref(1)
 //validation functions
 const validateNotEmpy = (value) => {
@@ -847,6 +851,10 @@ const supplierIndicators = ref([
   },
 
 ]);
+const restartProcess = () => {
+
+  window.location.reload()
+}
 const suppliers = ref([])
 //position of description
 //get current window width
@@ -1247,7 +1255,7 @@ const showLastSupplierData = async (supplierIndex) => {
       document.getElementById('btn-back-supplier').addEventListener('click', () => {
         Swal.close();
       });
-      d
+      
     }
   }).then(() => {
   });
@@ -1432,12 +1440,7 @@ const sendCotizacion = async () => {
       )
       //clear all values 
 
-      currentSupplier.value = 0;
-      suppliers.value = [];
-      formValues.value.forEach((input) => {
-        input.value = "";
-        input.keyRender++
-      });
+      currentProcessStep.value = 5;
 
     } else {
       showAlert("Error al enviar la cotización",
