@@ -702,7 +702,7 @@
       </div> -->
       <end-view v-if="currentProcessStep == 5"
         @back="restartProcess" />
-      />
+
   <footer-cuz />
 </template>
 <script setup>
