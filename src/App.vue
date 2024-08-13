@@ -234,7 +234,7 @@
                       </span>
                       <span class="epilogue-regular">
                         Cantidad:
-                        {{ getProductParam(productList, 'cantidad').value }} KG
+                        {{ getProductParam(productList, 'cantidad').value }} 
                       </span>
                       <span class="epilogue-regular">
                         Precio:
