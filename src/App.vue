@@ -1235,14 +1235,17 @@ const showLastSupplierData = async (supplierIndex) => {
         };
 
         if (cbm === "" || peso === "") {
+          console.log('entro')
           showErrors(cbm === "", peso === "");
+          return;
         } else {
+          console.log('entro2',cbm,peso)
           // Hide errors
           showErrors(false, false);
 
           // Set values
-          indicators[0].value = parseInt(cbm);
-          indicators[1].value = parseInt(peso);
+          indicators[0].value = parseFloat(cbm);
+          indicators[1].value = parseFloat(peso);
           currentSupplier.value++;
 
           Swal.close();
