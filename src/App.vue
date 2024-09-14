@@ -43,7 +43,7 @@
       <div class="process-informacion-personal" v-if="currentProcessStep == 1">
         <h1 class="my-4 sora-regular">Mis datos</h1>
         <span class="epilogue-regular">Busca tu DNI o ingresa manualmente tus nombres y apellidos</span>
-        <div v-for="(desc, descIndex) in formValuesComputedPair">
+        <div v-for="(desc, descIndex) in formValuesComputedPair" :key="descIndex">
           <customized-input :key="descIndex" :text="desc.text" :optionalText="desc.optionalText" :type="desc.type"
             @input="(e) => (desc.value = e)" :value="desc.value" :validation="desc.validate" :is-error="desc.error"
             :prepend="desc.prepend" :keyRender="desc.keyRender" :error-text="desc.errorText"
@@ -192,7 +192,7 @@
                     </file-selector>
                   </div>
                 </div>
-                <div class="col-12 col-md-6 row" style="position: relative;">
+                <div class="col-12 col-md-6 " style="position: relative;">
                   <div
                     v-for="(product, productItemIndex) in productList.filter((item) => (item.type != 'file' && item.type != 'number'))"
                     style="position:relative">
@@ -221,14 +221,17 @@
                 <div class="col-12 col-md-6" v-for="(productList, productListIndex) in supplier.products"
                   :key="productListIndex">
                   <div class="row">
-                    <div class=" col-12 col-md-6">
+                    <div class=" col-6 d-flex flex-column ">
+                      <span class="sora-regular text-center mx-auto mb-1"> 
+                        Producto {{ getFormattedNumber(productListIndex + 1) }}
+                      </span>
                       <div class="img-container">
                         <img :src="getObjectURL(getProductParam(productList, 'foto').value)" alt="product image"
                           class="img img-fluid" />
                       </div>
 
                     </div>
-                    <div class="product-info col-12 col-md-6">
+                    <div class="product-info col-6 col-md-6">
                       <span class="mb-2 epilogue-regular">
                         {{ getProductParam(productList, 'nombre').value }}
                       </span>
@@ -326,12 +329,12 @@
 
               </div>
               <div class="product-list-collapsed row py-4 ">
-                <div class=" col col-6" v-for="(productList, productListIndex) in supplier.products"
+                <div class="col-6" v-for="(productList, productListIndex) in supplier.products"
                   :key="productListIndex">
                   <span class="sora-regular">Producto {{ getFormattedNumber(productListIndex + 1) }}</span>
 
                   <div class="row mt-2">
-                    <div class=" col col-6">
+                    <div class="col-6">
 
                       <div class="img-container">
                         <img :src="getObjectURL(getProductParam(productList, 'foto').value)" alt="product image"
@@ -2023,7 +2026,19 @@ body {
   border-bottom: 1px solid #CFD6DC;
   padding: 1em;
 }
-
+@media (max-width: 1068px) {
+  .supplier-header {
+    padding: 0.5em;
+    border-bottom: none;
+  }
+}
+@media (max-width: 768px) {
+  .supplier-indicators {
+    font-size: 0.8rem;
+  }.product-list{
+    border-bottom: 1px solid #CFD6DC;
+  }
+}
 .slide-enter-active,
 .slide-leave-active {
   transition: all 0.5s;
@@ -2201,6 +2216,22 @@ input[type=number] {
   }
 }
 
+.hero-container {
+    width:70%;
+    margin: 0 auto;
+    background: linear-gradient(180deg, rgba(17, 17, 17, 0) 50%, #111111 100%);
+    position: relative;
+    aspect-ratio: 5/2;
+  }
+
+  .hero-image {
+    width: 100%;
+
+    height: 100%;
+    position: absolute;
+
+    z-index: -1;
+  }
 @media (max-width: 1098px) {
   .navbar {
     padding: 2em 0 !important;
@@ -2299,7 +2330,16 @@ input[type=number] {
   justify-content: center;
   column-gap: 1em;
 }
-
+@media (max-width: 1098px) {
+  .process-steps-buttons {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    row-gap: 1.5em;
+  }
+}
 .btn-siguiente {
   background: #FF500B;
   color: white;
@@ -2345,7 +2385,7 @@ input[type=number] {
 }
 
 .process-proveedores {
-  width: 70%;
+  width: 80%;
   margin: 0 auto;
 }
 
@@ -2442,7 +2482,7 @@ input[type=number] {
 .img-container {
   width: 80%;
   border: 1px solid #DFDFDF;
-  padding: 1.5em
+  padding: 1.5em;
 }
 
 .modal-delete {
@@ -2669,5 +2709,12 @@ textarea::-webkit-scrollbar-thumb:hover {
 .delete-product svg:hover {
   cursor: pointer;
   stroke: black
+}.product-list-collapsed{
+  row-gap: 1em;
 }
+.product-list-collapsed .col-12:not(:first-child){
+border-top: 1px solid #DFDFDF;
+padding-top: 1em;
+}
+
 </style>

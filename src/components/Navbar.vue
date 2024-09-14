@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar bg-light menu-shadow p-0 py-3 mb-5 ">
+    <nav class="navbar  menu-shadow p-0 py-3 mb-5 ">
       <div class="container-fluid">
         <svg width="190" height="36" viewBox="0 0 190 36" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_1672_4051)">
@@ -35,6 +35,7 @@
 .navbar {
     width: 80%;
     margin: 0 auto;
+    background: white;
 }
 .container-fluid {
     justify-content: center;

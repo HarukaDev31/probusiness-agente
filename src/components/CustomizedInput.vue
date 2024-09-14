@@ -145,6 +145,7 @@ onMounted(() => {
 
 .input-actions {
     border: 1px solid #ccc !important;
+    text-align: center;
 }
 
 span {
