@@ -25,3 +25,15 @@ export const getClientDataByDNIID = async (data) => {
         return null;
     }    
 }
+export const setTradingOrder = async (data) => {
+    try {
+        const response = await axios.post(import.meta.env.VITE_API_URL+'set-trading-order', data,{
+            headers: { 'Content-Type': 'multipart/form-data','API-Key': import.meta.env.VITE_API_KEY}
+        });
+        return response.data;
+    }
+    catch (error) {
+        throw new Error('Error al crear la orden de trading:', error);
+        return null;
+    }
+}
