@@ -520,7 +520,8 @@ import { ref, computed, reactive, onMounted } from "vue";
 import {
   sendCotization,
   getClientDataByDNIID,
-  setTradingOrder
+  setTradingOrder,
+  getPaises,
 } from "./services/send-cotization";
 import Swal from "sweetalert2";
 import EndView from "./components/EndView.vue";
@@ -542,11 +543,6 @@ const validateNumber = (value) => {
   return !isNaN(value) && value > 0 && value < 999999999;
 };
 
-//Variables
-
-
-
-// reactive variables
 const isLoading = ref(false);
 const isInStepByStep = ref(false);
 const productParams = [
@@ -712,14 +708,7 @@ const getFormParam = (paramsList, paramKey) => {
   return paramsList.find((param) => param.key == paramKey);
 };
 const countryOptions = [
-  {
-    value: 1,
-    text: "Peru",
-  },
-  {
-    value: 2,
-    text: "Colombia",
-  },
+
 ];
 const formValues = ref([
   {
@@ -791,7 +780,7 @@ const formValues = ref([
     optionalText: false,
     type: "select",
     options: countryOptions,
-    value: "",
+    value: "1",
     validate: validateNotEmpy,
     errorText: "Ingresa un pais valido",
     error: false,
@@ -799,7 +788,24 @@ const formValues = ref([
     helpText: "Ingresa tu correo electrónico.",
   },
 ]);
-
+const fillSelectPaises=async()=>{
+  try {
+    const response = await getPaises();
+    formValues.value.find((input) => input.key == "pais").options= response.paises.map((pais) => ({
+      value: pais.ID_Pais,
+      text: pais.No_Pais,
+    }));
+  } catch (e) {
+    console.error(e);
+  }
+}
+onMounted(() => {
+  try {
+    fillSelectPaises();
+  } catch (e) {
+    console.error(e);
+  }
+});
 const formValuesComputedPair = computed(() => {
   return formValues.value.filter((input, index) => index % 2 == 0);
 });
@@ -1689,7 +1695,7 @@ input[type="number"] {
   margin: 0 auto;
   background: linear-gradient(180deg, rgba(17, 17, 17, 0) 50%, #111111 100%);
   position: relative;
-  aspect-ratio: 5/2;
+  aspect-ratio: 5/1.6;
 }
 
 .hero-image {
