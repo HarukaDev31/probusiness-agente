@@ -1135,10 +1135,10 @@ const setTrading=async ()=>{
       showAlert(
         "Cotización enviada",
         `Su cotización ha sido registrada con el codigo N° ${response.code} ¡Gracias por confiar en nosotros!
-      Contactanos para mas informacion al whatsapp +51 991 351 346
+      Contactanos para mas informacion al whatsapp +51 992 583 703 
       `,
         "success",
-        () => redirectoWhatsapp("+51991351346"),
+        () => redirectoWhatsapp("+51992583703"),
         "!Contactanos!"
       );
       //clear all values
@@ -1316,10 +1316,10 @@ const sendCotizacion = async () => {
       showAlert(
         "Cotización enviada",
         `Su cotización ha sido registrada con el codigo N° ${response.code} ¡Gracias por confiar en nosotros!
-      Contactanos para mas informacion al whatsapp +51 991 351 346
+      Contactanos para mas informacion al whatsapp +51 992 583 703 
       `,
         "success",
-        () => redirectoWhatsapp("+51991351346"),
+        () => redirectoWhatsapp("+51992583703"),
         "!Contactanos!"
       );
       //clear all values
