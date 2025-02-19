@@ -37,3 +37,16 @@ export const setTradingOrder = async (data) => {
         return null;
     }
 }
+export const getPaises = async () => {
+    try {
+        const response = await axios.get(import.meta.env.VITE_API_URL+'get-paises',{
+            headers: { 'Content-Type': 'application/json','API-Key': import
+            .meta.env.VITE_API_KEY}
+        });
+        return response.data;
+    }
+    catch (error) {
+        throw new Error('Error al obtener los paises:', error);
+        return null;
+    }
+}
