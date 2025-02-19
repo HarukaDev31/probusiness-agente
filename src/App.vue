@@ -1383,7 +1383,7 @@ const processSteps = ref([
   },
   {
     id: 3,
-    name: "Proveedores",
+    name: "Productos",
     isCompleted: false,
   },
 ]);
@@ -1689,7 +1689,7 @@ input[type="number"] {
   margin: 0 auto;
   background: linear-gradient(180deg, rgba(17, 17, 17, 0) 50%, #111111 100%);
   position: relative;
-  aspect-ratio: 5/2;
+  aspect-ratio: 5/1.6;
 }
 
 .hero-image {
